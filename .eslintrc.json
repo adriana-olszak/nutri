@@ -15,6 +15,29 @@
               {
                 "sourceTag": "*",
                 "onlyDependOnLibsWithTags": ["*"]
+              },
+              {
+                "sourceTag": "type:feature",
+                "onlyDependOnLibsWithTags": ["type:feature", "type:ui"]
+              },
+              {
+                "sourceTag": "type:ui",
+                "onlyDependOnLibsWithTags": ["type:ui"]
+              },
+              {
+                "sourceTag": "scope:auth",
+                "onlyDependOnLibsWithTags": [
+                  "scope:auth",
+                  "scope:shared"
+                ]
+              },
+              {
+                "sourceTag": "scope:recipes",
+                "onlyDependOnLibsWithTags": ["scope:recipes", "scope:shared"]
+              },
+              {
+                "sourceTag": "scope:shared",
+                "onlyDependOnLibsWithTags": ["scope:shared"]
               }
             ]
           }

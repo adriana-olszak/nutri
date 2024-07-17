@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/client/auth/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["type:feature", "scope:auth"],
   "// targets": "to see all targets run: nx show project client-auth --web",
   "targets": {}
 }
