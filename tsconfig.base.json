@@ -17,7 +17,9 @@
     "paths": {
       "@nutri/client-auth": ["libs/client/auth/src/index.ts"],
       "@nutri/client-recipes": ["libs/client/recipes/src/index.ts"],
-      "@nutri/client-ui": ["libs/client/ui/src/index.ts"]
+      "@nutri/client-ui": ["libs/client/ui/src/index.ts"],
+      "@nutri/client-ui/*": ["libs/client/ui/src/lib/*"],
+      "@nutri/client-utils": ["libs/client/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
