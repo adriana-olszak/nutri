@@ -38,7 +38,15 @@ npx nx run-many -t <target1> <target2>
 npx nx run-many -t <target1> <target2> -p <proj1> <proj2>
 ```
 
+```
+nx 
+```
+
 Targets can be defined in the `package.json` or `projects.json`. Learn more [in the docs](https://nx.dev/features/run-tasks).
+
+## TODO
+- [ ] Setup FE
+- 
 
 ## Set up CI!
 
