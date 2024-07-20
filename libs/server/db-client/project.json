@@ -1,33 +1,33 @@
 {
   "name": "server-db-client",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/server/db-client/src",
+  "sourceRoot": "libs/server/db-client",
   "projectType": "library",
   "tags": [],
   "targets": {
     "prisma": {
       "command": "prisma",
       "options": {
-        "cwd": "libs/server/db-client/src"
+        "cwd": "libs/server/db-client"
       }
     },
     "generate-types": {
       "command": "prisma generate",
       "options": {
-        "cwd": "libs/server/db-client/src"
+        "cwd": "libs/server/db-client"
       }
     },
     "migrate": {
       "command": "prisma migrate dev",
       "options": {
-        "cwd": "libs/server/db-client/src"
+        "cwd": "libs/server/db-client"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/server/db-client/src/**/*.ts"]
+        "lintFilePatterns": ["libs/server/db-client/**/*.ts"]
       }
     }
   }

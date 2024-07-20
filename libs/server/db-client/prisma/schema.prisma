@@ -9,11 +9,9 @@ generator client {
 }
 
 datasource db {
-  // using sqlite for the ease of use
-  // feel free to use any other supported database
-  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#fields
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  // FIXME: when deploying we have to use ENV. For whatever reson it does not work.
+  url      = "postgresql://nutri:nutri@localhost:3100/nutri"
 }
 
 model User {
