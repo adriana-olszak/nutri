@@ -3,7 +3,7 @@ import {
   IsEnum,
   IsNumber,
   IsString,
-  validateSync,
+  validateSync
 } from 'class-validator';
 
 export enum Environment {
@@ -23,6 +23,33 @@ class EnvironmentVariables {
 
   @IsString()
   DATABASE_URL!: string;
+
+  @IsString()
+  OAUTH_GOOGLE_CLIENT_SECRET!: string;
+
+  @IsString()
+  OAUTH_GOOGLE_CLIENT_ID!: string;
+
+  @IsNumber()
+  JWT_EXPIRES_IN!: number;
+
+  @IsString()
+  JWT_PRIVATE_KEY!: string;
+
+  @IsString()
+  JWT_PUBLIC_KEY!: string;
+
+  @IsNumber()
+  AUTH_REMEMBER_ME_EXPIRES_IN!: number;
+
+  @IsString()
+  BCRYPT_COST!: string;
+
+  @IsString()
+  SERVER_BASE_URL!: string;
+
+  @IsString()
+  CLIENT_BASE_URL!: string;
 }
 
 export type ENV_VARS = keyof EnvironmentVariables;
@@ -32,10 +59,10 @@ export type EnvironmentVariablesType = {
 
 export function validate(config: Record<string, unknown>) {
   const validatedConfig = plainToInstance(EnvironmentVariables, config, {
-    enableImplicitConversion: true,
+    enableImplicitConversion: true
   });
   const errors = validateSync(validatedConfig, {
-    skipMissingProperties: false,
+    skipMissingProperties: false
   });
 
   if (errors.length > 0) {

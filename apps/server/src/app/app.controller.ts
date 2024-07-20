@@ -14,9 +14,9 @@ export class AppController {
 
   @Post('user')
   async createUser(@Body() userData: CreateUserDto) {
-    const { name, email } = userData;
+    const { username, email } = userData;
     return this.userService.createUser({
-      name,
+      username: username,
       email,
     });
   }
