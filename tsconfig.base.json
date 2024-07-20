@@ -24,7 +24,8 @@
       "@nutri/server-data-access-user": [
         "libs/server/data-access-users/src/index.ts"
       ],
-      "@nutri/server-db-client": ["libs/server/db-client/src/index.ts"]
+      "@nutri/server-db-client": ["libs/server/db-client/src/index.ts"],
+      "@nutri/server-metrics": ["libs/server/metrics/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
