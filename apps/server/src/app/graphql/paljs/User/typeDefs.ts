@@ -1,9 +1,10 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 
 export default gql`
   type User {
     id: String!
     createdAt: DateTime!
+    updatedAt: DateTime!
     username: String
     password: String
     email: String!
@@ -57,6 +58,9 @@ export default gql`
       update: UserUpdateInput!
     ): User
     deleteManyUser(where: UserWhereInput): BatchPayload
-    updateManyUser(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload
+    updateManyUser(
+      data: UserUpdateManyMutationInput!
+      where: UserWhereInput
+    ): BatchPayload
   }
-`;
+`

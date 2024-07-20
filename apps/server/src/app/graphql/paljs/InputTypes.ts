@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 
 export default gql`
   scalar DateTime
@@ -16,6 +16,7 @@ export default gql`
   enum UserScalarFieldEnum {
     id
     createdAt
+    updatedAt
     username
     password
     email
@@ -56,6 +57,7 @@ export default gql`
     NOT: [UserWhereInput!]
     id: StringFilter
     createdAt: DateTimeFilter
+    updatedAt: DateTimeFilter
     username: StringNullableFilter
     password: StringNullableFilter
     email: StringFilter
@@ -67,6 +69,7 @@ export default gql`
   input UserOrderByWithRelationInput {
     id: SortOrder
     createdAt: SortOrder
+    updatedAt: SortOrder
     username: SortOrderInput
     password: SortOrderInput
     email: SortOrder
@@ -84,6 +87,7 @@ export default gql`
     OR: [UserWhereInput!]
     NOT: [UserWhereInput!]
     createdAt: DateTimeFilter
+    updatedAt: DateTimeFilter
     password: StringNullableFilter
     roles: StringNullableListFilter
     googleProfile: JsonNullableFilter
@@ -92,6 +96,7 @@ export default gql`
   input UserOrderByWithAggregationInput {
     id: SortOrder
     createdAt: SortOrder
+    updatedAt: SortOrder
     username: SortOrderInput
     password: SortOrderInput
     email: SortOrder
@@ -109,6 +114,7 @@ export default gql`
     NOT: [UserScalarWhereWithAggregatesInput!]
     id: StringWithAggregatesFilter
     createdAt: DateTimeWithAggregatesFilter
+    updatedAt: DateTimeWithAggregatesFilter
     username: StringNullableWithAggregatesFilter
     password: StringNullableWithAggregatesFilter
     email: StringWithAggregatesFilter
@@ -120,6 +126,7 @@ export default gql`
   input UserCreateInput {
     id: String
     createdAt: DateTime
+    updatedAt: DateTime
     username: String
     password: String
     email: String!
@@ -131,6 +138,7 @@ export default gql`
   input UserUncheckedCreateInput {
     id: String
     createdAt: DateTime
+    updatedAt: DateTime
     username: String
     password: String
     email: String!
@@ -142,6 +150,7 @@ export default gql`
   input UserUpdateInput {
     id: String
     createdAt: DateTime
+    updatedAt: DateTime
     username: String
     password: String
     email: String
@@ -153,6 +162,7 @@ export default gql`
   input UserUncheckedUpdateInput {
     id: String
     createdAt: DateTime
+    updatedAt: DateTime
     username: String
     password: String
     email: String
@@ -164,6 +174,7 @@ export default gql`
   input UserCreateManyInput {
     id: String
     createdAt: DateTime
+    updatedAt: DateTime
     username: String
     password: String
     email: String!
@@ -175,6 +186,7 @@ export default gql`
   input UserUpdateManyMutationInput {
     id: String
     createdAt: DateTime
+    updatedAt: DateTime
     username: String
     password: String
     email: String
@@ -186,6 +198,7 @@ export default gql`
   input UserUncheckedUpdateManyInput {
     id: String
     createdAt: DateTime
+    updatedAt: DateTime
     username: String
     password: String
     email: String
@@ -267,6 +280,7 @@ export default gql`
   input UserCountOrderByAggregateInput {
     id: SortOrder
     createdAt: SortOrder
+    updatedAt: SortOrder
     username: SortOrder
     password: SortOrder
     email: SortOrder
@@ -278,6 +292,7 @@ export default gql`
   input UserMaxOrderByAggregateInput {
     id: SortOrder
     createdAt: SortOrder
+    updatedAt: SortOrder
     username: SortOrder
     password: SortOrder
     email: SortOrder
@@ -287,6 +302,7 @@ export default gql`
   input UserMinOrderByAggregateInput {
     id: SortOrder
     createdAt: SortOrder
+    updatedAt: SortOrder
     username: SortOrder
     password: SortOrder
     email: SortOrder
@@ -517,6 +533,7 @@ export default gql`
   type UserGroupByOutputType {
     id: String!
     createdAt: DateTime!
+    updatedAt: DateTime!
     username: String
     password: String
     email: String!
@@ -531,6 +548,7 @@ export default gql`
   type UserCountAggregateOutputType {
     id: Int!
     createdAt: Int!
+    updatedAt: Int!
     username: Int!
     password: Int!
     email: Int!
@@ -543,6 +561,7 @@ export default gql`
   type UserMinAggregateOutputType {
     id: String
     createdAt: DateTime
+    updatedAt: DateTime
     username: String
     password: String
     email: String
@@ -552,6 +571,7 @@ export default gql`
   type UserMaxAggregateOutputType {
     id: String
     createdAt: DateTime
+    updatedAt: DateTime
     username: String
     password: String
     email: String
@@ -561,6 +581,7 @@ export default gql`
   type CreateManyUserAndReturnOutputType {
     id: String!
     createdAt: DateTime!
+    updatedAt: DateTime!
     username: String
     password: String
     email: String!
@@ -568,4 +589,4 @@ export default gql`
     googleId: String
     googleProfile: Json
   }
-`;
+`

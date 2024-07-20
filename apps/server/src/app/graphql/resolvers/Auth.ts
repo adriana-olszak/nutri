@@ -1,9 +1,19 @@
 import crypto from 'crypto';
 
-import { HttpException, Logger, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  HttpException,
+  Logger,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Throttle } from '@nestjs/throttler';
-import { CurrentUser, JwtDto, RequestUserDto, RolesGuard } from '@nutri/server-auth';
+import {
+  CurrentUser,
+  JwtDto,
+  RequestUserDto,
+  RolesGuard,
+} from '@nutri/server-auth';
 import gql from 'graphql-tag';
 import { bcrypt, bcryptVerify } from 'hash-wasm';
 
@@ -36,7 +46,9 @@ export const typeDefs = gql`
 
   extend type Mutation {
     authPasswordChange(data: AuthPasswordChangeInput!): Boolean
-    authPasswordResetConfirmation(data: AuthPasswordResetConfirmationInput!): AuthSession!
+    authPasswordResetConfirmation(
+      data: AuthPasswordResetConfirmationInput!
+    ): AuthSession!
     authRegister(data: AuthRegisterInput!): AuthSession!
   }
 
@@ -104,7 +116,7 @@ export class AuthResolver {
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
     // private readonly mail: MailService,
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
   ) {}
 
   @Query()
@@ -129,7 +141,8 @@ export class AuthResolver {
       password: args.password,
       hash: user.password as string,
     });
-    if (!correctPassword) throw new HttpException(ApiErrors.AuthLogin.INCORRECT_PASSWORD, 400);
+    if (!correctPassword)
+      throw new HttpException(ApiErrors.AuthLogin.INCORRECT_PASSWORD, 400);
 
     return this.auth.getAuthSession(user, args.rememberMe);
   }
@@ -155,7 +168,7 @@ export class AuthResolver {
   @UseGuards(RolesGuard())
   async authExchangeToken(
     @CurrentUser() reqUser: RequestUserDto,
-    @Args('data') args: AuthExchangeTokenInput
+    @Args('data') args: AuthExchangeTokenInput,
   ) {
     const user = await this.prisma.user.findUnique({
       where: { id: reqUser.id },
@@ -170,7 +183,9 @@ export class AuthResolver {
   }
 
   @Query()
-  async authPasswordResetRequest(@Args('data') args: AuthPasswordResetRequestInput) {
+  async authPasswordResetRequest(
+    @Args('data') args: AuthPasswordResetRequestInput,
+  ) {
     const possibleUsers = await this.prisma.user.findMany({
       where: {
         OR: [
@@ -192,26 +207,32 @@ export class AuthResolver {
       select: { id: true, email: true },
     });
 
-    if (possibleUsers.length === 0) throw new HttpException(ApiErrors.Codes.USER_NOT_FOUND, 400);
+    if (possibleUsers.length === 0)
+      throw new HttpException(ApiErrors.Codes.USER_NOT_FOUND, 400);
 
     //TODO add mailer
     // possibleUsers.forEach(user => this.mail.sendPasswordReset(user));
   }
 
   @Mutation()
-  async authPasswordResetConfirmation(@Args('data') args: AuthPasswordResetConfirmationInput) {
+  async authPasswordResetConfirmation(
+    @Args('data') args: AuthPasswordResetConfirmationInput,
+  ) {
     let tokenPayload: JwtDto;
     try {
       tokenPayload = this.jwtService.verify(args.token);
     } catch {
-      throw new UnauthorizedException(ApiErrors.AuthPasswordResetConfirmation.JWT_FAILED);
+      throw new UnauthorizedException(
+        ApiErrors.AuthPasswordResetConfirmation.JWT_FAILED,
+      );
     }
 
     const userExists = await this.prisma.user.findUnique({
       where: { id: tokenPayload.sub },
       select: { id: true },
     });
-    if (!userExists) throw new UnauthorizedException(ApiErrors.Codes.USER_NOT_FOUND);
+    if (!userExists)
+      throw new UnauthorizedException(ApiErrors.Codes.USER_NOT_FOUND);
 
     const hashedPassword = await this.hashPassword(args.newPassword);
 
@@ -233,13 +254,15 @@ export class AuthResolver {
       where: { username: { equals: args.username, mode: 'insensitive' } },
       select: { username: true },
     });
-    if (usernameTaken) throw new HttpException(ApiErrors.AuthRegister.USERNAME_TAKEN, 400);
+    if (usernameTaken)
+      throw new HttpException(ApiErrors.AuthRegister.USERNAME_TAKEN, 400);
 
     const emailTaken = await this.prisma.user.findFirst({
       where: { email: { equals: args.email, mode: 'insensitive' } },
       select: { email: true },
     });
-    if (emailTaken) throw new HttpException(ApiErrors.AuthRegister.EMAIL_TAKEN, 400);
+    if (emailTaken)
+      throw new HttpException(ApiErrors.AuthRegister.EMAIL_TAKEN, 400);
 
     const hashedPassword = await this.hashPassword(args.password);
 
@@ -285,7 +308,7 @@ export class AuthResolver {
   @UseGuards(RolesGuard())
   async authPasswordChange(
     @Args('data') args: AuthPasswordChangeInput,
-    @CurrentUser() reqUser: RequestUserDto
+    @CurrentUser() reqUser: RequestUserDto,
   ) {
     const user = await this.prisma.user.findUnique({
       where: { id: reqUser.id },
@@ -301,7 +324,8 @@ export class AuthResolver {
       password: args.oldPassword,
       hash: user.password as string,
     });
-    if (!correctPassword) throw new HttpException(ApiErrors.AuthPasswordChange.WRONG_PASSWORD, 400);
+    if (!correctPassword)
+      throw new HttpException(ApiErrors.AuthPasswordChange.WRONG_PASSWORD, 400);
 
     const hashedPassword = await this.hashPassword(args.newPassword);
 
@@ -315,11 +339,15 @@ export class AuthResolver {
   private async hashPassword(password: string) {
     return bcrypt({
       // @default 12 bytes
-      costFactor: this.config.bcrypt?.costFactor ? this.config.bcrypt.costFactor : 12,
+      costFactor: this.config.bcrypt?.costFactor
+        ? this.config.bcrypt.costFactor
+        : 12,
       password,
       salt: crypto.getRandomValues(
         // @default 16 bytes
-        new Uint8Array(this.config.bcrypt?.saltSize ? this.config.bcrypt.saltSize : 16)
+        new Uint8Array(
+          this.config.bcrypt?.saltSize ? this.config.bcrypt.saltSize : 16,
+        ),
       ),
     });
   }

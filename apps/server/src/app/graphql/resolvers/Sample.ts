@@ -47,12 +47,12 @@ async function createUploadDirectory() {
   }
 }
 
-interval(1000).subscribe(i =>
+interval(1000).subscribe((i) =>
   pubSub.publish('sampleSubscription', {
     sampleSubscription: {
       message: `Server ticker ${i}`,
     },
-  })
+  }),
 );
 
 @Resolver()
@@ -65,7 +65,9 @@ export class SampleResolver {
   }
 
   @Mutation()
-  async sampleUpload(@Args('file', { type: () => GraphQLUpload }) file: Upload) {
+  async sampleUpload(
+    @Args('file', { type: () => GraphQLUpload }) file: Upload,
+  ) {
     /**
      * Normally you would pipe the stream directly to a blob service in
      * the cloud somewhere and then store the file meta within your database.
@@ -77,14 +79,16 @@ export class SampleResolver {
     const { filename, mimetype, encoding, createReadStream } = file;
 
     createReadStream()
-      .on('error', err => {
+      .on('error', (err) => {
         logger.error(`${filename} ReadStream Error`, err);
       })
       .pipe(createWriteStream(path.join(UPLOADS_PATH, filename)))
       .on('close', () => {
-        logger.log(`Uploaded: ${filename} | mimetype: ${mimetype} | encoding: ${encoding}`);
+        logger.log(
+          `Uploaded: ${filename} | mimetype: ${mimetype} | encoding: ${encoding}`,
+        );
       })
-      .on('error', err => {
+      .on('error', (err) => {
         logger.error(`${filename} WriteStream Error`, err);
       });
 
@@ -92,29 +96,33 @@ export class SampleResolver {
   }
 
   @Mutation()
-  async sampleUploadMany(@Args('files', { type: () => [GraphQLUpload] }) files: Promise<Upload>[]) {
+  async sampleUploadMany(
+    @Args('files', { type: () => [GraphQLUpload] }) files: Promise<Upload>[],
+  ) {
     await createUploadDirectory();
 
     return Promise.all(
-      files.map(async file => {
+      files.map(async (file) => {
         const { filename, mimetype, encoding, createReadStream } = await file;
 
         return new Promise((resolve, reject) => {
           createReadStream()
-            .on('error', err => {
+            .on('error', (err) => {
               logger.error(`${filename} ReadStream Error`, err);
             })
             .pipe(createWriteStream(path.join(UPLOADS_PATH, filename)))
             .on('close', () => {
-              logger.log(`Uploaded: ${filename} | mimetype: ${mimetype} | encoding: ${encoding}`);
+              logger.log(
+                `Uploaded: ${filename} | mimetype: ${mimetype} | encoding: ${encoding}`,
+              );
               resolve(filename);
             })
-            .on('error', err => {
+            .on('error', (err) => {
               logger.error(`${filename} WriteStream Error`, err);
               reject(`error ${filename}`);
             });
         });
-      })
+      }),
     );
   }
 }

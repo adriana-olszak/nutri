@@ -1,0 +1,16 @@
+{
+  "name": "generator",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/generator/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "gen": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "ts-node index.ts"
+      }
+    }
+  }
+}

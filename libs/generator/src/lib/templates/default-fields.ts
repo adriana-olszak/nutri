@@ -1,6 +1,6 @@
 export function DefaultFieldsTemplate(names: string[]) {
   let accum = `// This file is generated automatically. Do not edit it manually.
-import { Prisma } from './generated';
+import { Prisma } from "@prisma/client";
 
 export type DefaultFields = {\n`;
 

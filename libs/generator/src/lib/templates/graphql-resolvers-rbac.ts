@@ -6,7 +6,7 @@ import { Args, Info, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { RolesGuard } from '@nutri/server-auth';
 import { GraphQLResolveInfo } from 'graphql';
 
-import { PrismaSelectService, PrismaService } from '../../../prisma';
+import { PrismaSelectService, PrismaService } from '@nutri/server-db-client';
 import type {
   Aggregate${name}Args,
   CreateMany${name}Args,
