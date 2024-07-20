@@ -4,7 +4,7 @@ import {
   Post
 } from '@nestjs/common';
 import { UserService } from '@nutri/server-data-access-user';
-
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller()
 export class AppController {
@@ -13,7 +13,7 @@ export class AppController {
   ) {}
 
   @Post('user')
-  async createUser(@Body() userData: { name?: string; email: string }) {
+  async createUser(@Body() userData: CreateUserDto) {
     const { name, email } = userData;
     return this.userService.createUser({
       name,

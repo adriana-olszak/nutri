@@ -17,12 +17,9 @@ class EnvironmentVariables {
   @IsEnum(Environment)
   NODE_ENV!: Environment;
 
-  @IsString()
-  APP_NAME!: string;
-
   @IsNumber()
   @Transform(({ value }) => Number(value))
-  APP_PORT!: number;
+  SERVER_APP_PORT!: number;
 
   @IsString()
   DATABASE_URL!: string;

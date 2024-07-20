@@ -14,12 +14,11 @@ export class ConfigService {
     >,
   ) {}
 
-  get application() {
-    return this.configService.get('APP_NAME', { infer: true });
-  }
-
   get environment() {
     return this.configService.get('NODE_ENV', { infer: true });
+  }
+  get globalPrefix() {
+    return 'api'
   }
 
   get isDev(): boolean {
@@ -35,16 +34,6 @@ export class ConfigService {
   }
 
   port(): number {
-    return this.configService.get('APP_PORT', { infer: true });
-  }
-
-  /**
-   * DO NOT REMOVE
-   *
-   * It is used to bootstrap isolation in integration tests.
-   * @see feature/utils/helpers/
-   */
-  get databaseSchema() {
-    return 'public';
+    return this.configService.get('SERVER_APP_PORT', { infer: true });
   }
 }
