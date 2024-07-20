@@ -1,13 +1,27 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller, Get,
+  Post
+} from '@nestjs/common';
+import { UserService } from '@nutri/server-data-access-user';
 
-import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly userService: UserService,
+  ) {}
 
-  @Get()
-  getData() {
-    return this.appService.getData();
+  @Post('user')
+  async createUser(@Body() userData: { name?: string; email: string }) {
+    const { name, email } = userData;
+    return this.userService.createUser({
+      name,
+      email,
+    });
+  }
+  @Get('users')
+  async getUsers() {
+    return this.userService.users({});
   }
 }

@@ -1,1 +1,2 @@
-export * from './lib/server-data-access-user';
+export * from './lib/data-access-users.module';
+export * from './lib/user.service';
