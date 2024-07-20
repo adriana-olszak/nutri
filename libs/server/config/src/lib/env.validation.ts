@@ -1,5 +1,6 @@
 import { Transform, plainToInstance } from 'class-transformer';
 import {
+  IsBoolean,
   IsEnum,
   IsNumber,
   IsString,
@@ -50,6 +51,9 @@ class EnvironmentVariables {
 
   @IsString()
   CLIENT_BASE_URL!: string;
+
+  @IsBoolean()
+  PUBLIC_REGISTRATION!: boolean;
 }
 
 export type ENV_VARS = keyof EnvironmentVariables;

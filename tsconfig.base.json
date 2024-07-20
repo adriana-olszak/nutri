@@ -10,7 +10,7 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": ["es2021", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -20,6 +20,7 @@
       "@nutri/client-ui": ["libs/client/ui/src/index.ts"],
       "@nutri/client-ui/*": ["libs/client/ui/src/lib/*"],
       "@nutri/client-utils": ["libs/client/utils/src/index.ts"],
+      "@nutri/common-consts": ["libs/common/consts/src/index.ts"],
       "@nutri/server-auth": ["libs/server/auth/src/index.ts"],
       "@nutri/server-config": ["libs/server/config/src/index.ts"],
       "@nutri/server-data-access-user": [

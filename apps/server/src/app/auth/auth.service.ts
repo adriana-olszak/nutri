@@ -46,7 +46,7 @@ export class AuthService {
   }
 
   /**
-   * @returns `RequestUser` if valid and `null` otherwise
+   * @returns `RequestUserDto` if valid and `null` otherwise
    */
   async authorizeJwt(token: string): Promise<RequestUserDto | null> {
     const jwtPayload = this.jwtService.decode(token) as JwtDto;

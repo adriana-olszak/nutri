@@ -29,6 +29,10 @@ export class ConfigService {
     return this.environment === Environment.DEVELOPMENT;
   }
 
+  get isProd(): boolean {
+    return this.environment === Environment.PRODUCTION;
+  }
+
   get isTest(): boolean {
     return this.environment === Environment.TEST;
   }
@@ -40,6 +44,7 @@ export class ConfigService {
   get authRememberMeExpiresIn(): number {
     return this.configService.get('AUTH_REMEMBER_ME_EXPIRES_IN', { infer: true });
   }
+
   get clientUrl(): string {
     return this.configService.get('CLIENT_BASE_URL', { infer: true });
   }
@@ -79,6 +84,34 @@ export class ConfigService {
         callbackURL: `${this.serverUrl}/auth/google/redirect`,
         scope: ['email']
       }
+    };
+  }
+
+  get graphql() {
+    return {
+      subscriptions: true,
+      sandbox: true,
+      introspection: true,
+      csrfPrevention: true,
+      uploads: {
+        maxFileSize: 20_000_000, // 20 MB
+        maxFiles: 5
+      }
+    };
+  }
+
+  get publicRegistration(): boolean {
+    return this.configService.get('PUBLIC_REGISTRATION', { infer: true });
+  }
+
+  get helmet() {
+    return true;
+  }
+
+  get bcrypt() {
+    return {
+      costFactor: 12,
+      saltSize: 16
     };
   }
 

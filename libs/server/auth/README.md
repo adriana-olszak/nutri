@@ -13,7 +13,7 @@ Key Features:
 
 The `RolesGuard` offers the following functionality:
 - Verifies JWT validity
-- Extracts `RequestUser` from JWT payload
+- Extracts `RequestUserDto` from JWT payload
 - Enables `CurrentUser` parameter decorator injection
 - Checks user roles against required roles
 
@@ -24,19 +24,19 @@ Usage examples:
 1. Require either 'Admin' or 'Moderator' role:
 ```typescript
 @UseGuards(RolesGuard('Admin', 'Moderator'))
-accountInfo(@CurrentUser() user: RequestUser) { ... }
+accountInfo(@CurrentUser() user: RequestUserDto) { ... }
 ```
 
 2. Require both 'Admin' and 'Moderator' roles:
 ```typescript
 @UseGuards(RolesGuard('Admin'), RolesGuard('Moderator'))
-accountInfo(@CurrentUser() user: RequestUser) { ... }
+accountInfo(@CurrentUser() user: RequestUserDto) { ... }
 ```
 
-3. Verify JWT and extract `RequestUser` without role check:
+3. Verify JWT and extract `RequestUserDto` without role check:
 ```typescript
 @UseGuards(RolesGuard())
-accountInfo(@CurrentUser() user: RequestUser) { ... }
+accountInfo(@CurrentUser() user: RequestUserDto) { ... }
 ```
 
 The `AllowAnonymous` decorator permits non-authenticated access to specific endpoints:

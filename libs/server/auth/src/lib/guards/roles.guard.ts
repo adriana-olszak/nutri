@@ -18,10 +18,10 @@ import { ALLOW_ANONYMOUS_KEY } from '../decorators/allow-annonymous.decorator';
  * ＠UseGuards(RolesGuard('Admin'), RolesGuard('Moderator'))
  * ```
  * If no roles are passed as parameters, it will only verify that the request has a valid JWT
- * and extracts the `RequestUser` to be injected via the `＠CurrentUser` decorator.
+ * and extracts the `RequestUserDto` to be injected via the `＠CurrentUser` decorator.
  * ```ts
  * ＠UseGuards(RolesGuard())
- * accountInfo(＠CurrentUser() user: RequestUser) { ... }
+ * accountInfo(＠CurrentUser() user: RequestUserDto) { ... }
  * ```
  */
 export function RolesGuard<R extends string>(...roles: Array<R>) {
