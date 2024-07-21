@@ -1,0 +1,9 @@
+mutation UpsertOneUser(
+    $where: UserWhereUniqueInput!
+    $create: UserCreateInput!
+    $update: UserUpdateInput!
+  ) {
+    upsertOneUser(where: $where, create: $create, update: $update) {
+      ...UserFields
+    }
+  }

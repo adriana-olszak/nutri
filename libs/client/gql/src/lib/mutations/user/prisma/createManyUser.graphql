@@ -1,0 +1,5 @@
+mutation CreateManyUser($data: [UserCreateManyInput!]!) {
+    createManyUser(data: $data) {
+      count
+    }
+  }

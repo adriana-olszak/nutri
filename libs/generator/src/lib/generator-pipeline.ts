@@ -43,7 +43,7 @@ export class GeneratorPipeline {
         'Duration (s)': duration
       });
     }
-    await this.formatGeneratedCode();
+    // await this.formatGeneratedCode();
     Logger.table(generationStats, 'Generation Statistics');
     Logger.end('Code Generation Complete');
   }

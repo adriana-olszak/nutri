@@ -9,11 +9,11 @@ import { PRISMA_RESOLVERS, PRISMA_TYPE_DEFS } from './prisma';
 import { AuthResolver, typeDefs as AuthTypeDefs } from './Auth';
 
 const API_RESOLVERS = [
-  AuthResolver,
+  AuthResolver
 ];
 
 const API_TYPE_DEFS = [
-  AuthTypeDefs,
+  AuthTypeDefs
 ].filter(x => x) as DocumentNode[];
 
 export const ALL_RESOLVERS = [...PRISMA_RESOLVERS, ...API_RESOLVERS];
@@ -22,5 +22,5 @@ export const ALL_TYPE_DEFS = mergeTypeDefs([
   GLOBAL_TYPE_DEFS,
   PALJS_TYPE_DEFS,
   ...PRISMA_TYPE_DEFS,
-  ...API_TYPE_DEFS,
+  ...API_TYPE_DEFS
 ]);

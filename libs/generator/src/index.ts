@@ -33,7 +33,9 @@ async function main() {
       },
       {
         type: 'frontendGqlClient',
-        outPath: 'libs/graphql/src/lib'
+        outPath: 'libs/client/gql/src/lib',
+        fieldsFolderName: 'fields',
+        queriesFolderName: 'prisma'
       }
     ]
   });

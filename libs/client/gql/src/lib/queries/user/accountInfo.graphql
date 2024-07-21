@@ -1,0 +1,14 @@
+query AccountInfo {
+  accountInfo {
+    username
+    hasPassword
+    googleProfile {
+      name
+      given_name
+      family_name
+      locale
+      email
+      picture
+    }
+  }
+}

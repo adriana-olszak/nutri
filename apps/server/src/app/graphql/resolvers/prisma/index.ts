@@ -1,6 +1,6 @@
 // This file is generated automatically. Do not edit it manually.
 
-import { UserResolver } from './User';
+import { UserResolver} from './User';
 
 export const PRISMA_RESOLVERS = [
   UserResolver

@@ -9,7 +9,8 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "command": "ts-node index.ts"
+        "command": "ts-node src/index.ts",
+        "cwd": "libs/generator"
       }
     }
   }
