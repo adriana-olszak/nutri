@@ -53,6 +53,7 @@ class EnvironmentVariables {
   CLIENT_BASE_URL!: string;
 
   @IsBoolean()
+  @Transform(({ value }) => Boolean(value))
   PUBLIC_REGISTRATION!: boolean;
 }
 

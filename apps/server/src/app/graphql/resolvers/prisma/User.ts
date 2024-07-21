@@ -9,9 +9,7 @@ import {
 } from '@nestjs/graphql';
 import { RolesGuard } from '@nutri/server-auth';
 import { GraphQLResolveInfo } from 'graphql';
-import gql from 'graphql-tag';
 
-import { AuthService } from '../../../auth/auth.service';
 import type {
   AggregateUserArgs,
   CreateManyUserArgs,
@@ -24,22 +22,13 @@ import type {
   UpdateManyUserArgs,
   UpdateOneUserArgs,
   UpsertOneUserArgs,
-  User,
 } from '../../resolversTypes';
-import { PrismaService } from '@nutri/server-db-client';
-import { PrismaSelectService } from '@nutri/server-db-client';
-
-export const typeDefs = gql`
-  extend type User {
-    rules: [Json!]!
-  }
-`;
+import { PrismaService, PrismaSelectService } from '@nutri/server-db-client';
 
 @Resolver('User')
-@UseGuards(RolesGuard('Prisma'))
+@UseGuards(RolesGuard('USER'))
 export class UserResolver {
   constructor(
-    private readonly auth: AuthService,
     private readonly prisma: PrismaService,
     private readonly prismaSelect: PrismaSelectService,
   ) {}

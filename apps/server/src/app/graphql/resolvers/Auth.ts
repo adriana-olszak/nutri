@@ -58,7 +58,6 @@ export const typeDefs = gql`
     roles: [String!]!
     rememberMe: Boolean!
     expiresIn: Int!
-    rules: [Json!]!
   }
 
   type GoogleProfile {

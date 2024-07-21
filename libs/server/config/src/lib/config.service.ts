@@ -115,6 +115,18 @@ export class ConfigService {
     };
   }
 
+  get throttle() {
+    return {
+      ignoreUserAgents: [/googlebot/gi, /bingbot/gi],
+      throttlers: [
+        {
+          limit: 10,
+          ttl: 30_000
+        }
+      ]
+    }
+  }
+
   port(): number {
     return this.configService.get('SERVER_APP_PORT', { infer: true });
   }

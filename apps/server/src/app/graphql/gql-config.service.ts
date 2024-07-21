@@ -1,21 +1,22 @@
 import { ApolloServerPlugin } from '@apollo/server';
 import {
   ApolloServerPluginLandingPageLocalDefault,
-  ApolloServerPluginLandingPageProductionDefault,
+  ApolloServerPluginLandingPageProductionDefault
 } from '@apollo/server/plugin/landingPage/default';
 import { ApolloDriverConfig } from '@nestjs/apollo';
 import { Injectable } from '@nestjs/common';
 import { GqlOptionsFactory } from '@nestjs/graphql';
 import { print } from 'graphql';
-import GraphQLUpload from 'graphql-upload';
 
 import { IContext } from './models';
 import { ALL_TYPE_DEFS } from './resolvers';
 import { ConfigService } from '@nutri/server-config';
 
+// TODO https://dev.to/tugascript/nestjs-graphql-image-upload-to-a-s3-bucket-1njg
 @Injectable()
 export class GqlConfigService implements GqlOptionsFactory {
-  constructor(private readonly config: ConfigService) {}
+  constructor(private readonly config: ConfigService) {
+  }
 
   createGqlOptions(): ApolloDriverConfig {
     const plugins: ApolloServerPlugin[] = [];
@@ -27,8 +28,7 @@ export class GqlConfigService implements GqlOptionsFactory {
       plugins.push(ApolloServerPluginLandingPageProductionDefault());
 
     return {
-      typeDefs: print(ALL_TYPE_DEFS),
-      resolvers: { Upload: GraphQLUpload },
+      typeDefs:  print(ALL_TYPE_DEFS),
       playground: false,
       plugins,
       introspection: !!this.config.graphql.introspection,
@@ -38,20 +38,20 @@ export class GqlConfigService implements GqlOptionsFactory {
       installSubscriptionHandlers: !!this.config.graphql.subscriptions,
       subscriptions: this.config.graphql.subscriptions
         ? {
-            'graphql-ws': {
-              onConnect: (context: any) => {
-                const { connectionParams, extra } = context;
-                extra.token = connectionParams.token;
-              },
-            },
+          'graphql-ws': {
+            onConnect: (context: any) => {
+              const { connectionParams, extra } = context;
+              extra.token = connectionParams.token;
+            }
           }
+        }
         : undefined,
       context: (ctx: any): IContext => {
         // Subscriptions pass through JWT token for authentication
         if (ctx.extra) return { req: ctx.extra };
         // Queries, Mutations
         else return ctx;
-      },
+      }
     };
   }
 }
