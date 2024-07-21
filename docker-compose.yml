@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  postgres-nutri:
+    container_name: postgres-nutri
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_DB: ${DATABASE_NAME}
+      PG_DATA: /var/lib/postgresql/data
+      POSTGRES_INITDB_ARGS: "--wal-segsize=512"
+    ports:
+      - "${DATABASE_PORT}:5432"
+    volumes:
+      - ./deploy/docker-compose/postgres-nutri:/docker-entrypoint-initdb.d
+      - pgdata-postgres-nutri:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+volumes:
+  pgdata-postgres-nutri:

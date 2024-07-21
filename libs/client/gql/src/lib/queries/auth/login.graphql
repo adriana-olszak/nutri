@@ -1,0 +1,9 @@
+query AuthLogin($data: AuthLoginInput!) {
+  authLogin(data: $data) {
+    userId
+    token
+    roles
+    rememberMe
+    expiresIn
+  }
+}

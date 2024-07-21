@@ -1,0 +1,9 @@
+query AuthExchangeToken($data: AuthExchangeTokenInput!) {
+  authExchangeToken(data: $data) {
+    userId
+    token
+    roles
+    rememberMe
+    expiresIn
+  }
+}

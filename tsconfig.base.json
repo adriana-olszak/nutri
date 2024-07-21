@@ -10,20 +10,26 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": ["es2021", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@nutri/client-auth": ["libs/client/auth/src/index.ts"],
+      "@nutri/client-gql": ["libs/client/gql/src/index.ts"],
       "@nutri/client-recipes": ["libs/client/recipes/src/index.ts"],
       "@nutri/client-ui": ["libs/client/ui/src/index.ts"],
       "@nutri/client-ui/*": ["libs/client/ui/src/lib/*"],
       "@nutri/client-utils": ["libs/client/utils/src/index.ts"],
+      "@nutri/common-consts": ["libs/common/consts/src/index.ts"],
+      "@nutri/generator": ["libs/generator/src/index.ts"],
+      "@nutri/server-auth": ["libs/server/auth/src/index.ts"],
+      "@nutri/server-config": ["libs/server/config/src/index.ts"],
       "@nutri/server-data-access-user": [
         "libs/server/data-access-users/src/index.ts"
       ],
-      "@nutri/server-db-client": ["libs/server/db-client/src/index.ts"]
+      "@nutri/server-db-client": ["libs/server/db-client/src/index.ts"],
+      "@nutri/server-metrics": ["libs/server/metrics/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
