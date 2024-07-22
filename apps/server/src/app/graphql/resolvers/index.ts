@@ -22,5 +22,5 @@ export const ALL_TYPE_DEFS = mergeTypeDefs([
   GLOBAL_TYPE_DEFS,
   PALJS_TYPE_DEFS,
   ...PRISMA_TYPE_DEFS,
-  ...API_TYPE_DEFS
+  ...API_TYPE_DEFS,
 ]);

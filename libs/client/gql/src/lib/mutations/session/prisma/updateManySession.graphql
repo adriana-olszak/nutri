@@ -1,0 +1,5 @@
+mutation UpdateManySession($data: SessionUpdateManyMutationInput!, $where: SessionWhereInput!) {
+    updateManySession(data: $data, where: $where) {
+      count
+    }
+  }

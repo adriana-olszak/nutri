@@ -2,9 +2,6 @@ import { IsEmail, Length } from 'class-validator';
 import { ApiConstants } from '@nutri/common-consts';
 
 export class AuthRegisterInput {
-  @Length(ApiConstants.USERNAME_MIN_LENGTH, ApiConstants.USERNAME_MAX_LENGTH)
-  readonly username: string;
-
   @IsEmail()
   @Length(3, 254)
   readonly email: string;

@@ -1,0 +1,5 @@
+mutation UpdateOneRefreshToken($data: RefreshTokenUpdateInput!, $where: RefreshTokenWhereUniqueInput!) {
+    updateOneRefreshToken(data: $data, where: $where) {
+      ...RefreshTokenFields
+    }
+  }

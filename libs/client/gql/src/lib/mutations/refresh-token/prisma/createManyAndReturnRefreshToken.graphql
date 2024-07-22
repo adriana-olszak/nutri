@@ -1,0 +1,5 @@
+ mutation CreateManyRefreshTokenAndReturn($data: [RefreshTokenCreateManyInput!]!) {
+    createManyRefreshTokenAndReturn(data: $data) {
+      ...RefreshTokenFields
+    }
+  }

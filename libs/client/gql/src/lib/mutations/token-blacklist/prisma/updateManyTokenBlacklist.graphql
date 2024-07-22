@@ -1,0 +1,5 @@
+mutation UpdateManyTokenBlacklist($data: TokenBlacklistUpdateManyMutationInput!, $where: TokenBlacklistWhereInput!) {
+    updateManyTokenBlacklist(data: $data, where: $where) {
+      count
+    }
+  }

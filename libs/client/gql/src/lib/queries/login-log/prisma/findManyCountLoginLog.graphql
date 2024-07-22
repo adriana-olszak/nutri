@@ -1,0 +1,17 @@
+query FindManyLoginLogCount(
+    $where: LoginLogWhereInput
+    $orderBy: [LoginLogOrderByWithRelationInput]
+    $cursor: LoginLogWhereUniqueInput
+    $take: Int
+    $skip: Int
+    $distinct: [LoginLogScalarFieldEnum]
+  ) {
+    findManyLoginLogCount(
+      where: $where
+      orderBy: $orderBy
+      cursor: $cursor
+      take: $take
+      skip: $skip
+      distinct: $distinct
+    )
+  }

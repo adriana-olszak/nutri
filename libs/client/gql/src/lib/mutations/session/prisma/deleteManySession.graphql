@@ -1,0 +1,5 @@
+mutation DeleteManySession($where: SessionWhereInput!) {
+    deleteManySession(where: $where) {
+      count
+    }
+  }

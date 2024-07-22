@@ -1,0 +1,5 @@
+query FindUniqueLoginLog($where: LoginLogWhereUniqueInput!) {
+    findUniqueLoginLog(where: $where) {
+      ...LoginLogFields
+    }
+  }

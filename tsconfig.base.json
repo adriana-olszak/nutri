@@ -13,6 +13,7 @@
     "lib": ["es2021", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "@nutri/client-auth": ["libs/client/auth/src/index.ts"],
@@ -29,7 +30,8 @@
         "libs/server/data-access-users/src/index.ts"
       ],
       "@nutri/server-db-client": ["libs/server/db-client/src/index.ts"],
-      "@nutri/server-metrics": ["libs/server/metrics/src/index.ts"]
+      "@nutri/server-metrics": ["libs/server/metrics/src/index.ts"],
+      "@nutri/server-utils": ["libs/server/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

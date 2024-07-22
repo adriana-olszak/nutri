@@ -1,0 +1,5 @@
+mutation DeleteManyRefreshToken($where: RefreshTokenWhereInput!) {
+    deleteManyRefreshToken(where: $where) {
+      count
+    }
+  }

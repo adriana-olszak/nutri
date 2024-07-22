@@ -1,0 +1,5 @@
+mutation CreateManySession($data: [SessionCreateManyInput!]!) {
+    createManySession(data: $data) {
+      count
+    }
+  }

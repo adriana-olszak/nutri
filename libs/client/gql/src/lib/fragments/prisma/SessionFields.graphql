@@ -1,0 +1,4 @@
+fragment SessionFields on Session {
+    id
+    # @todo Add fields
+  }

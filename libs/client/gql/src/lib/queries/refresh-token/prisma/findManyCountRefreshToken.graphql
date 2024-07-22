@@ -1,0 +1,17 @@
+query FindManyRefreshTokenCount(
+    $where: RefreshTokenWhereInput
+    $orderBy: [RefreshTokenOrderByWithRelationInput]
+    $cursor: RefreshTokenWhereUniqueInput
+    $take: Int
+    $skip: Int
+    $distinct: [RefreshTokenScalarFieldEnum]
+  ) {
+    findManyRefreshTokenCount(
+      where: $where
+      orderBy: $orderBy
+      cursor: $cursor
+      take: $take
+      skip: $skip
+      distinct: $distinct
+    )
+  }

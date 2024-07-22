@@ -1,45 +1,131 @@
-import crypto from 'crypto';
-
 import {
-  HttpException,
-  Logger,
   UnauthorizedException,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Throttle } from '@nestjs/throttler';
 import {
   CurrentUser,
-  JwtDto,
   RequestUserDto,
-  RolesGuard,
+  RolesGuard
 } from '@nutri/server-auth';
 import gql from 'graphql-tag';
-import { bcrypt, bcryptVerify } from 'hash-wasm';
-
-import { JwtService } from '../../jwt';
-// import { MailService } from '../../mail';
 import { GqlThrottlerGuard } from '../gql-throttler.guard';
 import {
   AccountInfo,
-  AuthExchangeTokenInput,
+  AuthRefreshTokenInput,
   AuthLoginInput,
   AuthPasswordChangeInput,
   AuthPasswordResetConfirmationInput,
   AuthPasswordResetRequestInput,
-  AuthRegisterInput,
+  AuthRegisterInput, AuthSession
 } from '../models';
-import { AuthService } from '../../auth/auth.service';
 import { ConfigService } from '@nutri/server-config';
 import { PrismaService } from '@nutri/server-db-client';
 import { ApiErrors } from '@nutri/common-consts';
+import { AuthService } from '@nutri/server-auth';
+import { Request } from 'express';
 
-const logger = new Logger('AuthResolver');
+@Resolver()
+@UseGuards(GqlThrottlerGuard)
+@Throttle({ default: { limit: 10, ttl: 30_000 } })
+export class AuthResolver {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly authService: AuthService,
+    private readonly prisma: PrismaService
+  ) {
+  }
+
+  @Query('authLogin')
+  async login(@Context() context: { req: Request }, @Args('data') {
+    email,
+    password
+  }: AuthLoginInput): Promise<AuthSession> {
+    return await this.authService.login({
+      email,
+      password,
+      userAgent: 'not-production-ready',
+      ipAddress: this._extractIpAddress(context.req)
+    });
+  }
+
+  @Query()
+  @UseGuards(RolesGuard())
+  async accountInfo(@CurrentUser() reqUser: RequestUserDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: reqUser.id },
+      select: { email: true, password: true, googleProfile: true }
+    });
+
+    if (!user) throw new UnauthorizedException(ApiErrors.Codes.USER_NOT_FOUND);
+
+    return {
+      email: user.email,
+      hasPassword: !!user.password,
+      googleProfile: user.googleProfile as AccountInfo['googleProfile']
+    } satisfies AccountInfo;
+  }
+
+  @Query()
+  @UseGuards(RolesGuard())
+  async authRefreshToken(
+    @CurrentUser() reqUser: RequestUserDto,
+    @Args('data') args: AuthRefreshTokenInput
+  ) {
+    return this.authService.refreshToken(args.refreshToken);
+  }
+
+  @Query()
+  async authPasswordResetRequest(
+    @Args('data') args: AuthPasswordResetRequestInput
+  ) {
+    return this.authService.requestPasswordReset(args.email);
+  }
+
+  @Mutation()
+  async authPasswordResetConfirmation(
+    @Args('data') args: AuthPasswordResetConfirmationInput
+  ) {
+    return this.authService.resetPassword(args.token, args.newPassword);
+  }
+
+  @Mutation()
+  async authRegister(@Args('data') args: AuthRegisterInput) {
+    if (!this.config.publicRegistration) {
+      throw new UnauthorizedException('No public registrations allowed');
+    }
+
+    return await this.authService.register({
+      email: args.email,
+      password: args.password
+    });
+
+  }
+
+  @Mutation()
+  @UseGuards(RolesGuard())
+  async authPasswordChange(
+    @Args('data') args: AuthPasswordChangeInput,
+    @CurrentUser() reqUser: RequestUserDto
+  ) {
+    return this.authService.changePassword(reqUser.id, args.oldPassword, args.newPassword);
+  }
+
+  private _extractIpAddress(req: Request): string {
+    const forwardedFor = req.headers['x-forwarded-for'];
+    if (forwardedFor) {
+      const ips = (forwardedFor as string).split(',').map(ip => ip.trim());
+      return ips[0];
+    }
+    return req.ip || 'Unknown';
+  }
+}
 
 export const typeDefs = gql`
   extend type Query {
     authLogin(data: AuthLoginInput!): AuthSession!
-    authExchangeToken(data: AuthExchangeTokenInput): AuthSession!
+    authRefreshToken(data: AuthRefreshTokenInput): AuthSession!
     authPasswordResetRequest(data: AuthPasswordResetRequestInput!): Boolean
     accountInfo: AccountInfo!
   }
@@ -53,11 +139,10 @@ export const typeDefs = gql`
   }
 
   type AuthSession {
-    userId: String! # Change to Int! or String! respective to the typeof User['id']
-    token: String!
+    userId: String!
+    accessToken: String!
+    refreshToken: String!
     roles: [String!]!
-    rememberMe: Boolean!
-    expiresIn: Int!
   }
 
   type GoogleProfile {
@@ -70,19 +155,18 @@ export const typeDefs = gql`
   }
 
   type AccountInfo {
-    username: String
+    email: String
     hasPassword: Boolean!
     googleProfile: GoogleProfile
   }
 
   input AuthLoginInput {
-    username: String!
+    email: String!
     password: String!
-    rememberMe: Boolean!
   }
 
-  input AuthExchangeTokenInput {
-    rememberMe: Boolean!
+  input AuthRefreshTokenInput {
+    refreshToken: Boolean!
   }
 
   input AuthPasswordChangeInput {
@@ -96,258 +180,11 @@ export const typeDefs = gql`
   }
 
   input AuthPasswordResetRequestInput {
-    emailOrUsername: String!
+    email: String!
   }
 
   input AuthRegisterInput {
-    username: String!
     email: String!
     password: String!
   }
 `;
-
-@Resolver()
-@UseGuards(GqlThrottlerGuard)
-@Throttle({ default: { limit: 10, ttl: 30_000 } })
-export class AuthResolver {
-  constructor(
-    private readonly auth: AuthService,
-    private readonly config: ConfigService,
-    private readonly jwtService: JwtService,
-    // private readonly mail: MailService,
-    private readonly prisma: PrismaService,
-  ) {}
-
-  @Query()
-  async authLogin(@Args('data') args: AuthLoginInput) {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        username: {
-          mode: 'insensitive',
-          equals: args.username,
-        },
-      },
-      select: {
-        id: true,
-        roles: true,
-        password: true,
-      },
-    });
-
-    if (!user) throw new HttpException(ApiErrors.Codes.USER_NOT_FOUND, 400);
-
-    const correctPassword = await bcryptVerify({
-      password: args.password,
-      hash: user.password as string,
-    });
-    if (!correctPassword)
-      throw new HttpException(ApiErrors.AuthLogin.INCORRECT_PASSWORD, 400);
-
-    return this.auth.getAuthSession(user, args.rememberMe);
-  }
-
-  @Query()
-  @UseGuards(RolesGuard())
-  async accountInfo(@CurrentUser() reqUser: RequestUserDto) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: reqUser.id },
-      select: { username: true, password: true, googleProfile: true },
-    });
-
-    if (!user) throw new UnauthorizedException(ApiErrors.Codes.USER_NOT_FOUND);
-
-    return {
-      username: user.username,
-      hasPassword: !!user.password,
-      googleProfile: user.googleProfile as AccountInfo['googleProfile'],
-    } satisfies AccountInfo;
-  }
-
-  @Query()
-  @UseGuards(RolesGuard())
-  async authExchangeToken(
-    @CurrentUser() reqUser: RequestUserDto,
-    @Args('data') args: AuthExchangeTokenInput,
-  ) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: reqUser.id },
-      select: { id: true, roles: true },
-    });
-
-    if (user) {
-      return this.auth.getAuthSession(user, args.rememberMe);
-    } else {
-      throw new UnauthorizedException(ApiErrors.Codes.USER_NOT_FOUND);
-    }
-  }
-
-  @Query()
-  async authPasswordResetRequest(
-    @Args('data') args: AuthPasswordResetRequestInput,
-  ) {
-    const possibleUsers = await this.prisma.user.findMany({
-      where: {
-        OR: [
-          {
-            email: {
-              equals: args.emailOrUsername,
-              mode: 'insensitive',
-            },
-          },
-          {
-            username: {
-              equals: args.emailOrUsername,
-              mode: 'insensitive',
-            },
-          },
-        ],
-        AND: [{ username: { not: null } }],
-      },
-      select: { id: true, email: true },
-    });
-
-    if (possibleUsers.length === 0)
-      throw new HttpException(ApiErrors.Codes.USER_NOT_FOUND, 400);
-
-    //TODO add mailer
-    // possibleUsers.forEach(user => this.mail.sendPasswordReset(user));
-  }
-
-  @Mutation()
-  async authPasswordResetConfirmation(
-    @Args('data') args: AuthPasswordResetConfirmationInput,
-  ) {
-    let tokenPayload: JwtDto;
-    try {
-      tokenPayload = this.jwtService.verify(args.token);
-    } catch {
-      throw new UnauthorizedException(
-        ApiErrors.AuthPasswordResetConfirmation.JWT_FAILED,
-      );
-    }
-
-    const userExists = await this.prisma.user.findUnique({
-      where: { id: tokenPayload.sub },
-      select: { id: true },
-    });
-    if (!userExists)
-      throw new UnauthorizedException(ApiErrors.Codes.USER_NOT_FOUND);
-
-    const hashedPassword = await this.hashPassword(args.newPassword);
-
-    const updatedUser = await this.prisma.user.update({
-      where: { id: tokenPayload.sub },
-      select: { id: true, roles: true },
-      data: { password: hashedPassword },
-    });
-
-    return this.auth.getAuthSession(updatedUser);
-  }
-
-  @Mutation()
-  async authRegister(@Args('data') args: AuthRegisterInput) {
-    if (!this.config.publicRegistration)
-      throw new UnauthorizedException('No public registrations allowed');
-
-    const usernameTaken = await this.prisma.user.findFirst({
-      where: { username: { equals: args.username, mode: 'insensitive' } },
-      select: { username: true },
-    });
-    if (usernameTaken)
-      throw new HttpException(ApiErrors.AuthRegister.USERNAME_TAKEN, 400);
-
-    const emailTaken = await this.prisma.user.findFirst({
-      where: { email: { equals: args.email, mode: 'insensitive' } },
-      select: { email: true },
-    });
-    if (emailTaken)
-      throw new HttpException(ApiErrors.AuthRegister.EMAIL_TAKEN, 400);
-
-    const hashedPassword = await this.hashPassword(args.password);
-
-    const user = await this.prisma.user.create({
-      data: {
-        username: args.username,
-        email: args.email,
-        password: hashedPassword,
-      },
-      select: {
-        id: true,
-        roles: true,
-        username: true,
-        email: true,
-      },
-    });
-
-    /**
-     * @todo This is intended to be tailored to the site
-     */
-    if (this.config.isProd) {
-      // this.mail.sendGeneral({
-      //   to: user.email,
-      //   subject: 'Sign Up Confirmed',
-      //   context: {
-      //     siteUrl: this.config.clientUrl,
-      //     hiddenPreheaderText: `Sign up confirmed for ${user.username}`,
-      //     header: 'Welcome',
-      //     subHeading: 'Sign Up Confirmed',
-      //     body: `Thank you for signing up ${user.username}!`,
-      //     footerHeader: '',
-      //     footerBody: '',
-      //   },
-      // });
-    }
-
-    logger.log(`Registered new user: ${user.username}`);
-
-    return this.auth.getAuthSession(user);
-  }
-
-  @Mutation()
-  @UseGuards(RolesGuard())
-  async authPasswordChange(
-    @Args('data') args: AuthPasswordChangeInput,
-    @CurrentUser() reqUser: RequestUserDto,
-  ) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: reqUser.id },
-      select: {
-        id: true,
-        password: true,
-      },
-    });
-
-    if (!user) throw new UnauthorizedException(ApiErrors.Codes.USER_NOT_FOUND);
-
-    const correctPassword = await bcryptVerify({
-      password: args.oldPassword,
-      hash: user.password as string,
-    });
-    if (!correctPassword)
-      throw new HttpException(ApiErrors.AuthPasswordChange.WRONG_PASSWORD, 400);
-
-    const hashedPassword = await this.hashPassword(args.newPassword);
-
-    await this.prisma.user.update({
-      where: { id: user.id },
-      data: { password: hashedPassword },
-      select: { id: true },
-    });
-  }
-
-  private async hashPassword(password: string) {
-    return bcrypt({
-      // @default 12 bytes
-      costFactor: this.config.bcrypt?.costFactor
-        ? this.config.bcrypt.costFactor
-        : 12,
-      password,
-      salt: crypto.getRandomValues(
-        // @default 16 bytes
-        new Uint8Array(
-          this.config.bcrypt?.saltSize ? this.config.bcrypt.saltSize : 16,
-        ),
-      ),
-    });
-  }
-}

@@ -110,7 +110,7 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "AuthExchangeTokenInput",
+        "name": "AuthRefreshTokenInput",
         "description": null,
         "isOneOf": false,
         "fields": null,
@@ -3521,7 +3521,7 @@
             "deprecationReason": null
           },
           {
-            "name": "authExchangeToken",
+            "name": "authRefreshToken",
             "description": null,
             "args": [
               {
@@ -3529,7 +3529,7 @@
                 "description": null,
                 "type": {
                   "kind": "INPUT_OBJECT",
-                  "name": "AuthExchangeTokenInput",
+                  "name": "AuthRefreshTokenInput",
                   "ofType": null
                 },
                 "defaultValue": null,

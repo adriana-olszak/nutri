@@ -1,0 +1,5 @@
+mutation UpdateOneLoginLog($data: LoginLogUpdateInput!, $where: LoginLogWhereUniqueInput!) {
+    updateOneLoginLog(data: $data, where: $where) {
+      ...LoginLogFields
+    }
+  }

@@ -1,7 +1,7 @@
 import { Profile } from 'passport-google-oauth20';
 
 export interface AccountInfo {
-  username?: string | null;
+  email: string;
   hasPassword: boolean;
   googleProfile?: Profile['_json'] | null;
 }

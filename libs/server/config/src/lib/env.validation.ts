@@ -32,15 +32,6 @@ class EnvironmentVariables {
   OAUTH_GOOGLE_CLIENT_ID!: string;
 
   @IsNumber()
-  JWT_EXPIRES_IN!: number;
-
-  @IsString()
-  JWT_PRIVATE_KEY!: string;
-
-  @IsString()
-  JWT_PUBLIC_KEY!: string;
-
-  @IsNumber()
   AUTH_REMEMBER_ME_EXPIRES_IN!: number;
 
   @IsString()
@@ -55,6 +46,21 @@ class EnvironmentVariables {
   @IsBoolean()
   @Transform(({ value }) => Boolean(value))
   PUBLIC_REGISTRATION!: boolean;
+
+  @IsString()
+  AUTH_JWT_ACCESS_EXPIRATION!: string;
+
+  @IsString()
+  AUTH_JWT_REFRESH_EXPIRATION!: string;
+
+  @IsString()
+  AUTH_JWT_ACCESS_PUBLIC_KEY!: string;
+
+  @IsString()
+  AUTH_JWT_ACCESS_SECRET!: string;
+
+  @IsString()
+  AUTH_JWT_REFRESH_SECRET!: string;
 }
 
 export type ENV_VARS = keyof EnvironmentVariables;

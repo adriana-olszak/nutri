@@ -1,0 +1,5 @@
+mutation CreateManyRefreshToken($data: [RefreshTokenCreateManyInput!]!) {
+    createManyRefreshToken(data: $data) {
+      count
+    }
+  }

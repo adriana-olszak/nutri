@@ -3,17 +3,17 @@ import * as Types from '../../graphql-types';
 import { GraphQLClient, RequestOptions } from 'graphql-request';
 import gql from 'graphql-tag';
 type GraphQLClientRequestHeaders = RequestOptions['requestHeaders'];
-export type AuthExchangeTokenQueryVariables = Types.Exact<{
-  data: Types.AuthExchangeTokenInput;
+export type AuthRefreshTokenQueryVariables = Types.Exact<{
+  data: Types.AuthRefreshTokenInput;
 }>;
 
 
-export type AuthExchangeTokenQuery = { __typename?: 'Query', authExchangeToken: { __typename?: 'AuthSession', userId: string, token: string, roles: Array<string>, rememberMe: boolean, expiresIn: number } };
+export type AuthRefreshTokenQuery = { __typename?: 'Query', authRefreshToken: { __typename?: 'AuthSession', userId: string, token: string, roles: Array<string>, rememberMe: boolean, expiresIn: number } };
 
 
-export const AuthExchangeTokenDocument = gql`
-    query AuthExchangeToken($data: AuthExchangeTokenInput!) {
-  authExchangeToken(data: $data) {
+export const AuthRefreshTokenDocument = gql`
+    query AuthRefreshToken($data: AuthRefreshTokenInput!) {
+  authRefreshToken(data: $data) {
     userId
     token
     roles
@@ -30,8 +30,8 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    AuthExchangeToken(variables: AuthExchangeTokenQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<AuthExchangeTokenQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AuthExchangeTokenQuery>(AuthExchangeTokenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AuthExchangeToken', 'query', variables);
+    AuthRefreshToken(variables: AuthRefreshTokenQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<AuthRefreshTokenQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AuthRefreshTokenQuery>(AuthRefreshTokenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AuthRefreshToken', 'query', variables);
     }
   };
 }

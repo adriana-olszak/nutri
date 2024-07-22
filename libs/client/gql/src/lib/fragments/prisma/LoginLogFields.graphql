@@ -1,0 +1,4 @@
+fragment LoginLogFields on LoginLog {
+    id
+    # @todo Add fields
+  }

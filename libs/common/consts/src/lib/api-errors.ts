@@ -12,7 +12,6 @@ export enum AuthPasswordResetConfirmation {
 }
 
 export enum AuthRegister {
-  USERNAME_TAKEN = 'Username taken',
   EMAIL_TAKEN = 'Email taken',
 }
 

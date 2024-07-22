@@ -1,0 +1,5 @@
+mutation CreateOneRefreshToken($data: RefreshTokenCreateInput!) {
+    createOneRefreshToken(data: $data) {
+      ...RefreshTokenFields
+    }
+  }

@@ -1,0 +1,5 @@
+mutation CreateOneLoginLog($data: LoginLogCreateInput!) {
+    createOneLoginLog(data: $data) {
+      ...LoginLogFields
+    }
+  }

@@ -1,0 +1,5 @@
+ mutation CreateManySessionAndReturn($data: [SessionCreateManyInput!]!) {
+    createManySessionAndReturn(data: $data) {
+      ...SessionFields
+    }
+  }

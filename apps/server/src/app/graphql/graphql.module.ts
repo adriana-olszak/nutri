@@ -2,25 +2,24 @@ import { ApolloDriver } from '@nestjs/apollo';
 import { Global, Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 
-// import { MailModule } from '../mail';
 import { GqlConfigService } from './gql-config.service';
 import { ALL_RESOLVERS } from './resolvers';
-import { AuthModule } from '../auth/auth.module';
 import { ConfigModule } from '@nutri/server-config';
 import { DbClientModule } from '@nutri/server-db-client';
+import { NestAuthModule } from '@nutri/server-auth';
 
 @Global()
 @Module({
   imports: [
-    AuthModule,
-    // MailModule,
     DbClientModule,
+    NestAuthModule,
     GraphQLModule.forRootAsync({
       driver: ApolloDriver,
       useClass: GqlConfigService,
-      imports: [DbClientModule, ConfigModule],
-    }),
+      imports: [DbClientModule, ConfigModule]
+    })
   ],
-  providers: [...ALL_RESOLVERS],
+  providers: [...ALL_RESOLVERS]
 })
-export class GraphqlModule {}
+export class GraphqlModule {
+}

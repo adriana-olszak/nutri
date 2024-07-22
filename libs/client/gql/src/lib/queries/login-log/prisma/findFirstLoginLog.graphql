@@ -1,0 +1,19 @@
+query FindFirstLoginLog(
+    $where: LoginLogWhereInput
+    $orderBy: [LoginLogOrderByWithRelationInput]
+    $cursor: LoginLogWhereUniqueInput
+    $take: Int
+    $skip: Int
+    $distinct: [LoginLogScalarFieldEnum]
+  ) {
+    findFirstLoginLog(
+      where: $where
+      orderBy: $orderBy
+      cursor: $cursor
+      take: $take
+      skip: $skip
+      distinct: $distinct
+    ) {
+      ...LoginLogFields
+    }
+  }

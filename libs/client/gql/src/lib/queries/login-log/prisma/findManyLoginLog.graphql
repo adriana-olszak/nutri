@@ -1,0 +1,19 @@
+query FindManyLoginLog(
+    $where: LoginLogWhereInput
+    $orderBy: [LoginLogOrderByWithRelationInput]
+    $cursor: LoginLogWhereUniqueInput
+    $take: Int
+    $skip: Int
+    $distinct: [LoginLogScalarFieldEnum]
+  ) {
+    findManyLoginLog(
+      where: $where
+      orderBy: $orderBy
+      cursor: $cursor
+      take: $take
+      skip: $skip
+      distinct: $distinct
+    ) {
+      ...LoginLogFields
+    }
+  }

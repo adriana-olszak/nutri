@@ -1,0 +1,5 @@
+query FindUniqueSession($where: SessionWhereUniqueInput!) {
+    findUniqueSession(where: $where) {
+      ...SessionFields
+    }
+  }

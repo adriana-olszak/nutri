@@ -1,0 +1,5 @@
+mutation UpdateOneSession($data: SessionUpdateInput!, $where: SessionWhereUniqueInput!) {
+    updateOneSession(data: $data, where: $where) {
+      ...SessionFields
+    }
+  }

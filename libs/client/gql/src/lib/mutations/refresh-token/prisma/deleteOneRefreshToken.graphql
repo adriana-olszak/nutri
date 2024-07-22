@@ -1,0 +1,5 @@
+mutation DeleteOneRefreshToken($where: RefreshTokenWhereUniqueInput!) {
+    deleteOneRefreshToken(where: $where) {
+      id
+    }
+  }

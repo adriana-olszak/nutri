@@ -59,11 +59,11 @@ export class ConfigService {
 
   get jwtOptions(): JwtModuleOptions {
     return {
-      secret: this.configService.get('JWT_PRIVATE_KEY', { infer: true }).replace(/\\n/g, '\n'),
-      publicKey: this.configService.get('JWT_PUBLIC_KEY', { infer: true }).replace(/\\n/g, '\n'),
+      secret: this.authJWTAccessSecret,
+      publicKey: this.authJWTAccessPublicKey,
       signOptions: {
         algorithm: 'ES256',
-        expiresIn: this.configService.get('JWT_EXPIRES_IN', { infer: true })
+        expiresIn: this.authJWTAccessExpiration
       }
     };
   }
@@ -115,6 +115,26 @@ export class ConfigService {
     };
   }
 
+  get authJWTRefreshExpiration() {
+    return this.configService.get('AUTH_JWT_REFRESH_EXPIRATION', { infer: true });
+  }
+
+  get authJWTRefreshSecret() {
+    return this.configService.get('AUTH_JWT_REFRESH_SECRET', { infer: true }).replace(/\\n/g, '\n');
+  }
+
+  get authJWTAccessExpiration() {
+    return this.configService.get('AUTH_JWT_ACCESS_EXPIRATION', { infer: true });
+  }
+
+  get authJWTAccessSecret() {
+    return this.configService.get('AUTH_JWT_ACCESS_SECRET', { infer: true }).replace(/\\n/g, '\n');
+  }
+
+  get authJWTAccessPublicKey() {
+    return this.configService.get('AUTH_JWT_ACCESS_PUBLIC_KEY', { infer: true }).replace(/\\n/g, '\n');
+  }
+
   get throttle() {
     return {
       ignoreUserAgents: [/googlebot/gi, /bingbot/gi],
@@ -124,7 +144,7 @@ export class ConfigService {
           ttl: 30_000
         }
       ]
-    }
+    };
   }
 
   port(): number {

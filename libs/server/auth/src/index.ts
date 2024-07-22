@@ -1,4 +1,5 @@
 export * from './lib/auth.module';
+export * from './lib/auth.service';
 export * from './lib/dto/request-user.dto';
 export * from './lib/dto/jwt.dto';
 export * from './lib/guards/roles.guard';

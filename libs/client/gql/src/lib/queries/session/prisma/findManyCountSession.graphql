@@ -1,0 +1,17 @@
+query FindManySessionCount(
+    $where: SessionWhereInput
+    $orderBy: [SessionOrderByWithRelationInput]
+    $cursor: SessionWhereUniqueInput
+    $take: Int
+    $skip: Int
+    $distinct: [SessionScalarFieldEnum]
+  ) {
+    findManySessionCount(
+      where: $where
+      orderBy: $orderBy
+      cursor: $cursor
+      take: $take
+      skip: $skip
+      distinct: $distinct
+    )
+  }

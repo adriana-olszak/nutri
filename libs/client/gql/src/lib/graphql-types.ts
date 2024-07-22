@@ -30,7 +30,7 @@ export type AggregateUser = {
   _min?: Maybe<UserMinAggregateOutputType>;
 };
 
-export type AuthExchangeTokenInput = {
+export type AuthRefreshTokenInput = {
   rememberMe: Scalars['Boolean']['input'];
 };
 
@@ -384,7 +384,7 @@ export type Query = {
   __typename?: 'Query';
   accountInfo: AccountInfo;
   aggregateUser?: Maybe<AggregateUser>;
-  authExchangeToken: AuthSession;
+  authRefreshToken: AuthSession;
   authLogin: AuthSession;
   authPasswordResetRequest?: Maybe<Scalars['Boolean']['output']>;
   findFirstUser?: Maybe<User>;
@@ -403,8 +403,8 @@ export type QueryAggregateUserArgs = {
 };
 
 
-export type QueryAuthExchangeTokenArgs = {
-  data?: InputMaybe<AuthExchangeTokenInput>;
+export type QueryAuthRefreshTokenArgs = {
+  data?: InputMaybe<AuthRefreshTokenInput>;
 };
 
 

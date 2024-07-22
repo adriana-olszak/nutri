@@ -1,0 +1,5 @@
+mutation DeleteOneSession($where: SessionWhereUniqueInput!) {
+    deleteOneSession(where: $where) {
+      id
+    }
+  }

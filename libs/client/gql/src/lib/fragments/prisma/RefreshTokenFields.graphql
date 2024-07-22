@@ -1,0 +1,4 @@
+fragment RefreshTokenFields on RefreshToken {
+    id
+    # @todo Add fields
+  }

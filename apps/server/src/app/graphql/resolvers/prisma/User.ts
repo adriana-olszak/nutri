@@ -25,6 +25,8 @@ import type {
 } from '../../resolversTypes';
 import { PrismaService, PrismaSelectService } from '@nutri/server-db-client';
 
+export const typeDefs = null;
+
 @Resolver('User')
 @UseGuards(RolesGuard('USER'))
 export class UserResolver {

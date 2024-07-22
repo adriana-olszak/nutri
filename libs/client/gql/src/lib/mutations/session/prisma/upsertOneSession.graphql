@@ -1,0 +1,9 @@
+mutation UpsertOneSession(
+    $where: SessionWhereUniqueInput!
+    $create: SessionCreateInput!
+    $update: SessionUpdateInput!
+  ) {
+    upsertOneSession(where: $where, create: $create, update: $update) {
+      ...SessionFields
+    }
+  }

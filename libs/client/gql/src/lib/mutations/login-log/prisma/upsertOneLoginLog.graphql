@@ -1,0 +1,9 @@
+mutation UpsertOneLoginLog(
+    $where: LoginLogWhereUniqueInput!
+    $create: LoginLogCreateInput!
+    $update: LoginLogUpdateInput!
+  ) {
+    upsertOneLoginLog(where: $where, create: $create, update: $update) {
+      ...LoginLogFields
+    }
+  }

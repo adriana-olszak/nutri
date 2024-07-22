@@ -1,0 +1,5 @@
+mutation DeleteManyLoginLog($where: LoginLogWhereInput!) {
+    deleteManyLoginLog(where: $where) {
+      count
+    }
+  }

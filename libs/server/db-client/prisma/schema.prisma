@@ -15,18 +15,78 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @default(now())
-  username      String?  @unique
-  password      String?
-  email         String   @unique
-  roles         String[] @default(["USER"])
-  googleId      String?  @unique
+  id       String  @id @default(uuid())
+  email    String  @unique
+  password String?
+
+  roles         Roles[]
+  googleId      String? @unique
   googleProfile Json?
+
+  refreshTokens       RefreshToken[]
+  sessions            Session[]
+  loginLogs           LoginLog[]
+  passwordResetTokens PasswordResetToken[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-enum Role {
+enum Roles {
   USER
-  ADMIN
+  SUPERADMIN
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyId  String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceInfo   String?
+  ipAddress    String?
+  lastActiveAt DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model LoginLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  success   Boolean
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// TODO: Replace this with Redis or another in-memory store for production use.
+// Using an in-memory store will provide better performance for token blacklist checks.
+model TokenBlacklist {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

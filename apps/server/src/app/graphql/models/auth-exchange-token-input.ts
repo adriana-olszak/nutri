@@ -1,3 +1,3 @@
-export class AuthExchangeTokenInput {
-  readonly rememberMe: boolean;
+export class AuthRefreshTokenInput {
+  readonly refreshToken: string;
 }

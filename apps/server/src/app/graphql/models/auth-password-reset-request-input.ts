@@ -1,12 +1,8 @@
 import { MaxLength } from 'class-validator';
-import { ApiConstants } from '@nutri/common-consts';
 
-const LONGEST =
-  ApiConstants.USERNAME_MAX_LENGTH > 254
-    ? ApiConstants.USERNAME_MAX_LENGTH
-    : 254;
+const LONGEST = 254;
 
 export class AuthPasswordResetRequestInput {
   @MaxLength(LONGEST)
-  readonly emailOrUsername: string;
+  readonly email: string;
 }
