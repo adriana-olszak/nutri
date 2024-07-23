@@ -1,19 +1,10 @@
 // This file is generated automatically. Do not edit it manually.
 
 import { LoginLogResolver, typeDefs as LoginLogTypeDefs } from './LoginLog';
-import {
-  PasswordResetTokenResolver,
-  typeDefs as PasswordResetTokenTypeDefs,
-} from './PasswordResetToken';
-import {
-  RefreshTokenResolver,
-  typeDefs as RefreshTokenTypeDefs,
-} from './RefreshToken';
+import { PasswordResetTokenResolver, typeDefs as PasswordResetTokenTypeDefs } from './PasswordResetToken';
+import { RefreshTokenResolver, typeDefs as RefreshTokenTypeDefs } from './RefreshToken';
 import { SessionResolver, typeDefs as SessionTypeDefs } from './Session';
-import {
-  TokenBlacklistResolver,
-  typeDefs as TokenBlacklistTypeDefs,
-} from './TokenBlacklist';
+import { TokenBlacklistResolver, typeDefs as TokenBlacklistTypeDefs } from './TokenBlacklist';
 import { UserResolver, typeDefs as UserTypeDefs } from './User';
 
 export const PRISMA_RESOLVERS = [
@@ -22,7 +13,7 @@ export const PRISMA_RESOLVERS = [
   RefreshTokenResolver,
   SessionResolver,
   TokenBlacklistResolver,
-  UserResolver,
+  UserResolver
 ];
 
 export const PRISMA_TYPE_DEFS: any[] = [
@@ -31,5 +22,6 @@ export const PRISMA_TYPE_DEFS: any[] = [
   RefreshTokenTypeDefs,
   SessionTypeDefs,
   TokenBlacklistTypeDefs,
-  UserTypeDefs,
-].filter((x) => x);
+  UserTypeDefs
+].filter(x => x)
+

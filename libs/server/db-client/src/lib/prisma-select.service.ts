@@ -7,10 +7,14 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PrismaSelectService {
-  getArgs<Args>(args: Args, info: GraphQLResolveInfo, defaultFields?: PalDefaultFields): Args {
+  getArgs<Args>(
+    args: Args,
+    info: GraphQLResolveInfo,
+    defaultFields?: PalDefaultFields,
+  ): Args {
     const result = new PrismaSelect(info, {
       defaultFields: defaultFields as any,
-      dmmf: [Prisma.dmmf],
+      dmmf: [Prisma.dmmf.datamodel as any],
     }).value;
 
     if (!result.select || Object.keys(result.select).length > 0) {

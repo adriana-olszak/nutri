@@ -4,7 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 
 import { GqlConfigService } from './gql-config.service';
 import { ALL_RESOLVERS } from './resolvers';
-import { ConfigModule } from '@nutri/server-config';
+import { ConfigModule } from '@nutri/server-config/config.module';
 import { DbClientModule } from '@nutri/server-db-client';
 import { NestAuthModule } from '@nutri/server-auth';
 
@@ -16,10 +16,9 @@ import { NestAuthModule } from '@nutri/server-auth';
     GraphQLModule.forRootAsync({
       driver: ApolloDriver,
       useClass: GqlConfigService,
-      imports: [DbClientModule, ConfigModule]
-    })
+      imports: [DbClientModule, ConfigModule],
+    }),
   ],
-  providers: [...ALL_RESOLVERS]
+  providers: [...ALL_RESOLVERS],
 })
-export class GraphqlModule {
-}
+export class GraphqlModule {}

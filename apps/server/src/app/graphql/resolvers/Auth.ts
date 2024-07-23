@@ -1,13 +1,11 @@
-import {
-  UnauthorizedException,
-  UseGuards
-} from '@nestjs/common';
+import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Throttle } from '@nestjs/throttler';
 import {
   CurrentUser,
+  CurrentToken,
   RequestUserDto,
-  RolesGuard
+  RolesGuard,
 } from '@nutri/server-auth';
 import gql from 'graphql-tag';
 import { GqlThrottlerGuard } from '../gql-throttler.guard';
@@ -18,7 +16,8 @@ import {
   AuthPasswordChangeInput,
   AuthPasswordResetConfirmationInput,
   AuthPasswordResetRequestInput,
-  AuthRegisterInput, AuthSession
+  AuthRegisterInput,
+  AuthSession,
 } from '../models';
 import { ConfigService } from '@nutri/server-config';
 import { PrismaService } from '@nutri/server-db-client';
@@ -33,20 +32,19 @@ export class AuthResolver {
   constructor(
     private readonly config: ConfigService,
     private readonly authService: AuthService,
-    private readonly prisma: PrismaService
-  ) {
-  }
+    private readonly prisma: PrismaService,
+  ) {}
 
   @Query('authLogin')
-  async login(@Context() context: { req: Request }, @Args('data') {
-    email,
-    password
-  }: AuthLoginInput): Promise<AuthSession> {
+  async login(
+    @Context() context: { req: Request },
+    @Args('data') { email, password }: AuthLoginInput,
+  ): Promise<AuthSession> {
     return await this.authService.login({
       email,
       password,
       userAgent: 'not-production-ready',
-      ipAddress: this._extractIpAddress(context.req)
+      ipAddress: this._extractIpAddress(context.req),
     });
   }
 
@@ -55,7 +53,7 @@ export class AuthResolver {
   async accountInfo(@CurrentUser() reqUser: RequestUserDto) {
     const user = await this.prisma.user.findUnique({
       where: { id: reqUser.id },
-      select: { email: true, password: true, googleProfile: true }
+      select: { email: true, password: true, googleProfile: true },
     });
 
     if (!user) throw new UnauthorizedException(ApiErrors.Codes.USER_NOT_FOUND);
@@ -63,7 +61,7 @@ export class AuthResolver {
     return {
       email: user.email,
       hasPassword: !!user.password,
-      googleProfile: user.googleProfile as AccountInfo['googleProfile']
+      googleProfile: user.googleProfile as AccountInfo['googleProfile'],
     } satisfies AccountInfo;
   }
 
@@ -71,21 +69,22 @@ export class AuthResolver {
   @UseGuards(RolesGuard())
   async authRefreshToken(
     @CurrentUser() reqUser: RequestUserDto,
-    @Args('data') args: AuthRefreshTokenInput
+    @Args('data') args: AuthRefreshTokenInput,
+    @CurrentToken() currentToken: string,
   ) {
-    return this.authService.refreshToken(args.refreshToken);
+    return this.authService.refreshToken(args.refreshToken, currentToken);
   }
 
   @Query()
   async authPasswordResetRequest(
-    @Args('data') args: AuthPasswordResetRequestInput
+    @Args('data') args: AuthPasswordResetRequestInput,
   ) {
     return this.authService.requestPasswordReset(args.email);
   }
 
   @Mutation()
   async authPasswordResetConfirmation(
-    @Args('data') args: AuthPasswordResetConfirmationInput
+    @Args('data') args: AuthPasswordResetConfirmationInput,
   ) {
     return this.authService.resetPassword(args.token, args.newPassword);
   }
@@ -98,24 +97,27 @@ export class AuthResolver {
 
     return await this.authService.register({
       email: args.email,
-      password: args.password
+      password: args.password,
     });
-
   }
 
   @Mutation()
   @UseGuards(RolesGuard())
   async authPasswordChange(
     @Args('data') args: AuthPasswordChangeInput,
-    @CurrentUser() reqUser: RequestUserDto
+    @CurrentUser() reqUser: RequestUserDto,
   ) {
-    return this.authService.changePassword(reqUser.id, args.oldPassword, args.newPassword);
+    return this.authService.changePassword(
+      reqUser.id,
+      args.oldPassword,
+      args.newPassword,
+    );
   }
 
   private _extractIpAddress(req: Request): string {
     const forwardedFor = req.headers['x-forwarded-for'];
     if (forwardedFor) {
-      const ips = (forwardedFor as string).split(',').map(ip => ip.trim());
+      const ips = (forwardedFor as string).split(',').map((ip) => ip.trim());
       return ips[0];
     }
     return req.ip || 'Unknown';
@@ -166,7 +168,7 @@ export const typeDefs = gql`
   }
 
   input AuthRefreshTokenInput {
-    refreshToken: Boolean!
+    refreshToken: String!
   }
 
   input AuthPasswordChangeInput {

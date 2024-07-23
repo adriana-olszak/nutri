@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule as NestJwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nutri/server-config';
-
+import { ConfigService } from '@nutri/server-config';
 
 @Module({
   imports: [
@@ -9,7 +8,6 @@ import { ConfigModule, ConfigService } from '@nutri/server-config';
       useFactory: (config: ConfigService) => config.jwtOptions,
       inject: [ConfigService],
     }),
-    ConfigModule,
   ],
   exports: [NestJwtModule],
 })

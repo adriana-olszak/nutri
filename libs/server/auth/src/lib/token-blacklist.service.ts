@@ -1,48 +1,53 @@
-// token-blacklist.service.ts
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@nutri/server-db-client';
+import {
+  PrismaService,
+  PrismaTransactionalClient,
+} from '@nutri/server-db-client';
+
+type BlacklistTokenParams = {
+  token: string;
+  expiresAt: Date;
+};
 
 @Injectable()
 export class TokenBlacklistService {
-  constructor(private prisma: PrismaService) {
-  }
+  constructor(private prisma: PrismaService) {}
 
-  async blacklistToken(token: string, expiresAt: Date): Promise<void> {
-    await this.prisma.tokenBlacklist.create({
+  async blacklistToken(
+    { token, expiresAt }: BlacklistTokenParams,
+    trx?: PrismaTransactionalClient,
+  ): Promise<void> {
+    console.log('blacklistedToken', token);
+    const client = trx || this.prisma;
+    await client.tokenBlacklist.create({
       data: {
         token,
-        expiresAt
-      }
+        expiresAt,
+      },
     });
   }
 
-  async isTokenBlacklisted(token: string): Promise<boolean> {
-    const blacklistedToken = await this.prisma.tokenBlacklist.findUnique({
-      where: { token }
+  async isTokenBlacklisted(
+    { token }: { token: string },
+    trx?: PrismaTransactionalClient,
+  ): Promise<boolean> {
+    console.log('isTokenBlacklisted', token);
+    const client = trx || this.prisma;
+    const blacklistedToken = await client.tokenBlacklist.findUnique({
+      where: { token },
     });
 
-    if (!blacklistedToken) {
-      return false;
-    }
-
-    if (blacklistedToken.expiresAt < new Date()) {
-      // Token has expired, remove it from the blacklist
-      await this.prisma.tokenBlacklist.delete({
-        where: { token }
-      });
-      return false;
-    }
-
-    return true;
+    return !!blacklistedToken;
   }
 
-  async cleanupExpiredTokens(): Promise<void> {
-    await this.prisma.tokenBlacklist.deleteMany({
+  async cleanupExpiredTokens(trx?: PrismaTransactionalClient): Promise<void> {
+    const client = trx || this.prisma;
+    await client.tokenBlacklist.deleteMany({
       where: {
         expiresAt: {
-          lt: new Date()
-        }
-      }
+          lt: new Date(),
+        },
+      },
     });
   }
 }

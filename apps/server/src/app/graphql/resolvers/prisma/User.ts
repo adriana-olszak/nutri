@@ -28,7 +28,7 @@ import { PrismaService, PrismaSelectService } from '@nutri/server-db-client';
 export const typeDefs = null;
 
 @Resolver('User')
-@UseGuards(RolesGuard('USER'))
+@UseGuards()
 export class UserResolver {
   constructor(
     private readonly prisma: PrismaService,

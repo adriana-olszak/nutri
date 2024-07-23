@@ -4,7 +4,7 @@ import {
   IsEnum,
   IsNumber,
   IsString,
-  validateSync
+  validateSync,
 } from 'class-validator';
 
 export enum Environment {
@@ -47,10 +47,12 @@ class EnvironmentVariables {
   @Transform(({ value }) => Boolean(value))
   PUBLIC_REGISTRATION!: boolean;
 
-  @IsString()
+  @IsNumber()
+  @Transform(({ value }) => Number(value))
   AUTH_JWT_ACCESS_EXPIRATION!: string;
 
-  @IsString()
+  @IsNumber()
+  @Transform(({ value }) => Number(value))
   AUTH_JWT_REFRESH_EXPIRATION!: string;
 
   @IsString()
@@ -70,10 +72,10 @@ export type EnvironmentVariablesType = {
 
 export function validate(config: Record<string, unknown>) {
   const validatedConfig = plainToInstance(EnvironmentVariables, config, {
-    enableImplicitConversion: true
+    enableImplicitConversion: true,
   });
   const errors = validateSync(validatedConfig, {
-    skipMissingProperties: false
+    skipMissingProperties: false,
   });
 
   if (errors.length > 0) {

@@ -1,11 +1,16 @@
-import {
-  Injectable,
-  Logger
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@nutri/server-db-client';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nutri/server-config';
 import { ErrorHandler } from '@nutri/server-utils';
+
+type GenerateTokenParams = {
+  user: {
+    id: string;
+    email: string;
+    roles: string[];
+  };
+};
 
 @Injectable()
 export class AccessTokenService {
@@ -15,19 +20,18 @@ export class AccessTokenService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-    private configService: ConfigService
-  ) {
-  }
+    private configService: ConfigService,
+  ) {}
 
-  public generate(user: any) {
+  public generate({ user }: GenerateTokenParams) {
     const payload = {
       sub: user.id,
       email: user.email,
-      roles: user.roles
+      roles: user.roles,
     };
-    return this.jwtService.sign(payload, {
-      expiresIn: this.configService.authJWTAccessExpiration,
-      secret: this.configService.authJWTAccessSecret
-    });
+    // return this.jwtService.sign(payload, {
+    //   expiresIn: this.configService.authJWTAccessExpiration,
+    //   secret: this.configService.authJWTAccessSecret,
+    // });
   }
 }
