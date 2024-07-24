@@ -6,6 +6,11 @@ async function main() {
   const scriptDir = path.dirname(__filename);
   const rootDir = findRootDir(scriptDir);
 
+  const excludeModels = ['LoginLog',
+    'PasswordResetToken',
+    'RefreshToken',
+    'Session',
+    'TokenBlacklist'];
   const generator = new GeneratorPipeline({
     rootDir,
     prismaClientPath: 'libs/server/db-client/src/lib/generated',
@@ -16,7 +21,12 @@ async function main() {
       backend: {
         generator: 'sdl',
         output: 'apps/server/src/app/graphql/paljs',
-        doNotUseFieldUpdateOperationsInput: true
+        doNotUseFieldUpdateOperationsInput: true,
+        excludeModels: excludeModels.map(name => ({
+          name,
+          queries: true,
+          mutations: true
+        }))
       }
     },
     generators: [
@@ -24,7 +34,8 @@ async function main() {
         type: 'graphqlResolvers',
         auth: {
           scheme: 'RBAC',
-          defaultRBACRole: 'USER'
+          defaultRBACRole: 'USER',
+          excludeModels
         }
       },
       {
@@ -35,7 +46,8 @@ async function main() {
         type: 'frontendGqlClient',
         outPath: 'libs/client/gql/src/lib',
         fieldsFolderName: 'fields',
-        queriesFolderName: 'prisma'
+        queriesFolderName: 'prisma',
+        excludeModels
       }
     ]
   });

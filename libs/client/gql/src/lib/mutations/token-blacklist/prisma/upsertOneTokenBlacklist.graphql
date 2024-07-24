@@ -1,9 +1,0 @@
-mutation UpsertOneTokenBlacklist(
-    $where: TokenBlacklistWhereUniqueInput!
-    $create: TokenBlacklistCreateInput!
-    $update: TokenBlacklistUpdateInput!
-  ) {
-    upsertOneTokenBlacklist(where: $where, create: $create, update: $update) {
-      ...TokenBlacklistFields
-    }
-  }

@@ -1,5 +1,0 @@
- mutation CreateManyLoginLogAndReturn($data: [LoginLogCreateManyInput!]!) {
-    createManyLoginLogAndReturn(data: $data) {
-      ...LoginLogFields
-    }
-  }

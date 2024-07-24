@@ -18,6 +18,7 @@ export type GraphQLResolversConfig = {
   auth: {
     scheme: 'RBAC';
     defaultRBACRole: string;
+    excludeModels: string[];
   };
 };
 
@@ -29,6 +30,7 @@ export type SchemaExtensionsConfig = {
 export type FrontendGqlClientConfig = {
   type: 'frontendGqlClient';
   outPath: string;
+  excludeModels: string[];
   fieldsFolderName?: string;
   queriesFolderName?: string;
 };

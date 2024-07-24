@@ -1,5 +1,0 @@
-query FindUniqueRefreshToken($where: RefreshTokenWhereUniqueInput!) {
-    findUniqueRefreshToken(where: $where) {
-      ...RefreshTokenFields
-    }
-  }

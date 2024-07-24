@@ -1,5 +1,0 @@
-mutation DeleteOneLoginLog($where: LoginLogWhereUniqueInput!) {
-    deleteOneLoginLog(where: $where) {
-      id
-    }
-  }

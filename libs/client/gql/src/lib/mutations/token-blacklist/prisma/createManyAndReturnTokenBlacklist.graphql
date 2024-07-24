@@ -1,5 +1,0 @@
- mutation CreateManyTokenBlacklistAndReturn($data: [TokenBlacklistCreateManyInput!]!) {
-    createManyTokenBlacklistAndReturn(data: $data) {
-      ...TokenBlacklistFields
-    }
-  }

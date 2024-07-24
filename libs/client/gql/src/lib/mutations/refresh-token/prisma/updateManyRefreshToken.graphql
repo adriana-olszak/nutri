@@ -1,5 +1,0 @@
-mutation UpdateManyRefreshToken($data: RefreshTokenUpdateManyMutationInput!, $where: RefreshTokenWhereInput!) {
-    updateManyRefreshToken(data: $data, where: $where) {
-      count
-    }
-  }

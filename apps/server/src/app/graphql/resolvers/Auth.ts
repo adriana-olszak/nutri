@@ -127,7 +127,7 @@ export class AuthResolver {
 export const typeDefs = gql`
   extend type Query {
     authLogin(data: AuthLoginInput!): AuthSession!
-    authRefreshToken(data: AuthRefreshTokenInput): AuthSession!
+    authRefreshToken(data: AuthRefreshTokenInput): RefreshToken!
     authPasswordResetRequest(data: AuthPasswordResetRequestInput!): Boolean
     accountInfo: AccountInfo!
   }
@@ -145,6 +145,11 @@ export const typeDefs = gql`
     accessToken: String!
     refreshToken: String!
     roles: [String!]!
+  }
+
+  type RefreshToken {
+    accessToken: String!
+    refreshToken: String!
   }
 
   type GoogleProfile {

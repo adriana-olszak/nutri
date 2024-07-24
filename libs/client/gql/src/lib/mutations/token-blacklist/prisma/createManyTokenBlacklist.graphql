@@ -1,5 +1,0 @@
-mutation CreateManyTokenBlacklist($data: [TokenBlacklistCreateManyInput!]!) {
-    createManyTokenBlacklist(data: $data) {
-      count
-    }
-  }

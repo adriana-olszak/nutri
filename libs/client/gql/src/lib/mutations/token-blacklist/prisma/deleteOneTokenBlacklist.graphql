@@ -1,5 +1,0 @@
-mutation DeleteOneTokenBlacklist($where: TokenBlacklistWhereUniqueInput!) {
-    deleteOneTokenBlacklist(where: $where) {
-      id
-    }
-  }

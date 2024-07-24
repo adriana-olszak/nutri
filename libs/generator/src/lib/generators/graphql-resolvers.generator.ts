@@ -22,8 +22,7 @@ export class GraphQLResolverGenerator extends BaseGenerator<GraphQLResolversConf
     const dirents = await readdir(palOutPath, { withFileTypes: true });
     const prismaNames = dirents.filter(d => d.isDirectory()).map(d => d.name).sort();
 
-
-    for (const prismaName of prismaNames) {
+    for (const prismaName of prismaNames.filter(name => !this.config.auth.excludeModels.includes(name))) {
       const outFile = path.join(prismaResolversPath, `${prismaName}.ts`);
 
       if (!existsSync(outFile)) {
@@ -34,11 +33,12 @@ export class GraphQLResolverGenerator extends BaseGenerator<GraphQLResolversConf
       }
     }
 
-    let prismaIndexFileNames = await this.getFileNames(prismaResolversPath);
+    const prismaIndexFileNames = await this.getFileNames(prismaResolversPath);
+
     const prismaIndexPath = path.join(prismaResolversPath, 'index.ts');
     await this.writeFile(prismaIndexPath, GraphQLPrismaIndexTemplate(prismaIndexFileNames));
 
-    let apiIndexFileNames = await this.getFileNames(apiResolversPath);
+    const apiIndexFileNames = await this.getFileNames(apiResolversPath);
     const apiIndexPath = path.join(apiResolversPath, 'index.ts');
     await this.writeFile(apiIndexPath, GraphQLApiIndexTemplate(apiIndexFileNames));
 

@@ -1,5 +1,0 @@
-mutation CreateOneTokenBlacklist($data: TokenBlacklistCreateInput!) {
-    createOneTokenBlacklist(data: $data) {
-      ...TokenBlacklistFields
-    }
-  }

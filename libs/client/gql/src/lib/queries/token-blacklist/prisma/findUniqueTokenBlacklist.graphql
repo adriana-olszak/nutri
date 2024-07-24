@@ -1,5 +1,0 @@
-query FindUniqueTokenBlacklist($where: TokenBlacklistWhereUniqueInput!) {
-    findUniqueTokenBlacklist(where: $where) {
-      ...TokenBlacklistFields
-    }
-  }

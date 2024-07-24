@@ -1,9 +1,0 @@
-mutation UpsertOneRefreshToken(
-    $where: RefreshTokenWhereUniqueInput!
-    $create: RefreshTokenCreateInput!
-    $update: RefreshTokenUpdateInput!
-  ) {
-    upsertOneRefreshToken(where: $where, create: $create, update: $update) {
-      ...RefreshTokenFields
-    }
-  }

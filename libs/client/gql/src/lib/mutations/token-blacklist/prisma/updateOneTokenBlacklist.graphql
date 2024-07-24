@@ -1,5 +1,0 @@
-mutation UpdateOneTokenBlacklist($data: TokenBlacklistUpdateInput!, $where: TokenBlacklistWhereUniqueInput!) {
-    updateOneTokenBlacklist(data: $data, where: $where) {
-      ...TokenBlacklistFields
-    }
-  }

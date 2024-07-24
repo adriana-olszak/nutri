@@ -26,6 +26,7 @@ export class GeneratorPipeline {
           return new SchemaExtensionGenerator(genConfig, baseConfig);
         case 'frontendGqlClient':
           return new FrontendGqlClientGenerator(genConfig, baseConfig);
+        // gen for tables / forms
       }
     }));
   }

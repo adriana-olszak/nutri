@@ -1,5 +1,0 @@
-mutation CreateManyLoginLog($data: [LoginLogCreateManyInput!]!) {
-    createManyLoginLog(data: $data) {
-      count
-    }
-  }

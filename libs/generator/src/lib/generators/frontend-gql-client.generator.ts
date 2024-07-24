@@ -63,7 +63,7 @@ export class FrontendGqlClientGenerator extends BaseGenerator<FrontendGqlClientC
     const dirents = await readdir(palOutPath, { withFileTypes: true });
     const prismaNames = dirents.filter(d => d.isDirectory()).map(d => d.name).sort();
 
-    for (const prismaName of prismaNames) {
+    for (const prismaName of prismaNames.filter(name => !this.config.excludeModels.includes(name))) {
       const { fragmentsPath, queriesPath, mutationsPath } = await this.ensurePaths(prismaName);
       // Queries
       await this.writeFile(path.join(queriesPath, `findUnique${prismaName}.graphql`), prismaClientFindUniqueTemplate(prismaName));
