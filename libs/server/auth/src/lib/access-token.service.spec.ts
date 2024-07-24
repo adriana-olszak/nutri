@@ -1,44 +1,48 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { AccessTokenService } from './access-token.service';
 import { PrismaService } from '@nutri/server-db-client';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nutri/server-config';
 import { userFactory } from '@nutri/server-testing';
+import { ConfigService } from '@nutri/server-config';
+import { TestBed } from '@automock/jest';
+import { faker } from '@faker-js/faker';
 
-// jest.mock('@nutri/server-db-client');
-// jest.mock('@nestjs/jwt');
-// jest.mock('@nutri/server-config');
 
 describe('AccessTokenService', () => {
   let accessTokenService: AccessTokenService;
-  let jwtServiceMock: jest.Mocked<JwtService>;
-  // let configServiceMock: jest.Mocked<ConfigService>;
+  let jwtServiceMock: JwtService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [AccessTokenService, PrismaService, JwtService],
-    }).compile();
-
-    accessTokenService = module.get<AccessTokenService>(AccessTokenService);
-    jwtServiceMock = module.get(JwtService) as jest.Mocked<JwtService>;
-    // configServiceMock = module.get(ConfigService) as jest.Mocked<ConfigService>;
-
-    // // Mock the ConfigService getter methods
-    // jest
-    //   .spyOn(configServiceMock, 'authJWTAccessExpiration', 'get')
-    //   .mockReturnValue('1000');
-    // jest
-    //   .spyOn(configServiceMock, 'authJWTAccessSecret', 'get')
-    //   .mockReturnValue('secret');
+    const { unit, unitRef } = TestBed.create(AccessTokenService)
+      .mock(PrismaService)
+      .using({
+        loginLog: {
+          create: jest.fn()
+        },
+        user: {
+          findUnique: jest.fn()
+        }
+      })
+      .mock(ConfigService)
+      .using({
+        authJWTAccessExpiration: '1000',
+        authJWTAccessSecret: 'secret'
+      })
+      .compile();
+    accessTokenService = unit;
+    jwtServiceMock = unitRef.get(JwtService);
   });
 
   it('should generate an access token', () => {
     const user = userFactory.build();
+    const sessionId = faker.string.uuid()
     const token = 'generated-token';
-    // jwtServiceMock.sign.mockReturnValue(token);
-
+    // Mock the ConfigService getter methods
+    jest
+      .spyOn(jwtServiceMock, 'sign')
+      .mockReturnValue(token);
     const result = accessTokenService.generate({
       user: { id: user.id, email: user.email, roles: user.roles },
+      sessionId
     });
 
     expect(result).toEqual(token);
@@ -47,11 +51,12 @@ describe('AccessTokenService', () => {
         sub: user.id,
         email: user.email,
         roles: user.roles,
+        sessionId
       },
       {
         expiresIn: '1000',
-        secret: 'secret',
-      },
+        secret: 'secret'
+      }
     );
   });
 });

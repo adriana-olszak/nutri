@@ -10,6 +10,7 @@ type GenerateTokenParams = {
     email: string;
     roles: string[];
   };
+  sessionId: string;
 };
 
 @Injectable()
@@ -20,18 +21,20 @@ export class AccessTokenService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-    private configService: ConfigService,
-  ) {}
+    private configService: ConfigService
+  ) {
+  }
 
-  public generate({ user }: GenerateTokenParams) {
+  public generate({ user, sessionId }: GenerateTokenParams) {
     const payload = {
       sub: user.id,
       email: user.email,
       roles: user.roles,
+      sessionId
     };
-    // return this.jwtService.sign(payload, {
-    //   expiresIn: this.configService.authJWTAccessExpiration,
-    //   secret: this.configService.authJWTAccessSecret,
-    // });
+    return this.jwtService.sign(payload, {
+      expiresIn: this.configService.authJWTAccessExpiration,
+      secret: this.configService.authJWTAccessSecret
+    });
   }
 }

@@ -10,11 +10,13 @@ export class EmailTakenException extends HttpException {
 
 @Catch(EmailTakenException)
 export class EmailTakenExceptionFilter implements ExceptionFilter {
-  constructor(private readonly config: ConfigService) {}
+  constructor(private readonly config: ConfigService) {
+  }
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
-    res.redirect(`/login?email_taken=true`);
+    if (exception instanceof EmailTakenException)
+      res.redirect(`/login?email_taken=true`);
   }
 }

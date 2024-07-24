@@ -1,16 +1,12 @@
+import { MockedObject } from 'jest-mock';
 import { PrismaService } from '@nutri/server-db-client';
-import { MockedFunction } from 'jest-mock';
 
-type MockPrismaServiceProperties = {
-  [K in keyof PrismaService]: PrismaService[K] extends (...args: any[]) => any
-    ? MockedFunction<PrismaService[K]>
-    : {
-        [SubK in keyof PrismaService[K]]: PrismaService[K][SubK] extends (
-          ...args: any[]
-        ) => any
-          ? MockedFunction<PrismaService[K][SubK]>
-          : PrismaService[K][SubK];
-      };
+type DeepMockProxy<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => any
+    ? jest.MockedFunction<T[K]>
+    : T[K] extends object
+      ? DeepMockProxy<T[K]>
+      : T[K];
 };
 
-export type MockPrismaService = MockPrismaServiceProperties & PrismaService;
+export type MockPrismaService = MockedObject<DeepMockProxy<PrismaService>>;

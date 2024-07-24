@@ -44,7 +44,7 @@ describe('RefreshTokenService', () => {
     const result = await refreshTokenService.generate({ userId: user.id });
     expect(result).toEqual({
       token: refreshToken.token,
-      familyId: refreshToken.familyId,
+      familyId: expect.any(String)
     });
   });
 

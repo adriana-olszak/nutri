@@ -2,7 +2,7 @@ import {
   BadRequestException,
   Injectable,
   Logger,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { JwtService } from '@nestjs/jwt';
@@ -30,15 +30,16 @@ export class AuthService {
     private sessionService: SessionService,
     private loginLogService: AuthAuditLogService,
     private refreshTokenService: RefreshTokenService,
-    private accessTokenService: AccessTokenService,
-  ) {}
+    private accessTokenService: AccessTokenService
+  ) {
+  }
 
   async login({
-    email,
-    password,
-    ipAddress,
-    userAgent,
-  }: {
+                email,
+                password,
+                ipAddress,
+                userAgent
+              }: {
     email: string;
     password: string;
     ipAddress: string;
@@ -50,24 +51,27 @@ export class AuthService {
         if (!user) {
           await this.loginLogService.logFailedLogin(
             { email, ipAddress, userAgent },
-            trx,
+            trx
           );
           throw new UnauthorizedException('Invalid credentials');
         }
 
-        await this.sessionService.createSession(
+        const session = await this.sessionService.createSession(
           { userId: user.id, ipAddress, deviceInfo: userAgent },
-          trx,
+          trx
         );
-        const accessToken = this.accessTokenService.generate({ user });
+        const accessToken = this.accessTokenService.generate({
+          user,
+          sessionId: session.id  // Include sessionId in the token payload
+        });
         const { token: refreshToken } = await this.refreshTokenService.generate(
           { userId: user.id },
-          trx,
+          trx
         );
 
         await this.loginLogService.logSuccessfulLogin(
           { userId: user.id, ipAddress, userAgent },
-          trx,
+          trx
         );
 
         this.logger.log(`User ${user.id} logged in successfully`);
@@ -75,7 +79,7 @@ export class AuthService {
           userId: user.id,
           roles: user.roles,
           accessToken,
-          refreshToken,
+          refreshToken
         };
       } catch (error: unknown) {
         return this.errorHandler.handleError(error, 'Login attempt failed');
@@ -84,16 +88,20 @@ export class AuthService {
   }
 
   async register({
-    email,
-    password,
-  }: {
+                   email,
+                   password,
+                   ipAddress,
+                   userAgent
+                 }: {
     email: string;
     password: string;
+    ipAddress: string;
+    userAgent: string;
   }): Promise<AuthSession> {
     return this.prisma.$transaction(async (trx) => {
       try {
         const existingUser = await trx.user.findUnique({
-          where: { email: email.toLowerCase() },
+          where: { email: email.toLowerCase() }
         });
 
         if (existingUser) {
@@ -106,24 +114,37 @@ export class AuthService {
           data: {
             email: email.toLowerCase(),
             password: hashedPassword,
-            roles: ['USER'], // Assign default role
+            roles: ['USER'] // Assign default role
           },
-          select: { id: true, email: true, roles: true },
+          select: { id: true, email: true, roles: true }
         });
 
-        const accessToken = this.accessTokenService.generate({ user: newUser });
-        const { token: refreshToken } = await this.refreshTokenService.generate(
-          { userId: newUser.id },
-          trx,
+        const session = await this.sessionService.createSession(
+          { userId: newUser.id, ipAddress, deviceInfo: userAgent },
+          trx
         );
 
-        this.logger.log(`User ${newUser.id} registered successfully`);
+        const accessToken = this.accessTokenService.generate({
+          user: newUser,
+          sessionId: session.id
+        });
+        const { token: refreshToken } = await this.refreshTokenService.generate(
+          { userId: newUser.id },
+          trx
+        );
+
+        await this.loginLogService.logSuccessfulLogin(
+          { userId: newUser.id, ipAddress, userAgent },
+          trx
+        );
+
+        this.logger.log(`User ${newUser.id} registered and logged in successfully`);
 
         return {
           userId: newUser.id,
           roles: newUser.roles,
           accessToken,
-          refreshToken,
+          refreshToken
         };
       } catch (error: unknown) {
         return this.errorHandler.handleError(error, 'Registration failed');
@@ -131,25 +152,27 @@ export class AuthService {
     });
   }
 
-  async logout(accessToken: string, refreshToken: string, sessionId: string) {
+  async logout(accessToken: string, refreshToken: string) {
     return this.prisma.$transaction(async (trx) => {
       try {
         const decodedToken = this.jwtService.decode(accessToken) as {
           exp: number;
           sub: string;
+          sessionId: string;  // Extract sessionId from the token
         };
         const expirationDate = new Date(decodedToken.exp * 1000);
+        const sessionId = decodedToken.sessionId;
 
         await Promise.all([
           this.tokenBlacklistService.blacklistToken(
             { token: accessToken, expiresAt: expirationDate },
-            trx,
+            trx
           ),
           this.refreshTokenService.revoke({ token: refreshToken }, trx),
-          this.sessionService.endSession({ sessionId }, trx),
+          this.sessionService.endSession({ sessionId }, trx)
         ]);
 
-        this.logger.log(`User ${decodedToken.sub} logged out successfully`);
+        this.logger.log(`User ${decodedToken.sub} logged out successfully from session ${sessionId}`);
       } catch (error: unknown) {
         return this.errorHandler.handleError(error, 'Logout attempt failed');
       }
@@ -160,7 +183,7 @@ export class AuthService {
     return this.prisma.$transaction(async (trx) => {
       try {
         const user = await trx.user.findUnique({
-          where: { email: email.toLowerCase() },
+          where: { email: email.toLowerCase() }
         });
         if (!user) {
           // Don't reveal that the user doesn't exist
@@ -174,8 +197,8 @@ export class AuthService {
           data: {
             token,
             userId: user.id,
-            expiresAt,
-          },
+            expiresAt
+          }
         });
 
         // Here you would send an email with the reset link
@@ -193,12 +216,12 @@ export class AuthService {
       try {
         const passwordReset = await trx.passwordResetToken.findUnique({
           where: { token },
-          include: { user: true },
+          include: { user: true }
         });
 
         if (!passwordReset || passwordReset.expiresAt < new Date()) {
           throw new UnauthorizedException(
-            'Invalid or expired password reset token',
+            'Invalid or expired password reset token'
           );
         }
 
@@ -206,15 +229,15 @@ export class AuthService {
 
         await trx.user.update({
           where: { id: passwordReset.userId },
-          data: { password: hashedPassword },
+          data: { password: hashedPassword }
         });
 
         await trx.passwordResetToken.delete({
-          where: { id: passwordReset.id },
+          where: { id: passwordReset.id }
         });
 
         this.logger.log(
-          `Password reset successful for user ${passwordReset.userId}`,
+          `Password reset successful for user ${passwordReset.userId}`
         );
       } catch (error: unknown) {
         this.errorHandler.handleError(error, 'Password reset failed');
@@ -225,7 +248,7 @@ export class AuthService {
   async changePassword(
     userId: string,
     oldPassword: string,
-    newPassword: string,
+    newPassword: string
   ): Promise<void> {
     return this.prisma.$transaction(async (trx) => {
       try {
@@ -233,13 +256,13 @@ export class AuthService {
 
         if (!user || !user.password) {
           throw new UnauthorizedException(
-            'User not found or has no password set',
+            'User not found or has no password set'
           );
         }
 
         const isOldPasswordValid = await this._verifyPassword(
           oldPassword,
-          user.password,
+          user.password
         );
         if (!isOldPasswordValid) {
           throw new UnauthorizedException('Invalid old password');
@@ -249,7 +272,7 @@ export class AuthService {
 
         await trx.user.update({
           where: { id: userId },
-          data: { password: hashedNewPassword },
+          data: { password: hashedNewPassword }
         });
 
         this.logger.log(`Password changed successfully for user ${userId}`);
@@ -262,13 +285,19 @@ export class AuthService {
   async refreshToken(oldRefreshToken: string, currentAccessToken: string) {
     try {
       return await this.prisma.$transaction(async (trx) => {
+        const decodedCurrentToken = this.jwtService.decode(currentAccessToken) as {
+          exp: number;
+          sub: string;
+          sessionId: string;
+        };
+
         const newRefreshToken = await this.refreshTokenService.rotate(
           { oldToken: oldRefreshToken },
-          trx,
+          trx
         );
         const { userId } = await this.refreshTokenService.validate(
           { token: newRefreshToken },
-          trx,
+          trx
         );
         const user = await trx.user.findUnique({ where: { id: userId } });
 
@@ -276,39 +305,37 @@ export class AuthService {
           throw new UnauthorizedException('User not found');
         }
 
-        const newAccessToken = this.accessTokenService.generate({ user });
+        // Include the sessionId from the current token in the new token
+        const newAccessToken = this.accessTokenService.generate({
+          user,
+          sessionId: decodedCurrentToken.sessionId
+        });
 
-        this.logger.log(`Tokens refreshed for user ${userId}`);
+        this.logger.log(`Tokens refreshed for user ${userId} in session ${decodedCurrentToken.sessionId}`);
         return { accessToken: newAccessToken, refreshToken: newRefreshToken };
       });
     } catch (error: unknown) {
-      console.log(error);
       // If there's an error, we should blacklist the current access token
       try {
         const decodedToken = this.jwtService.decode(currentAccessToken) as {
           exp: number;
           sub: string;
+          sessionId: string;
         };
-        console.log(decodedToken);
         const expirationDate = new Date(decodedToken.exp * 1000);
-        console.log(expirationDate);
-        console.log(currentAccessToken);
 
         // Blacklist the token outside of the transaction
         await this.tokenBlacklistService.blacklistToken({
           token: currentAccessToken,
-          expiresAt: expirationDate,
+          expiresAt: expirationDate
         });
 
         this.logger.log(
-          `Access token blacklisted for user ${decodedToken.sub} due to refresh token error`,
+          `Access token blacklisted for user ${decodedToken.sub} in session ${decodedToken.sessionId} due to refresh token error`
         );
-        console.log('DONE');
       } catch (blacklistError) {
-        console.log('Errrororo');
         this.logger.error('Failed to blacklist access token', blacklistError);
       }
-      console.log('ERROR HANDLERR');
 
       // Rethrow the original error
       return this.errorHandler.handleError(error, 'Token refresh failed');
@@ -318,13 +345,13 @@ export class AuthService {
   private async _validateUser(email: string, password: string, trx?: any) {
     const user = await (trx || this.prisma).user.findUnique({
       where: { email: email.toLowerCase() },
-      select: { id: true, email: true, password: true, roles: true },
+      select: { id: true, email: true, password: true, roles: true }
     });
 
     if (!user) return null;
     if (!user.password) {
       throw new UnauthorizedException(
-        'This account uses Google Sign-In. Please log in with Google.',
+        'This account uses Google Sign-In. Please log in with Google.'
       );
     }
 
@@ -337,7 +364,7 @@ export class AuthService {
 
   private async _verifyPassword(
     plainTextPassword: string,
-    hashedPassword: string,
+    hashedPassword: string
   ): Promise<boolean> {
     return bcrypt.compare(plainTextPassword, hashedPassword);
   }
@@ -347,7 +374,7 @@ export class AuthService {
       password,
       this.configService.bcrypt?.costFactor
         ? this.configService.bcrypt.costFactor
-        : 12,
+        : 12
     );
   }
 }
