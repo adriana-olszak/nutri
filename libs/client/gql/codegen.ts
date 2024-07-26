@@ -11,18 +11,17 @@ const config: CodegenConfig = {
     'src/lib/graphql.schema.json': {
       plugins: ['introspection']
     },
-    'src/lib/': {
-      preset: 'near-operation-file',
-      presetConfig: {
-        baseTypesPath: 'graphql-types.ts',
-        extension: '.gen.ts'
-      },
+    'src/lib/graphql-operations.gen.ts': {
       plugins: [
+        'typescript',
         'typescript-operations',
         'typescript-graphql-request'
-      ]
+      ],
+      config: {
+        // rawRequest: true,
+        inlineFragmentTypes: 'combine'
+      }
     }
-
   }
 };
 

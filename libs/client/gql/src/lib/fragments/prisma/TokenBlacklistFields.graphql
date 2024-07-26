@@ -1,4 +1,0 @@
-fragment TokenBlacklistFields on TokenBlacklist {
-    id
-    # @todo Add fields
-  }

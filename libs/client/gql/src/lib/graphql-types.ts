@@ -96,7 +96,7 @@ export type AuthRegisterInput = {
 export type AuthSession = {
   __typename?: 'AuthSession';
   accessToken: Scalars['String']['output'];
-  refreshToken: Scalars['String']['output'];
+  accessTokenExpiresAt: Scalars['DateTime']['output'];
   roles: Array<Scalars['String']['output']>;
   userId: Scalars['String']['output'];
 };
@@ -152,6 +152,7 @@ export type CreateManyRefreshTokenAndReturnOutputType = {
   expiresAt: Scalars['DateTime']['output'];
   familyId: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  sessionId: Scalars['String']['output'];
   token: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
   used: Scalars['Boolean']['output'];
@@ -696,11 +697,6 @@ export type Mutation = {
 
 export type MutationAuthLoginArgs = {
   data: AuthLoginInput;
-};
-
-
-export type MutationAuthLogoutArgs = {
-  refreshToken: Scalars['String']['input'];
 };
 
 
@@ -1387,11 +1383,13 @@ export enum QueryMode {
 export type RefreshToken = {
   __typename?: 'RefreshToken';
   accessToken: Scalars['String']['output'];
+  accessTokenExpiresAt: Scalars['DateTime']['output'];
   createdAt: Scalars['DateTime']['output'];
   expiresAt: Scalars['DateTime']['output'];
   familyId: Scalars['String']['output'];
   id: Scalars['String']['output'];
   refreshToken: Scalars['String']['output'];
+  sessionId: Scalars['String']['output'];
   token: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
   used: Scalars['Boolean']['output'];
@@ -1406,6 +1404,7 @@ export type RefreshTokenCountAggregateOutputType = {
   expiresAt: Scalars['Int']['output'];
   familyId: Scalars['Int']['output'];
   id: Scalars['Int']['output'];
+  sessionId: Scalars['Int']['output'];
   token: Scalars['Int']['output'];
   updatedAt: Scalars['Int']['output'];
   used: Scalars['Int']['output'];
@@ -1417,6 +1416,7 @@ export type RefreshTokenCountOrderByAggregateInput = {
   expiresAt?: InputMaybe<SortOrder>;
   familyId?: InputMaybe<SortOrder>;
   id?: InputMaybe<SortOrder>;
+  sessionId?: InputMaybe<SortOrder>;
   token?: InputMaybe<SortOrder>;
   updatedAt?: InputMaybe<SortOrder>;
   used?: InputMaybe<SortOrder>;
@@ -1428,6 +1428,7 @@ export type RefreshTokenCreateInput = {
   expiresAt: Scalars['DateTime']['input'];
   familyId: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId: Scalars['String']['input'];
   token: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1439,6 +1440,7 @@ export type RefreshTokenCreateManyInput = {
   expiresAt: Scalars['DateTime']['input'];
   familyId: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId: Scalars['String']['input'];
   token: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1450,6 +1452,7 @@ export type RefreshTokenCreateManyUserInput = {
   expiresAt: Scalars['DateTime']['input'];
   familyId: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId: Scalars['String']['input'];
   token: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1477,6 +1480,7 @@ export type RefreshTokenCreateWithoutUserInput = {
   expiresAt: Scalars['DateTime']['input'];
   familyId: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId: Scalars['String']['input'];
   token: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1491,6 +1495,7 @@ export type RefreshTokenGroupByOutputType = {
   expiresAt: Scalars['DateTime']['output'];
   familyId: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  sessionId: Scalars['String']['output'];
   token: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
   used: Scalars['Boolean']['output'];
@@ -1509,6 +1514,7 @@ export type RefreshTokenMaxAggregateOutputType = {
   expiresAt?: Maybe<Scalars['DateTime']['output']>;
   familyId?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
+  sessionId?: Maybe<Scalars['String']['output']>;
   token?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   used?: Maybe<Scalars['Boolean']['output']>;
@@ -1520,6 +1526,7 @@ export type RefreshTokenMaxOrderByAggregateInput = {
   expiresAt?: InputMaybe<SortOrder>;
   familyId?: InputMaybe<SortOrder>;
   id?: InputMaybe<SortOrder>;
+  sessionId?: InputMaybe<SortOrder>;
   token?: InputMaybe<SortOrder>;
   updatedAt?: InputMaybe<SortOrder>;
   used?: InputMaybe<SortOrder>;
@@ -1532,6 +1539,7 @@ export type RefreshTokenMinAggregateOutputType = {
   expiresAt?: Maybe<Scalars['DateTime']['output']>;
   familyId?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
+  sessionId?: Maybe<Scalars['String']['output']>;
   token?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   used?: Maybe<Scalars['Boolean']['output']>;
@@ -1543,6 +1551,7 @@ export type RefreshTokenMinOrderByAggregateInput = {
   expiresAt?: InputMaybe<SortOrder>;
   familyId?: InputMaybe<SortOrder>;
   id?: InputMaybe<SortOrder>;
+  sessionId?: InputMaybe<SortOrder>;
   token?: InputMaybe<SortOrder>;
   updatedAt?: InputMaybe<SortOrder>;
   used?: InputMaybe<SortOrder>;
@@ -1561,6 +1570,7 @@ export type RefreshTokenOrderByWithAggregationInput = {
   expiresAt?: InputMaybe<SortOrder>;
   familyId?: InputMaybe<SortOrder>;
   id?: InputMaybe<SortOrder>;
+  sessionId?: InputMaybe<SortOrder>;
   token?: InputMaybe<SortOrder>;
   updatedAt?: InputMaybe<SortOrder>;
   used?: InputMaybe<SortOrder>;
@@ -1572,6 +1582,7 @@ export type RefreshTokenOrderByWithRelationInput = {
   expiresAt?: InputMaybe<SortOrder>;
   familyId?: InputMaybe<SortOrder>;
   id?: InputMaybe<SortOrder>;
+  sessionId?: InputMaybe<SortOrder>;
   token?: InputMaybe<SortOrder>;
   updatedAt?: InputMaybe<SortOrder>;
   used?: InputMaybe<SortOrder>;
@@ -1584,6 +1595,7 @@ export enum RefreshTokenScalarFieldEnum {
   ExpiresAt = 'expiresAt',
   FamilyId = 'familyId',
   Id = 'id',
+  SessionId = 'sessionId',
   Token = 'token',
   UpdatedAt = 'updatedAt',
   Used = 'used',
@@ -1598,6 +1610,7 @@ export type RefreshTokenScalarWhereInput = {
   expiresAt?: InputMaybe<DateTimeFilter>;
   familyId?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
+  sessionId?: InputMaybe<StringFilter>;
   token?: InputMaybe<StringFilter>;
   updatedAt?: InputMaybe<DateTimeFilter>;
   used?: InputMaybe<BoolFilter>;
@@ -1612,6 +1625,7 @@ export type RefreshTokenScalarWhereWithAggregatesInput = {
   expiresAt?: InputMaybe<DateTimeWithAggregatesFilter>;
   familyId?: InputMaybe<StringWithAggregatesFilter>;
   id?: InputMaybe<StringWithAggregatesFilter>;
+  sessionId?: InputMaybe<StringWithAggregatesFilter>;
   token?: InputMaybe<StringWithAggregatesFilter>;
   updatedAt?: InputMaybe<DateTimeWithAggregatesFilter>;
   used?: InputMaybe<BoolWithAggregatesFilter>;
@@ -1623,6 +1637,7 @@ export type RefreshTokenUncheckedCreateInput = {
   expiresAt: Scalars['DateTime']['input'];
   familyId: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId: Scalars['String']['input'];
   token: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1641,6 +1656,7 @@ export type RefreshTokenUncheckedCreateWithoutUserInput = {
   expiresAt: Scalars['DateTime']['input'];
   familyId: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId: Scalars['String']['input'];
   token: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1651,6 +1667,7 @@ export type RefreshTokenUncheckedUpdateInput = {
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   familyId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId?: InputMaybe<Scalars['String']['input']>;
   token?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1662,6 +1679,7 @@ export type RefreshTokenUncheckedUpdateManyInput = {
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   familyId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId?: InputMaybe<Scalars['String']['input']>;
   token?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1673,6 +1691,7 @@ export type RefreshTokenUncheckedUpdateManyWithoutUserInput = {
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   familyId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId?: InputMaybe<Scalars['String']['input']>;
   token?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1697,6 +1716,7 @@ export type RefreshTokenUncheckedUpdateWithoutUserInput = {
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   familyId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId?: InputMaybe<Scalars['String']['input']>;
   token?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1707,6 +1727,7 @@ export type RefreshTokenUpdateInput = {
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   familyId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId?: InputMaybe<Scalars['String']['input']>;
   token?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1718,6 +1739,7 @@ export type RefreshTokenUpdateManyMutationInput = {
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   familyId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId?: InputMaybe<Scalars['String']['input']>;
   token?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1752,6 +1774,7 @@ export type RefreshTokenUpdateWithoutUserInput = {
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   familyId?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId?: InputMaybe<Scalars['String']['input']>;
   token?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
   used?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1771,6 +1794,7 @@ export type RefreshTokenWhereInput = {
   expiresAt?: InputMaybe<DateTimeFilter>;
   familyId?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
+  sessionId?: InputMaybe<StringFilter>;
   token?: InputMaybe<StringFilter>;
   updatedAt?: InputMaybe<DateTimeFilter>;
   used?: InputMaybe<BoolFilter>;
@@ -1786,6 +1810,7 @@ export type RefreshTokenWhereUniqueInput = {
   expiresAt?: InputMaybe<DateTimeFilter>;
   familyId?: InputMaybe<StringFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
+  sessionId?: InputMaybe<StringFilter>;
   token?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<DateTimeFilter>;
   used?: InputMaybe<BoolFilter>;

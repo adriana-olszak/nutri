@@ -2,7 +2,7 @@ mutation AuthLogin($data: AuthLoginInput!) {
   authLogin(data: $data) {
     userId
     accessToken
-    refreshToken
+    accessTokenExpiresAt
     roles
   }
 }
