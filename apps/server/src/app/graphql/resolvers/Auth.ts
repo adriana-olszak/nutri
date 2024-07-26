@@ -74,7 +74,6 @@ export class AuthResolver {
   }
 
   @Mutation()
-  @UseGuards(RolesGuard())
   async authRefreshToken(
     @Context() { req, res }: { req: Request, res: Response }
   ) {
