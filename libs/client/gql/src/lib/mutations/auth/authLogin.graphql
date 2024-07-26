@@ -1,0 +1,8 @@
+mutation AuthLogin($data: AuthLoginInput!) {
+  authLogin(data: $data) {
+    userId
+    accessToken
+    refreshToken
+    roles
+  }
+}

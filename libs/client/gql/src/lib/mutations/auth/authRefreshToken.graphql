@@ -1,0 +1,5 @@
+mutation AuthRefreshToken($data: AuthRefreshTokenInput) {
+  authRefreshToken(data: $data) {
+    accessToken
+  }
+}

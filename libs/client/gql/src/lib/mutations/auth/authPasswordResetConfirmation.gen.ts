@@ -8,17 +8,16 @@ export type AuthPasswordResetConfirmationMutationVariables = Types.Exact<{
 }>;
 
 
-export type AuthPasswordResetConfirmationMutation = { __typename?: 'Mutation', authPasswordResetConfirmation: { __typename?: 'AuthSession', userId: string, token: string, roles: Array<string>, rememberMe: boolean, expiresIn: number } };
+export type AuthPasswordResetConfirmationMutation = { __typename?: 'Mutation', authPasswordResetConfirmation: { __typename?: 'AuthSession', userId: string, accessToken: string, refreshToken: string, roles: Array<string> } };
 
 
 export const AuthPasswordResetConfirmationDocument = gql`
     mutation AuthPasswordResetConfirmation($data: AuthPasswordResetConfirmationInput!) {
   authPasswordResetConfirmation(data: $data) {
     userId
-    token
+    accessToken
+    refreshToken
     roles
-    rememberMe
-    expiresIn
   }
 }
     `;

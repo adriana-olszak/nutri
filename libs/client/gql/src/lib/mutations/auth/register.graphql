@@ -1,9 +1,0 @@
-mutation AuthRegister($data: AuthRegisterInput!) {
-  authRegister(data: $data) {
-    userId
-    token
-    roles
-    rememberMe
-    expiresIn
-  }
-}

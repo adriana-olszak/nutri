@@ -3,16 +3,16 @@ import * as Types from '../../graphql-types';
 import { GraphQLClient, RequestOptions } from 'graphql-request';
 import gql from 'graphql-tag';
 type GraphQLClientRequestHeaders = RequestOptions['requestHeaders'];
-export type AuthPasswordResetRequestQueryVariables = Types.Exact<{
+export type AuthPasswordResetRequestMutationVariables = Types.Exact<{
   data: Types.AuthPasswordResetRequestInput;
 }>;
 
 
-export type AuthPasswordResetRequestQuery = { __typename?: 'Query', authPasswordResetRequest?: boolean | null };
+export type AuthPasswordResetRequestMutation = { __typename?: 'Mutation', authPasswordResetRequest?: boolean | null };
 
 
 export const AuthPasswordResetRequestDocument = gql`
-    query AuthPasswordResetRequest($data: AuthPasswordResetRequestInput!) {
+    mutation AuthPasswordResetRequest($data: AuthPasswordResetRequestInput!) {
   authPasswordResetRequest(data: $data)
 }
     `;
@@ -24,8 +24,8 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    AuthPasswordResetRequest(variables: AuthPasswordResetRequestQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<AuthPasswordResetRequestQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AuthPasswordResetRequestQuery>(AuthPasswordResetRequestDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AuthPasswordResetRequest', 'query', variables);
+    AuthPasswordResetRequest(variables: AuthPasswordResetRequestMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<AuthPasswordResetRequestMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AuthPasswordResetRequestMutation>(AuthPasswordResetRequestDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AuthPasswordResetRequest', 'mutation', variables);
     }
   };
 }

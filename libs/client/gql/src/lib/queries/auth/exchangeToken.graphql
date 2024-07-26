@@ -1,9 +1,0 @@
-query AuthRefreshToken($data: AuthRefreshTokenInput!) {
-  authRefreshToken(data: $data) {
-    userId
-    token
-    roles
-    rememberMe
-    expiresIn
-  }
-}

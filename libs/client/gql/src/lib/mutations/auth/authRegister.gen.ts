@@ -8,17 +8,16 @@ export type AuthRegisterMutationVariables = Types.Exact<{
 }>;
 
 
-export type AuthRegisterMutation = { __typename?: 'Mutation', authRegister: { __typename?: 'AuthSession', userId: string, token: string, roles: Array<string>, rememberMe: boolean, expiresIn: number } };
+export type AuthRegisterMutation = { __typename?: 'Mutation', authRegister: { __typename?: 'AuthSession', userId: string, accessToken: string, refreshToken: string, roles: Array<string> } };
 
 
 export const AuthRegisterDocument = gql`
     mutation AuthRegister($data: AuthRegisterInput!) {
   authRegister(data: $data) {
     userId
-    token
+    accessToken
+    refreshToken
     roles
-    rememberMe
-    expiresIn
   }
 }
     `;
