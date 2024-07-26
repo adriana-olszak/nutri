@@ -1,9 +1,8 @@
 mutation AuthRegister($data: AuthRegisterInput!) {
   authRegister(data: $data) {
     userId
-    token
+    accessToken
+    refreshToken
     roles
-    rememberMe
-    expiresIn
   }
 }
