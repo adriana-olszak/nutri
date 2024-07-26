@@ -31,7 +31,6 @@ export class TokenBlacklistService {
     { token }: { token: string },
     trx?: PrismaTransactionalClient,
   ): Promise<boolean> {
-    console.log('isTokenBlacklisted', token);
     const client = trx || this.prisma;
     const blacklistedToken = await client.tokenBlacklist.findUnique({
       where: { token },

@@ -24,9 +24,9 @@ export class GoogleOAuthStrategy extends PassportStrategy(Strategy, 'google') {
 
       const existingUserWithGoogleEmail = await this.prisma.user.findFirst({
         where: {
-          email: { equals: googleEmail, mode: 'insensitive' },
+          email: { equals: googleEmail, mode: 'insensitive' }
         },
-        select: { id: true },
+        select: { id: true }
       });
 
       if (existingUserWithGoogleEmail) {
@@ -37,21 +37,22 @@ export class GoogleOAuthStrategy extends PassportStrategy(Strategy, 'google') {
         data: {
           email: googleEmail,
           googleId: profile.id,
-          googleProfile: profile._json,
-        },
+          googleProfile: profile._json
+        }
       });
 
       Logger.log(`Registered new user via Google signup: ${googleEmail}`);
     } else {
       this.prisma.user.update({
         where: { id: user.id },
-        data: { googleProfile: profile._json },
+        data: { googleProfile: profile._json }
       });
     }
 
     const reqUser: RequestUserDto = {
       id: user.id,
       roles: user.roles,
+      sessionId: 'sessionId'
     };
 
     return reqUser;

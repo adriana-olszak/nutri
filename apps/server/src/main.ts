@@ -2,7 +2,7 @@
  * This is not a production server yet!
  * This is only a minimal backend to get started.
  */
-
+import cookieParser from 'cookie-parser';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -18,6 +18,7 @@ async function bootstrap() {
   const config: ConfigService = app.get(ConfigService);
 
   app.use(express.json());
+  app.use(cookieParser())
   app.enableShutdownHooks();
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix(config.globalPrefix);

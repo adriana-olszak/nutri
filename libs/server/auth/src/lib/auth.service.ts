@@ -44,7 +44,7 @@ export class AuthService {
     password: string;
     ipAddress: string;
     userAgent: string;
-  }): Promise<AuthSession> {
+  }): Promise<AuthSession & { refreshToken: string }> {
     return this.prisma.$transaction(async (trx) => {
       try {
         const user = await this._validateUser(email, password, trx);
@@ -283,6 +283,10 @@ export class AuthService {
   }
 
   async refreshToken(oldRefreshToken: string, currentAccessToken: string) {
+    console.log(' >>>>>>>>>@>  (oldRefreshToken)', oldRefreshToken);
+    console.log(' >>>>>>>>>@>  (currentAccessToken)', currentAccessToken);
+
+
     try {
       return await this.prisma.$transaction(async (trx) => {
         const decodedCurrentToken = this.jwtService.decode(currentAccessToken) as {
@@ -322,6 +326,8 @@ export class AuthService {
           sub: string;
           sessionId: string;
         };
+        console.log(' >>>>>>>>>@>  (decodedToken)', decodedToken);
+
         const expirationDate = new Date(decodedToken.exp * 1000);
 
         // Blacklist the token outside of the transaction
@@ -377,4 +383,6 @@ export class AuthService {
         : 12
     );
   }
+
+
 }

@@ -1,29 +1,27 @@
-import { UnauthorizedException, UseGuards } from '@nestjs/common';
+import {  UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Throttle } from '@nestjs/throttler';
 import {
   CurrentUser,
   CurrentToken,
   RequestUserDto,
-  RolesGuard,
+  RolesGuard
 } from '@nutri/server-auth';
 import gql from 'graphql-tag';
 import { GqlThrottlerGuard } from '../gql-throttler.guard';
 import {
   AccountInfo,
-  AuthRefreshTokenInput,
   AuthLoginInput,
   AuthPasswordChangeInput,
   AuthPasswordResetConfirmationInput,
   AuthPasswordResetRequestInput,
   AuthRegisterInput,
-  AuthSession,
 } from '../models';
 import { ConfigService } from '@nutri/server-config';
 import { PrismaService } from '@nutri/server-db-client';
 import { ApiErrors } from '@nutri/common-consts';
-import { AuthService } from '@nutri/server-auth';
-import { Request } from 'express';
+import { AuthService, AuthSession } from '@nutri/server-auth';
+import { Request, Response } from 'express';
 
 @Resolver()
 @UseGuards(GqlThrottlerGuard)
@@ -32,20 +30,29 @@ export class AuthResolver {
   constructor(
     private readonly config: ConfigService,
     private readonly authService: AuthService,
-    private readonly prisma: PrismaService,
-  ) {}
+    private readonly prisma: PrismaService
+  ) {
+  }
 
-  @Query('authLogin')
+  @Mutation('authLogin')
   async login(
-    @Context() context: { req: Request },
-    @Args('data') { email, password }: AuthLoginInput,
+    @Context() context: { req: Request; res: Response },
+    @Args('data') { email, password }: AuthLoginInput
   ): Promise<AuthSession> {
-    return await this.authService.login({
+    const session = await this.authService.login({
       email,
       password,
-      userAgent: 'not-production-ready',
-      ipAddress: this._extractIpAddress(context.req),
+      userAgent: context.req.headers['user-agent'] || 'unknown',
+      ipAddress: this._extractIpAddress(context.req)
     });
+
+    this._setRefreshTokenCookie(context.res, session.refreshToken);
+
+    return {
+      userId: session.userId,
+      accessToken: session.accessToken,
+      roles: session.roles
+    };
   }
 
   @Query()
@@ -53,7 +60,7 @@ export class AuthResolver {
   async accountInfo(@CurrentUser() reqUser: RequestUserDto) {
     const user = await this.prisma.user.findUnique({
       where: { id: reqUser.id },
-      select: { email: true, password: true, googleProfile: true },
+      select: { email: true, password: true, googleProfile: true }
     });
 
     if (!user) throw new UnauthorizedException(ApiErrors.Codes.USER_NOT_FOUND);
@@ -61,36 +68,51 @@ export class AuthResolver {
     return {
       email: user.email,
       hasPassword: !!user.password,
-      googleProfile: user.googleProfile as AccountInfo['googleProfile'],
+      googleProfile: user.googleProfile as AccountInfo['googleProfile']
     } satisfies AccountInfo;
   }
 
-  @Query()
+  @Mutation()
   @UseGuards(RolesGuard())
   async authRefreshToken(
-    @CurrentUser() reqUser: RequestUserDto,
-    @Args('data') args: AuthRefreshTokenInput,
-    @CurrentToken() currentToken: string,
+    @Context() { req, res }: { req: Request, res: Response },
   ) {
-    return this.authService.refreshToken(args.refreshToken, currentToken);
+    // Auth Guard checks the correctness and presence
+    const currentToken = (req.headers['authorization'] as string).replace('Bearer ', '');
+    const refreshToken = req.cookies['refreshToken'];
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token not found');
+    }
+
+    const newTokens = await this.authService.refreshToken(refreshToken, currentToken);
+
+    this._setRefreshTokenCookie(res, newTokens.refreshToken);
+
+    return {
+      accessToken: newTokens.accessToken,
+    };
   }
 
-  @Query()
+  @Mutation()
   async authPasswordResetRequest(
-    @Args('data') args: AuthPasswordResetRequestInput,
+    @Args('data') args: AuthPasswordResetRequestInput
   ) {
     return this.authService.requestPasswordReset(args.email);
   }
 
   @Mutation()
   async authPasswordResetConfirmation(
-    @Args('data') args: AuthPasswordResetConfirmationInput,
+    @Args('data') args: AuthPasswordResetConfirmationInput
   ) {
     return this.authService.resetPassword(args.token, args.newPassword);
   }
 
   @Mutation()
-  async authRegister(@Args('data') args: AuthRegisterInput) {
+  async authRegister(
+    @Args('data') args: AuthRegisterInput,
+    @Context() context: { req: Request }
+  ) {
     if (!this.config.publicRegistration) {
       throw new UnauthorizedException('No public registrations allowed');
     }
@@ -98,19 +120,32 @@ export class AuthResolver {
     return await this.authService.register({
       email: args.email,
       password: args.password,
+      ipAddress: this._extractIpAddress(context.req),
+      userAgent: context.req.headers['user-agent'] || 'unknown'
     });
+  }
+
+  @Mutation()
+  @UseGuards(RolesGuard())
+  async authLogout(
+    @CurrentUser() reqUser: RequestUserDto,
+    @CurrentToken() currentToken: string,
+    @Args('refreshToken') refreshToken: string
+  ) {
+    await this.authService.logout(currentToken, refreshToken);
+    return true;
   }
 
   @Mutation()
   @UseGuards(RolesGuard())
   async authPasswordChange(
     @Args('data') args: AuthPasswordChangeInput,
-    @CurrentUser() reqUser: RequestUserDto,
+    @CurrentUser() reqUser: RequestUserDto
   ) {
     return this.authService.changePassword(
       reqUser.id,
       args.oldPassword,
-      args.newPassword,
+      args.newPassword
     );
   }
 
@@ -122,24 +157,31 @@ export class AuthResolver {
     }
     return req.ip || 'Unknown';
   }
+
+  private _setRefreshTokenCookie(res: Response, token: string) {
+    res.cookie('refreshToken', token, {
+      httpOnly: true,
+      secure: this.config.isProd,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+  }
 }
 
 export const typeDefs = gql`
   extend type Query {
-    authLogin(data: AuthLoginInput!): AuthSession!
-    authRefreshToken(data: AuthRefreshTokenInput): RefreshToken!
-    authPasswordResetRequest(data: AuthPasswordResetRequestInput!): Boolean
     accountInfo: AccountInfo!
   }
 
   extend type Mutation {
+    authLogin(data: AuthLoginInput!): AuthSession!
+    authRefreshToken(data: AuthRefreshTokenInput): RefreshToken!
+    authPasswordResetRequest(data: AuthPasswordResetRequestInput!): Boolean
     authPasswordChange(data: AuthPasswordChangeInput!): Boolean
-    authPasswordResetConfirmation(
-      data: AuthPasswordResetConfirmationInput!
-    ): AuthSession!
+    authPasswordResetConfirmation(data: AuthPasswordResetConfirmationInput!): AuthSession!
     authRegister(data: AuthRegisterInput!): AuthSession!
+    authLogout(refreshToken: String!): Boolean!
   }
-
   type AuthSession {
     userId: String!
     accessToken: String!
