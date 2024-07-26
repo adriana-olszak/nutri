@@ -49,11 +49,11 @@ class EnvironmentVariables {
 
   @IsNumber()
   @Transform(({ value }) => Number(value))
-  AUTH_JWT_ACCESS_EXPIRATION!: string;
+  AUTH_JWT_ACCESS_EXPIRATION!: number;
 
   @IsNumber()
   @Transform(({ value }) => Number(value))
-  AUTH_JWT_REFRESH_EXPIRATION!: string;
+  AUTH_JWT_REFRESH_EXPIRATION!: number;
 
   @IsString()
   AUTH_JWT_ACCESS_PUBLIC_KEY!: string;
