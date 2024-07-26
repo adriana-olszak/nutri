@@ -2,11 +2,11 @@ import {
   Injectable,
   UnauthorizedException,
   Logger,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
 import {
   PrismaService,
-  PrismaTransactionalClient,
+  PrismaTransactionalClient
 } from '@nutri/server-db-client';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,6 +16,7 @@ import { ErrorHandler } from '@nutri/server-utils';
 type GenerateTokenParams = {
   userId: string;
   existingFamilyId?: string;
+  sessionId: string;
 };
 
 @Injectable()
@@ -26,49 +27,51 @@ export class RefreshTokenService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-    private configService: ConfigService,
-  ) {}
+    private configService: ConfigService
+  ) {
+  }
 
   public async generate(
-    { userId, existingFamilyId }: GenerateTokenParams,
-    trx?: PrismaTransactionalClient,
+    { userId, existingFamilyId, sessionId }: GenerateTokenParams,
+    trx?: PrismaTransactionalClient
   ) {
     try {
       const client = trx || this.prisma;
       const token = this.jwtService.sign(
-        { type: 'refresh', userId },
+        { type: 'refresh', userId, sessionId },  // Include sessionId in the token payload
         {
           expiresIn: this.configService.authJWTRefreshExpiration,
-          secret: this.configService.authJWTRefreshSecret,
-        },
+          secret: this.configService.authJWTRefreshSecret
+        }
       );
 
       const familyId = existingFamilyId || uuidv4();
       const expiresAt = new Date(
-        Date.now() + this.configService.authJWTRefreshExpiration,
+        Date.now() + this.configService.authJWTRefreshExpiration
       );
       await client.refreshToken.create({
-        data: { token, userId, familyId, expiresAt },
+        data: { token, userId, familyId, expiresAt, sessionId }  // Store sessionId in the database
       });
 
-      this.logger.log(`Generated refresh token for user ${userId}`);
+      this.logger.log(`Generated refresh token for user ${userId} in session ${sessionId}`);
       return { token, familyId };
     } catch (error: unknown) {
       return this.errorHandler.handleError(
         error,
-        'Failed to generate refresh token',
+        'Failed to generate refresh token'
       );
     }
   }
 
+
   public async rotate(
-    { oldToken }: { oldToken: string },
-    trx?: PrismaTransactionalClient,
+    { oldToken}: { oldToken: string },
+    trx?: PrismaTransactionalClient
   ) {
     try {
       const client = trx || this.prisma;
       const existingToken = await client.refreshToken.findUnique({
-        where: { token: oldToken },
+        where: { token: oldToken }
       });
 
       if (!existingToken) {
@@ -78,22 +81,23 @@ export class RefreshTokenService {
       if (existingToken.used) {
         await this.revokeByFamily({ familyId: existingToken.familyId }, client);
         this.logger.warn(
-          `Refresh token reuse detected for family ${existingToken.familyId}`,
+          `Refresh token reuse detected for family ${existingToken.familyId}`
         );
         throw new UnauthorizedException('Refresh token reuse detected');
       }
 
       await client.refreshToken.update({
         where: { id: existingToken.id },
-        data: { used: true },
+        data: { used: true }
       });
 
       const { token: newRefreshToken } = await this.generate(
         {
           userId: existingToken.userId,
           existingFamilyId: existingToken.familyId,
+          sessionId: existingToken.sessionId
         },
-        client,
+        client
       );
 
       this.logger.log(`Rotated refresh token for user ${existingToken.userId}`);
@@ -101,38 +105,38 @@ export class RefreshTokenService {
     } catch (error: unknown) {
       return this.errorHandler.handleError(
         error,
-        'Failed to rotate refresh token',
+        'Failed to rotate refresh token'
       );
     }
   }
 
   public async revokeByFamily(
     { familyId }: { familyId: string },
-    trx?: PrismaTransactionalClient,
+    trx?: PrismaTransactionalClient
   ) {
     try {
       const client = trx || this.prisma;
       const result = await client.refreshToken.updateMany({
         where: { familyId },
-        data: { used: true },
+        data: { used: true }
       });
       this.logger.log(`Revoked ${result.count} tokens for family ${familyId}`);
     } catch (error: unknown) {
       return this.errorHandler.handleError(
         error,
-        'Failed to revoke token family',
+        'Failed to revoke token family'
       );
     }
   }
 
-  async validate(
+  public async validate(
     { token }: { token: string },
-    trx?: PrismaTransactionalClient,
+    trx?: PrismaTransactionalClient
   ) {
     try {
       const client = trx || this.prisma;
       const refreshToken = await client.refreshToken.findUnique({
-        where: { token },
+        where: { token }
       });
 
       if (!refreshToken) {
@@ -144,11 +148,11 @@ export class RefreshTokenService {
         throw new UnauthorizedException('Invalid refresh token');
       }
 
-      return { userId: refreshToken.userId };
+      return { userId: refreshToken.userId, sessionId: refreshToken.sessionId };  // Return sessionId as well
     } catch (error: unknown) {
       return this.errorHandler.handleError(
         error,
-        'Failed to validate refresh token',
+        'Failed to validate refresh token'
       );
     }
   }
@@ -158,13 +162,13 @@ export class RefreshTokenService {
       const client = trx || this.prisma;
       const result = await client.refreshToken.update({
         where: { token },
-        data: { used: true },
+        data: { used: true }
       });
       this.logger.log(`Revoked refresh token: ${result.id}`);
     } catch (error: unknown) {
       return this.errorHandler.handleError(
         error,
-        'Failed to revoke refresh token',
+        'Failed to revoke refresh token'
       );
     }
   }

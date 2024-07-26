@@ -1,4 +1,4 @@
-import {  UnauthorizedException, UseGuards } from '@nestjs/common';
+import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Throttle } from '@nestjs/throttler';
 import {
@@ -15,7 +15,7 @@ import {
   AuthPasswordChangeInput,
   AuthPasswordResetConfirmationInput,
   AuthPasswordResetRequestInput,
-  AuthRegisterInput,
+  AuthRegisterInput
 } from '../models';
 import { ConfigService } from '@nutri/server-config';
 import { PrismaService } from '@nutri/server-db-client';
@@ -51,7 +51,8 @@ export class AuthResolver {
     return {
       userId: session.userId,
       accessToken: session.accessToken,
-      roles: session.roles
+      roles: session.roles,
+      accessTokenExpiresAt: session.accessTokenExpiresAt,
     };
   }
 
@@ -75,22 +76,21 @@ export class AuthResolver {
   @Mutation()
   @UseGuards(RolesGuard())
   async authRefreshToken(
-    @Context() { req, res }: { req: Request, res: Response },
+    @Context() { req, res }: { req: Request, res: Response }
   ) {
-    // Auth Guard checks the correctness and presence
-    const currentToken = (req.headers['authorization'] as string).replace('Bearer ', '');
     const refreshToken = req.cookies['refreshToken'];
 
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token not found');
     }
 
-    const newTokens = await this.authService.refreshToken(refreshToken, currentToken);
+    const newTokens = await this.authService.refreshToken(refreshToken);
 
     this._setRefreshTokenCookie(res, newTokens.refreshToken);
 
     return {
       accessToken: newTokens.accessToken,
+      accessTokenExpiresAt: newTokens.accessTokenExpiresAt
     };
   }
 
@@ -112,7 +112,7 @@ export class AuthResolver {
   async authRegister(
     @Args('data') args: AuthRegisterInput,
     @Context() context: { req: Request }
-  ) {
+  ): Promise<AuthSession> {
     if (!this.config.publicRegistration) {
       throw new UnauthorizedException('No public registrations allowed');
     }
@@ -128,10 +128,10 @@ export class AuthResolver {
   @Mutation()
   @UseGuards(RolesGuard())
   async authLogout(
-    @CurrentUser() reqUser: RequestUserDto,
-    @CurrentToken() currentToken: string,
-    @Args('refreshToken') refreshToken: string
+    @Context() { req }: { req: Request },
+    @CurrentToken() currentToken: string
   ) {
+    const refreshToken = req.cookies['refreshToken'];
     await this.authService.logout(currentToken, refreshToken);
     return true;
   }
@@ -169,28 +169,31 @@ export class AuthResolver {
 }
 
 export const typeDefs = gql`
+  directive @public on FIELD_DEFINITION | OBJECT
+
   extend type Query {
     accountInfo: AccountInfo!
   }
 
   extend type Mutation {
-    authLogin(data: AuthLoginInput!): AuthSession!
+    authLogin(data: AuthLoginInput!): AuthSession! @public
     authRefreshToken(data: AuthRefreshTokenInput): RefreshToken!
-    authPasswordResetRequest(data: AuthPasswordResetRequestInput!): Boolean
+    authPasswordResetRequest(data: AuthPasswordResetRequestInput!): Boolean @public
     authPasswordChange(data: AuthPasswordChangeInput!): Boolean
     authPasswordResetConfirmation(data: AuthPasswordResetConfirmationInput!): AuthSession!
-    authRegister(data: AuthRegisterInput!): AuthSession!
-    authLogout(refreshToken: String!): Boolean!
+    authRegister(data: AuthRegisterInput!): AuthSession! @public
+    authLogout: Boolean!
   }
   type AuthSession {
     userId: String!
     accessToken: String!
-    refreshToken: String!
+    accessTokenExpiresAt: DateTime!,
     roles: [String!]!
   }
 
   type RefreshToken {
     accessToken: String!
+    accessTokenExpiresAt: DateTime!,
     refreshToken: String!
   }
 

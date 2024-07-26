@@ -6,6 +6,7 @@ export default gql`
     token: String!
     userId: String!
     familyId: String!
+    sessionId: String!
     expiresAt: DateTime!
     used: Boolean!
     createdAt: DateTime!

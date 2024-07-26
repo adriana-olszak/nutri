@@ -19,22 +19,27 @@ export class AccessTokenService {
   private readonly errorHandler = new ErrorHandler(this.logger);
 
   constructor(
-    private prisma: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService
   ) {
   }
 
-  public generate({ user, sessionId }: GenerateTokenParams) {
+  generate({ user, sessionId }: GenerateTokenParams) {
+    const expiresIn = this.configService.authJWTAccessExpiration;
+    const expiresAt = new Date(Date.now() + expiresIn * 1000);
+
     const payload = {
       sub: user.id,
       email: user.email,
       roles: user.roles,
       sessionId
     };
-    return this.jwtService.sign(payload, {
-      expiresIn: this.configService.authJWTAccessExpiration,
+
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn,
       secret: this.configService.authJWTAccessSecret
     });
+
+    return { accessToken, expiresAt };
   }
 }

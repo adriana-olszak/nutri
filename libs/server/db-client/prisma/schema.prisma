@@ -43,6 +43,7 @@ model RefreshToken {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   familyId  String
+  sessionId String
   expiresAt DateTime
   used      Boolean  @default(false)
   createdAt DateTime @default(now())

@@ -29,6 +29,7 @@ export default gql`
     token
     userId
     familyId
+    sessionId
     expiresAt
     used
     createdAt
@@ -190,6 +191,7 @@ export default gql`
     token: StringFilter
     userId: StringFilter
     familyId: StringFilter
+    sessionId: StringFilter
     expiresAt: DateTimeFilter
     used: BoolFilter
     createdAt: DateTimeFilter
@@ -202,6 +204,7 @@ export default gql`
     token: SortOrder
     userId: SortOrder
     familyId: SortOrder
+    sessionId: SortOrder
     expiresAt: SortOrder
     used: SortOrder
     createdAt: SortOrder
@@ -217,6 +220,7 @@ export default gql`
     NOT: [RefreshTokenWhereInput!]
     userId: StringFilter
     familyId: StringFilter
+    sessionId: StringFilter
     expiresAt: DateTimeFilter
     used: BoolFilter
     createdAt: DateTimeFilter
@@ -229,6 +233,7 @@ export default gql`
     token: SortOrder
     userId: SortOrder
     familyId: SortOrder
+    sessionId: SortOrder
     expiresAt: SortOrder
     used: SortOrder
     createdAt: SortOrder
@@ -246,6 +251,7 @@ export default gql`
     token: StringWithAggregatesFilter
     userId: StringWithAggregatesFilter
     familyId: StringWithAggregatesFilter
+    sessionId: StringWithAggregatesFilter
     expiresAt: DateTimeWithAggregatesFilter
     used: BoolWithAggregatesFilter
     createdAt: DateTimeWithAggregatesFilter
@@ -591,6 +597,7 @@ export default gql`
     id: String
     token: String!
     familyId: String!
+    sessionId: String!
     expiresAt: DateTime!
     used: Boolean
     createdAt: DateTime
@@ -603,6 +610,7 @@ export default gql`
     token: String!
     userId: String!
     familyId: String!
+    sessionId: String!
     expiresAt: DateTime!
     used: Boolean
     createdAt: DateTime
@@ -613,6 +621,7 @@ export default gql`
     id: String
     token: String
     familyId: String
+    sessionId: String
     expiresAt: DateTime
     used: Boolean
     createdAt: DateTime
@@ -625,6 +634,7 @@ export default gql`
     token: String
     userId: String
     familyId: String
+    sessionId: String
     expiresAt: DateTime
     used: Boolean
     createdAt: DateTime
@@ -636,6 +646,7 @@ export default gql`
     token: String!
     userId: String!
     familyId: String!
+    sessionId: String!
     expiresAt: DateTime!
     used: Boolean
     createdAt: DateTime
@@ -646,6 +657,7 @@ export default gql`
     id: String
     token: String
     familyId: String
+    sessionId: String
     expiresAt: DateTime
     used: Boolean
     createdAt: DateTime
@@ -657,6 +669,7 @@ export default gql`
     token: String
     userId: String
     familyId: String
+    sessionId: String
     expiresAt: DateTime
     used: Boolean
     createdAt: DateTime
@@ -1142,6 +1155,7 @@ export default gql`
     token: SortOrder
     userId: SortOrder
     familyId: SortOrder
+    sessionId: SortOrder
     expiresAt: SortOrder
     used: SortOrder
     createdAt: SortOrder
@@ -1153,6 +1167,7 @@ export default gql`
     token: SortOrder
     userId: SortOrder
     familyId: SortOrder
+    sessionId: SortOrder
     expiresAt: SortOrder
     used: SortOrder
     createdAt: SortOrder
@@ -1164,6 +1179,7 @@ export default gql`
     token: SortOrder
     userId: SortOrder
     familyId: SortOrder
+    sessionId: SortOrder
     expiresAt: SortOrder
     used: SortOrder
     createdAt: SortOrder
@@ -1687,6 +1703,7 @@ export default gql`
     id: String
     token: String!
     familyId: String!
+    sessionId: String!
     expiresAt: DateTime!
     used: Boolean
     createdAt: DateTime
@@ -1697,6 +1714,7 @@ export default gql`
     id: String
     token: String!
     familyId: String!
+    sessionId: String!
     expiresAt: DateTime!
     used: Boolean
     createdAt: DateTime
@@ -1819,6 +1837,7 @@ export default gql`
     token: StringFilter
     userId: StringFilter
     familyId: StringFilter
+    sessionId: StringFilter
     expiresAt: DateTimeFilter
     used: BoolFilter
     createdAt: DateTimeFilter
@@ -2203,6 +2222,7 @@ export default gql`
     id: String
     token: String!
     familyId: String!
+    sessionId: String!
     expiresAt: DateTime!
     used: Boolean
     createdAt: DateTime
@@ -2239,6 +2259,7 @@ export default gql`
     id: String
     token: String
     familyId: String
+    sessionId: String
     expiresAt: DateTime
     used: Boolean
     createdAt: DateTime
@@ -2249,6 +2270,7 @@ export default gql`
     id: String
     token: String
     familyId: String
+    sessionId: String
     expiresAt: DateTime
     used: Boolean
     createdAt: DateTime
@@ -2259,6 +2281,7 @@ export default gql`
     id: String
     token: String
     familyId: String
+    sessionId: String
     expiresAt: DateTime
     used: Boolean
     createdAt: DateTime
@@ -2374,6 +2397,7 @@ export default gql`
     token: String!
     userId: String!
     familyId: String!
+    sessionId: String!
     expiresAt: DateTime!
     used: Boolean!
     createdAt: DateTime!
@@ -2498,6 +2522,7 @@ export default gql`
     token: Int!
     userId: Int!
     familyId: Int!
+    sessionId: Int!
     expiresAt: Int!
     used: Int!
     createdAt: Int!
@@ -2510,6 +2535,7 @@ export default gql`
     token: String
     userId: String
     familyId: String
+    sessionId: String
     expiresAt: DateTime
     used: Boolean
     createdAt: DateTime
@@ -2521,6 +2547,7 @@ export default gql`
     token: String
     userId: String
     familyId: String
+    sessionId: String
     expiresAt: DateTime
     used: Boolean
     createdAt: DateTime
@@ -2658,6 +2685,7 @@ export default gql`
     token: String!
     userId: String!
     familyId: String!
+    sessionId: String!
     expiresAt: DateTime!
     used: Boolean!
     createdAt: DateTime!

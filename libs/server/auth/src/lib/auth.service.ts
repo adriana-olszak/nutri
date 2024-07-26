@@ -60,12 +60,12 @@ export class AuthService {
           { userId: user.id, ipAddress, deviceInfo: userAgent },
           trx
         );
-        const accessToken = this.accessTokenService.generate({
+        const { accessToken, expiresAt } = this.accessTokenService.generate({
           user,
           sessionId: session.id  // Include sessionId in the token payload
         });
         const { token: refreshToken } = await this.refreshTokenService.generate(
-          { userId: user.id },
+          { userId: user.id, sessionId: session.id},
           trx
         );
 
@@ -79,7 +79,8 @@ export class AuthService {
           userId: user.id,
           roles: user.roles,
           accessToken,
-          refreshToken
+          accessTokenExpiresAt: expiresAt,
+          refreshToken,
         };
       } catch (error: unknown) {
         return this.errorHandler.handleError(error, 'Login attempt failed');
@@ -124,12 +125,12 @@ export class AuthService {
           trx
         );
 
-        const accessToken = this.accessTokenService.generate({
+        const { accessToken, expiresAt } = this.accessTokenService.generate({
           user: newUser,
           sessionId: session.id
         });
         const { token: refreshToken } = await this.refreshTokenService.generate(
-          { userId: newUser.id },
+          { userId: newUser.id, sessionId: session.id},
           trx
         );
 
@@ -144,6 +145,7 @@ export class AuthService {
           userId: newUser.id,
           roles: newUser.roles,
           accessToken,
+          accessTokenExpiresAt: expiresAt,
           refreshToken
         };
       } catch (error: unknown) {
@@ -282,68 +284,35 @@ export class AuthService {
     });
   }
 
-  async refreshToken(oldRefreshToken: string, currentAccessToken: string) {
-    console.log(' >>>>>>>>>@>  (oldRefreshToken)', oldRefreshToken);
-    console.log(' >>>>>>>>>@>  (currentAccessToken)', currentAccessToken);
-
-
+  async refreshToken(oldRefreshToken: string) {
     try {
       return await this.prisma.$transaction(async (trx) => {
-        const decodedCurrentToken = this.jwtService.decode(currentAccessToken) as {
-          exp: number;
-          sub: string;
-          sessionId: string;
-        };
+        const { userId, sessionId } = await this.refreshTokenService.validate(
+          { token: oldRefreshToken },
+          trx
+        );
 
-        const newRefreshToken = await this.refreshTokenService.rotate(
-          { oldToken: oldRefreshToken },
-          trx
-        );
-        const { userId } = await this.refreshTokenService.validate(
-          { token: newRefreshToken },
-          trx
-        );
         const user = await trx.user.findUnique({ where: { id: userId } });
 
         if (!user) {
           throw new UnauthorizedException('User not found');
         }
 
-        // Include the sessionId from the current token in the new token
-        const newAccessToken = this.accessTokenService.generate({
+        const newRefreshToken = await this.refreshTokenService.rotate(
+          { oldToken: oldRefreshToken },
+          trx
+        );
+
+        const {accessToken: newAccessToken, expiresAt } = this.accessTokenService.generate({
           user,
-          sessionId: decodedCurrentToken.sessionId
+          sessionId
         });
 
-        this.logger.log(`Tokens refreshed for user ${userId} in session ${decodedCurrentToken.sessionId}`);
-        return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+        this.logger.log(`Tokens refreshed for user ${userId} in session ${sessionId}`);
+        return { accessToken: newAccessToken, accessTokenExpiresAt:expiresAt, refreshToken: newRefreshToken };
       });
     } catch (error: unknown) {
-      // If there's an error, we should blacklist the current access token
-      try {
-        const decodedToken = this.jwtService.decode(currentAccessToken) as {
-          exp: number;
-          sub: string;
-          sessionId: string;
-        };
-        console.log(' >>>>>>>>>@>  (decodedToken)', decodedToken);
-
-        const expirationDate = new Date(decodedToken.exp * 1000);
-
-        // Blacklist the token outside of the transaction
-        await this.tokenBlacklistService.blacklistToken({
-          token: currentAccessToken,
-          expiresAt: expirationDate
-        });
-
-        this.logger.log(
-          `Access token blacklisted for user ${decodedToken.sub} in session ${decodedToken.sessionId} due to refresh token error`
-        );
-      } catch (blacklistError) {
-        this.logger.error('Failed to blacklist access token', blacklistError);
-      }
-
-      // Rethrow the original error
+      await this.refreshTokenService.revoke({ token: oldRefreshToken });
       return this.errorHandler.handleError(error, 'Token refresh failed');
     }
   }

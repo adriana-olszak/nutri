@@ -19,6 +19,10 @@ async function bootstrap() {
 
   app.use(express.json());
   app.use(cookieParser())
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    credentials: true
+  });
   app.enableShutdownHooks();
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix(config.globalPrefix);

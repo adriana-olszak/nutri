@@ -103,6 +103,7 @@ export type RefreshToken = { [key: string]: Resolver<any, any, any> } & {
   token?: Resolver<Client.RefreshToken, {}, string>
   userId?: Resolver<Client.RefreshToken, {}, string>
   familyId?: Resolver<Client.RefreshToken, {}, string>
+  sessionId?: Resolver<Client.RefreshToken, {}, string>
   expiresAt?: Resolver<Client.RefreshToken, {}, Date>
   used?: Resolver<Client.RefreshToken, {}, boolean>
   createdAt?: Resolver<Client.RefreshToken, {}, Date>
@@ -214,6 +215,11 @@ export type CreateManyRefreshTokenAndReturnOutputType = {
     string
   >
   familyId?: Resolver<
+    ReturnType<Client.Prisma.RefreshTokenDelegate['createManyAndReturn']>,
+    {},
+    string
+  >
+  sessionId?: Resolver<
     ReturnType<Client.Prisma.RefreshTokenDelegate['createManyAndReturn']>,
     {},
     string
@@ -879,6 +885,7 @@ export type RefreshTokenGroupByOutputType = {
   token?: Resolver<Client.Prisma.RefreshTokenGroupByOutputType, {}, string>
   userId?: Resolver<Client.Prisma.RefreshTokenGroupByOutputType, {}, string>
   familyId?: Resolver<Client.Prisma.RefreshTokenGroupByOutputType, {}, string>
+  sessionId?: Resolver<Client.Prisma.RefreshTokenGroupByOutputType, {}, string>
   expiresAt?: Resolver<Client.Prisma.RefreshTokenGroupByOutputType, {}, Date>
   used?: Resolver<Client.Prisma.RefreshTokenGroupByOutputType, {}, boolean>
   createdAt?: Resolver<Client.Prisma.RefreshTokenGroupByOutputType, {}, Date>
@@ -1235,6 +1242,11 @@ export type RefreshTokenCountAggregateOutputType = {
     {},
     number
   >
+  sessionId?: Resolver<
+    Client.Prisma.RefreshTokenCountAggregateOutputType,
+    {},
+    number
+  >
   expiresAt?: Resolver<
     Client.Prisma.RefreshTokenCountAggregateOutputType,
     {},
@@ -1285,6 +1297,11 @@ export type RefreshTokenMinAggregateOutputType = {
     {},
     string | null
   >
+  sessionId?: Resolver<
+    Client.Prisma.RefreshTokenMinAggregateOutputType,
+    {},
+    string | null
+  >
   expiresAt?: Resolver<
     Client.Prisma.RefreshTokenMinAggregateOutputType,
     {},
@@ -1326,6 +1343,11 @@ export type RefreshTokenMaxAggregateOutputType = {
     string | null
   >
   familyId?: Resolver<
+    Client.Prisma.RefreshTokenMaxAggregateOutputType,
+    {},
+    string | null
+  >
+  sessionId?: Resolver<
     Client.Prisma.RefreshTokenMaxAggregateOutputType,
     {},
     string | null
@@ -2481,6 +2503,7 @@ export type RefreshTokenWhereInput = {
   token?: StringFilter
   userId?: StringFilter
   familyId?: StringFilter
+  sessionId?: StringFilter
   expiresAt?: DateTimeFilter
   used?: BoolFilter
   createdAt?: DateTimeFilter
@@ -2493,6 +2516,7 @@ export type RefreshTokenOrderByWithRelationInput = {
   token?: SortOrder
   userId?: SortOrder
   familyId?: SortOrder
+  sessionId?: SortOrder
   expiresAt?: SortOrder
   used?: SortOrder
   createdAt?: SortOrder
@@ -2509,6 +2533,7 @@ export type RefreshTokenWhereUniqueInput = AtLeast<
     NOT?: RefreshTokenWhereInput[]
     userId?: StringFilter
     familyId?: StringFilter
+    sessionId?: StringFilter
     expiresAt?: DateTimeFilter
     used?: BoolFilter
     createdAt?: DateTimeFilter
@@ -2523,6 +2548,7 @@ export type RefreshTokenOrderByWithAggregationInput = {
   token?: SortOrder
   userId?: SortOrder
   familyId?: SortOrder
+  sessionId?: SortOrder
   expiresAt?: SortOrder
   used?: SortOrder
   createdAt?: SortOrder
@@ -2540,6 +2566,7 @@ export type RefreshTokenScalarWhereWithAggregatesInput = {
   token?: StringWithAggregatesFilter
   userId?: StringWithAggregatesFilter
   familyId?: StringWithAggregatesFilter
+  sessionId?: StringWithAggregatesFilter
   expiresAt?: DateTimeWithAggregatesFilter
   used?: BoolWithAggregatesFilter
   createdAt?: DateTimeWithAggregatesFilter
@@ -2897,6 +2924,7 @@ export type RefreshTokenCreateInput = {
   id?: string
   token: string
   familyId: string
+  sessionId: string
   expiresAt: Date
   used?: boolean
   createdAt?: Date
@@ -2909,6 +2937,7 @@ export type RefreshTokenUncheckedCreateInput = {
   token: string
   userId: string
   familyId: string
+  sessionId: string
   expiresAt: Date
   used?: boolean
   createdAt?: Date
@@ -2919,6 +2948,7 @@ export type RefreshTokenUpdateInput = {
   id?: string
   token?: string
   familyId?: string
+  sessionId?: string
   expiresAt?: Date
   used?: boolean
   createdAt?: Date
@@ -2931,6 +2961,7 @@ export type RefreshTokenUncheckedUpdateInput = {
   token?: string
   userId?: string
   familyId?: string
+  sessionId?: string
   expiresAt?: Date
   used?: boolean
   createdAt?: Date
@@ -2942,6 +2973,7 @@ export type RefreshTokenCreateManyInput = {
   token: string
   userId: string
   familyId: string
+  sessionId: string
   expiresAt: Date
   used?: boolean
   createdAt?: Date
@@ -2952,6 +2984,7 @@ export type RefreshTokenUpdateManyMutationInput = {
   id?: string
   token?: string
   familyId?: string
+  sessionId?: string
   expiresAt?: Date
   used?: boolean
   createdAt?: Date
@@ -2963,6 +2996,7 @@ export type RefreshTokenUncheckedUpdateManyInput = {
   token?: string
   userId?: string
   familyId?: string
+  sessionId?: string
   expiresAt?: Date
   used?: boolean
   createdAt?: Date
@@ -3448,6 +3482,7 @@ export type RefreshTokenCountOrderByAggregateInput = {
   token?: SortOrder
   userId?: SortOrder
   familyId?: SortOrder
+  sessionId?: SortOrder
   expiresAt?: SortOrder
   used?: SortOrder
   createdAt?: SortOrder
@@ -3459,6 +3494,7 @@ export type RefreshTokenMaxOrderByAggregateInput = {
   token?: SortOrder
   userId?: SortOrder
   familyId?: SortOrder
+  sessionId?: SortOrder
   expiresAt?: SortOrder
   used?: SortOrder
   createdAt?: SortOrder
@@ -3470,6 +3506,7 @@ export type RefreshTokenMinOrderByAggregateInput = {
   token?: SortOrder
   userId?: SortOrder
   familyId?: SortOrder
+  sessionId?: SortOrder
   expiresAt?: SortOrder
   used?: SortOrder
   createdAt?: SortOrder
@@ -3993,6 +4030,7 @@ export type RefreshTokenCreateWithoutUserInput = {
   id?: string
   token: string
   familyId: string
+  sessionId: string
   expiresAt: Date
   used?: boolean
   createdAt?: Date
@@ -4003,6 +4041,7 @@ export type RefreshTokenUncheckedCreateWithoutUserInput = {
   id?: string
   token: string
   familyId: string
+  sessionId: string
   expiresAt: Date
   used?: boolean
   createdAt?: Date
@@ -4125,6 +4164,7 @@ export type RefreshTokenScalarWhereInput = {
   token?: StringFilter
   userId?: StringFilter
   familyId?: StringFilter
+  sessionId?: StringFilter
   expiresAt?: DateTimeFilter
   used?: BoolFilter
   createdAt?: DateTimeFilter
@@ -4509,6 +4549,7 @@ export type RefreshTokenCreateManyUserInput = {
   id?: string
   token: string
   familyId: string
+  sessionId: string
   expiresAt: Date
   used?: boolean
   createdAt?: Date
@@ -4545,6 +4586,7 @@ export type RefreshTokenUpdateWithoutUserInput = {
   id?: string
   token?: string
   familyId?: string
+  sessionId?: string
   expiresAt?: Date
   used?: boolean
   createdAt?: Date
@@ -4555,6 +4597,7 @@ export type RefreshTokenUncheckedUpdateWithoutUserInput = {
   id?: string
   token?: string
   familyId?: string
+  sessionId?: string
   expiresAt?: Date
   used?: boolean
   createdAt?: Date
@@ -4565,6 +4608,7 @@ export type RefreshTokenUncheckedUpdateManyWithoutUserInput = {
   id?: string
   token?: string
   familyId?: string
+  sessionId?: string
   expiresAt?: Date
   used?: boolean
   createdAt?: Date
@@ -4670,6 +4714,7 @@ export enum RefreshTokenScalarFieldEnum {
   token = 'token',
   userId = 'userId',
   familyId = 'familyId',
+  sessionId = 'sessionId',
   expiresAt = 'expiresAt',
   used = 'used',
   createdAt = 'createdAt',
