@@ -1,0 +1,62 @@
+data_sources:
+  - type: USDA
+    parserType: csv
+    files:
+      - name: food_calorie_conversion_factor
+        path: ./__data__/usda/food_calorie_conversion_factor.csv
+      - name: food_nutrient_conversion_factor
+        path: ./__data__/usda/food_nutrient_conversion_factor.csv
+      - name: food_category
+        path: ./__data__/usda/food_category.csv
+      - name: measure_unit
+        path: ./__data__/usda/measure_unit.csv
+      - name: nutrient
+        path: ./__data__/usda/nutrient.csv
+      - name: food
+        order: 1
+        path: ./__data__/usda/food.csv
+      - name: food_attribute
+        order: 2
+        path: ./__data__/usda/food_attribute.csv
+      - name: food_nutrient
+        order: 3
+        path: ./__data__/usda/food_nutrient.csv
+      - name: food_portion
+        order: 4
+        path: ./__data__/usda/food_portion.csv
+      - name: market_acquisition
+        order: 5
+        path: ./__data__/usda/market_acquisition.csv
+
+processing:
+  grouping:
+    - entity: food
+      group_by:
+        - description
+      aggregate:
+        - field: fdc_id
+          operation: collect
+        - field: food_category_id
+          operation: collect
+    - entity: food_nutrient
+      group_by:
+        - fdc_id
+    - entity: food_attribute
+      group_by:
+        - fdc_id
+    - entity: food_portion
+      group_by:
+          - fdc_id
+    - entity: market_acquisition
+      group_by:
+        - fdc_id
+
+  enrichment:
+    - source: nutrient
+      key: id
+      join_key: nutrient_id
+      join_on: food_nutrient
+    - source: measure_unit
+      key: id
+      join_key: measure_unit_id
+      join_on: food_portion
