@@ -1,0 +1,7 @@
+data_sources:
+  - dataSource: USDA
+    sourceVersion: "2024.06"
+    parserType: json
+    files:
+      - name: foundationDownload
+        path: ./__data__/foundationDownload.json

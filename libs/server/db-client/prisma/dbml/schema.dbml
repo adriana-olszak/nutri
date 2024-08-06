@@ -1,0 +1,281 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  email String [unique, not null]
+  password String
+  roles Roles[] [not null]
+  googleId String [unique]
+  googleProfile Json
+  refreshTokens RefreshToken [not null]
+  sessions Session [not null]
+  loginLogs LoginLog [not null]
+  passwordResetTokens PasswordResetToken [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table RefreshToken {
+  id String [pk]
+  token String [unique, not null]
+  userId String [not null]
+  user User [not null]
+  familyId String [not null]
+  sessionId String [not null]
+  expiresAt DateTime [not null]
+  used Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Session {
+  id String [pk]
+  userId String [not null]
+  user User [not null]
+  deviceInfo String
+  ipAddress String
+  lastActiveAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table LoginLog {
+  id String [pk]
+  userId String
+  user User
+  success Boolean [not null]
+  ipAddress String
+  userAgent String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table PasswordResetToken {
+  id String [pk]
+  token String [unique, not null]
+  userId String [not null]
+  user User [not null]
+  expiresAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table TokenBlacklist {
+  id String [pk]
+  token String [unique, not null]
+  expiresAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Language {
+  code String [pk]
+  name String [not null]
+  translations Translation [not null]
+  searchVectors FoodSearchVector [not null]
+}
+
+Table Translation {
+  id String [pk]
+  entityType String [not null]
+  entityId String [not null]
+  field String [not null]
+  value String [not null]
+  languageCode String [not null]
+  language Language [not null]
+
+  indexes {
+    (languageCode, entityType, entityId, field) [unique]
+  }
+}
+
+Table Food {
+  id String [pk]
+  sourceId String [unique, not null]
+  description String [not null]
+  scientificName String
+  nutrients FoodNutrient [not null]
+  portions FoodPortion [not null]
+  brandedFood BrandedFood
+  categories FoodCategoryOnFood [not null]
+  searchVectors FoodSearchVector [not null]
+  importInfo ImportInfo [not null]
+  importInfoId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table FoodSearchVector {
+  id String [pk]
+  food Food [not null]
+  foodId String [not null]
+  language Language [not null]
+  languageCode String [not null]
+
+  indexes {
+    (foodId, languageCode) [unique]
+  }
+}
+
+Table FoodCategory {
+  id String [pk]
+  code String [unique]
+  description String [unique]
+  parentCategoryId String
+  level Int [not null]
+  sourceId String [unique, not null]
+  foods FoodCategoryOnFood [not null]
+  importInfo ImportInfo [not null]
+  importInfoId String [not null]
+  parentCategory FoodCategory
+  childCategories FoodCategory [not null]
+}
+
+Table FoodCategoryOnFood {
+  food Food [not null]
+  foodId String [not null]
+  category FoodCategory [not null]
+  categoryId String [not null]
+  isPrimaryCategory Boolean [not null, default: false]
+
+  indexes {
+    (foodId, categoryId) [pk]
+  }
+}
+
+Table BrandedFood {
+  id String [pk]
+  food Food [not null]
+  foodId String [unique, not null]
+  brandOwner String [not null]
+  gtinUpc String
+  ingredients String
+  servingSize Float
+  servingUnit String
+  sourceId String [not null]
+  importInfo ImportInfo [not null]
+  importInfoId String [not null]
+}
+
+Table Nutrient {
+  id String [pk]
+  name String [not null]
+  unitName String [not null]
+  sourceId String [unique, not null]
+  foodNutrients FoodNutrient [not null]
+  importInfo ImportInfo [not null]
+  importInfoId String [not null]
+}
+
+Table FoodNutrient {
+  id String [pk]
+  food Food [not null]
+  foodId String [not null]
+  nutrient Nutrient [not null]
+  nutrientId String [not null]
+  amount Float [not null]
+  min Float
+  median Float
+  max Float
+  confidenceCode String
+  sourceId String [not null]
+  importInfo ImportInfo [not null]
+  importInfoId String [not null]
+}
+
+Table FoodPortion {
+  id String [pk]
+  amount Float [not null]
+  gramWeight Float [not null]
+  portionDescription String
+  sourceId String [not null]
+  food Food [not null]
+  foodId String [not null]
+  measureUnitName String [not null]
+  measureUnit MeasureUnit [not null]
+  importInfo ImportInfo [not null]
+  importInfoId String [not null]
+}
+
+Table MeasureUnit {
+  name String [pk]
+  FoodPortion FoodPortion [not null]
+  importInfo ImportInfo [not null]
+  importInfoId String [not null]
+}
+
+Table ImportInfo {
+  id String [pk]
+  sourceVersion String [not null]
+  importDate DateTime [not null]
+  dataSource FoodDataSource [not null]
+  foods Food [not null]
+  foodCategories FoodCategory [not null]
+  brandedFoods BrandedFood [not null]
+  nutrients Nutrient [not null]
+  foodNutrients FoodNutrient [not null]
+  foodPortions FoodPortion [not null]
+  measureUnits MeasureUnit [not null]
+
+  indexes {
+    (dataSource, sourceVersion) [unique]
+  }
+}
+
+Enum Roles {
+  USER
+  SUPERADMIN
+}
+
+Enum FoodDataSource {
+  USDA
+  EUROFIR
+  CIQUAL
+  USER_INPUT
+}
+
+Ref: RefreshToken.userId > User.id [delete: Cascade]
+
+Ref: Session.userId > User.id [delete: Cascade]
+
+Ref: LoginLog.userId > User.id [delete: Cascade]
+
+Ref: PasswordResetToken.userId > User.id [delete: Cascade]
+
+Ref: Translation.languageCode > Language.code
+
+Ref: Food.importInfoId > ImportInfo.id
+
+Ref: FoodSearchVector.foodId > Food.id
+
+Ref: FoodSearchVector.languageCode > Language.code
+
+Ref: FoodCategory.importInfoId > ImportInfo.id
+
+Ref: FoodCategory.parentCategoryId - FoodCategory.id
+
+Ref: FoodCategoryOnFood.foodId > Food.id
+
+Ref: FoodCategoryOnFood.categoryId > FoodCategory.id
+
+Ref: BrandedFood.foodId - Food.id
+
+Ref: BrandedFood.importInfoId > ImportInfo.id
+
+Ref: Nutrient.importInfoId > ImportInfo.id
+
+Ref: FoodNutrient.foodId > Food.id
+
+Ref: FoodNutrient.nutrientId > Nutrient.id
+
+Ref: FoodNutrient.importInfoId > ImportInfo.id
+
+Ref: FoodPortion.foodId > Food.id
+
+Ref: FoodPortion.measureUnitName > MeasureUnit.name
+
+Ref: FoodPortion.importInfoId > ImportInfo.id
+
+Ref: MeasureUnit.importInfoId > ImportInfo.id

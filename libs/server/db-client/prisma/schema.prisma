@@ -8,6 +8,15 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+// generator erd {
+//   provider = "prisma-erd-generator"
+//   mmdcPath = "../../../node_modules/.bin"
+// }
+
 datasource db {
   provider = "postgresql"
   // FIXME: when deploying we have to use ENV. For whatever reson it does not work.
@@ -90,4 +99,196 @@ model TokenBlacklist {
   expiresAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Represents languages used in the database
+model Language {
+  code          String             @id @unique
+  name          String
+  translations  Translation[]
+  searchVectors FoodSearchVector[]
+}
+
+// Stores translations for various entities in different languages
+model Translation {
+  id         String @id @default(uuid())
+  entityType String
+  entityId   String
+
+  // name of transalted column
+  field String
+  value String
+
+  languageCode String
+  language     Language @relation(fields: [languageCode], references: [code])
+
+  @@unique([languageCode, entityType, entityId, field])
+  @@index([entityType, entityId])
+}
+
+// Represents a food item with its nutritional information
+// All values are given per 100g edible part of the food
+model Food {
+  id             String               @id @default(uuid())
+  sourceId       String               @unique
+  description    String
+  scientificName String?
+  nutrients      FoodNutrient[]
+  portions       FoodPortion[]
+  brandedFood    BrandedFood?
+  categories     FoodCategoryOnFood[]
+  searchVectors  FoodSearchVector[]
+  importInfo     ImportInfo           @relation(fields: [importInfoId], references: [id])
+  importInfoId   String
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+}
+
+// Stores search vectors for efficient food searching
+model FoodSearchVector {
+  id           String                  @id @default(uuid())
+  food         Food                    @relation(fields: [foodId], references: [id])
+  foodId       String
+  language     Language                @relation(fields: [languageCode], references: [code])
+  languageCode String
+  searchVector Unsupported("tsvector")
+
+  @@unique([foodId, languageCode])
+  @@index([searchVector], type: Gin)
+}
+
+// Represents food categories, which can be hierarchical
+model FoodCategory {
+  id               String               @id @default(uuid())
+  code             String?              @unique
+  description      String?              @unique
+  parentCategoryId String?
+  level            Int
+  sourceId         String               @unique
+  foods            FoodCategoryOnFood[] // New field
+  importInfo       ImportInfo           @relation(fields: [importInfoId], references: [id])
+  importInfoId     String
+
+  parentCategory  FoodCategory?  @relation("ParentChild", fields: [parentCategoryId], references: [id])
+  childCategories FoodCategory[] @relation("ParentChild")
+
+  @@index([parentCategoryId])
+  @@index([level])
+}
+
+model FoodCategoryOnFood {
+  food              Food         @relation(fields: [foodId], references: [id])
+  foodId            String
+  category          FoodCategory @relation(fields: [categoryId], references: [id])
+  categoryId        String
+  isPrimaryCategory Boolean      @default(false)
+
+  @@id([foodId, categoryId])
+  @@index([foodId])
+  @@index([categoryId])
+}
+
+// Represents branded food products
+model BrandedFood {
+  id           String     @id @default(uuid())
+  food         Food       @relation(fields: [foodId], references: [id])
+  foodId       String     @unique
+  brandOwner   String
+  gtinUpc      String?
+  ingredients  String?
+  servingSize  Float?
+  servingUnit  String?
+  sourceId     String
+  importInfo   ImportInfo @relation(fields: [importInfoId], references: [id])
+  importInfoId String
+
+  @@index([brandOwner])
+  @@index([gtinUpc])
+}
+
+// Represents nutrients and their properties
+model Nutrient {
+  id       String @id @default(uuid())
+  name     String
+  // The standard unit of measure for the nutrient (per 100g of food)
+  unitName String
+  sourceId String @unique
+
+  foodNutrients FoodNutrient[]
+  importInfo    ImportInfo     @relation(fields: [importInfoId], references: [id])
+  importInfoId  String
+
+  @@index([name])
+}
+
+// Represents the nutritional content of a food
+model FoodNutrient {
+  id             String     @id @default(uuid())
+  food           Food       @relation(fields: [foodId], references: [id])
+  foodId         String
+  nutrient       Nutrient   @relation(fields: [nutrientId], references: [id])
+  nutrientId     String
+  amount         Float
+  min            Float?
+  median         Float?
+  max            Float?
+  confidenceCode String?
+  sourceId       String
+  importInfo     ImportInfo @relation(fields: [importInfoId], references: [id])
+  importInfoId   String
+
+  @@index([foodId])
+  @@index([nutrientId])
+  @@index([amount])
+}
+
+// Represents portion sizes for foods
+model FoodPortion {
+  id                 String  @id @default(uuid())
+  amount             Float
+  gramWeight         Float
+  portionDescription String?
+  sourceId           String
+
+  food            Food        @relation(fields: [foodId], references: [id])
+  foodId          String
+  measureUnitName String
+  measureUnit     MeasureUnit @relation(fields: [measureUnitName], references: [name])
+  importInfo      ImportInfo  @relation(fields: [importInfoId], references: [id])
+  importInfoId    String
+
+  @@index([foodId])
+}
+
+model MeasureUnit {
+  name         String        @id @unique
+  FoodPortion  FoodPortion[]
+  importInfo   ImportInfo    @relation(fields: [importInfoId], references: [id])
+  importInfoId String
+}
+
+// Represents the source of food data (e.g., USDA, FDA, EUROFIR, CIQUAL, CUSTOM)
+enum FoodDataSource {
+  USDA
+  EUROFIR
+  CIQUAL
+  USER_INPUT
+}
+
+// Stores information about data imports
+model ImportInfo {
+  id             String         @id @default(uuid())
+  sourceVersion  String
+  importDate     DateTime
+  dataSource     FoodDataSource
+  foods          Food[]
+  foodCategories FoodCategory[]
+  brandedFoods   BrandedFood[]
+  nutrients      Nutrient[]
+  foodNutrients  FoodNutrient[]
+  foodPortions   FoodPortion[]
+  measureUnits   MeasureUnit[]
+
+  @@unique([dataSource, sourceVersion])
+  @@index([importDate])
 }
