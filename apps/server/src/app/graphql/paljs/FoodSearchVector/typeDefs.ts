@@ -1,13 +1,11 @@
 import gql from 'graphql-tag'
 
 export default gql`
-  type Translation {
+  type FoodSearchVector {
     id: String!
-    entityType: String!
-    entityId: String!
-    field: String!
-    value: String!
+    foodId: String!
     languageCode: String!
+    food: Food!
     language: Language!
   }
 `

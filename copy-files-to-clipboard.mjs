@@ -5,10 +5,12 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Function to read file content
-function readFileContent(filePath) {
+// Function to read file content with line limit
+function readFileContent(filePath, maxLines = Infinity) {
   try {
-    return fs.readFileSync(filePath, 'utf8');
+    const content = fs.readFileSync(filePath, 'utf8');
+    const lines = content.split('\n');
+    return lines.slice(0, maxLines).join('\n');
   } catch (error) {
     console.error(`Error reading file ${filePath}: ${error.message}`);
     return '';
@@ -16,7 +18,7 @@ function readFileContent(filePath) {
 }
 
 // Function to process a file or directory
-function processPath(basePath, relativePath) {
+function processPath(basePath, relativePath, maxLines) {
   const fullPath = path.join(basePath, relativePath);
   let content = '';
 
@@ -24,12 +26,12 @@ function processPath(basePath, relativePath) {
     // If it's a directory, process all files in it
     const files = fs.readdirSync(fullPath);
     for (const file of files) {
-      content += processPath(basePath, path.join(relativePath, file));
+      content += processPath(basePath, path.join(relativePath, file), maxLines);
     }
   } else {
     // If it's a file, add its content
     content += `// File: ${relativePath}\n`;
-    content += readFileContent(fullPath);
+    content += readFileContent(fullPath, maxLines);
     content += '\n\n';
   }
 
@@ -40,6 +42,7 @@ function processPath(basePath, relativePath) {
 async function main() {
   const baseDir = process.cwd(); // Assumes the script is run from the project root
   const inputFile = 'file_list.txt'; // Name of the file containing the list of paths
+  const maxLines = process.env.MAX_LINES ? parseInt(process.env.MAX_LINES, 10) : Infinity;
 
   // Read the list of files
   const fileList = fs.readFileSync(inputFile, 'utf8').split('\n').filter(Boolean);
@@ -48,7 +51,7 @@ async function main() {
 
   // Process each path
   for (const filePath of fileList) {
-    combinedContent += processPath(baseDir, filePath);
+    combinedContent += processPath(baseDir, filePath, maxLines);
   }
 
   // Dynamically import clipboardy

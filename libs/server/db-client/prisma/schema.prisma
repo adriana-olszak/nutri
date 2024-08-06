@@ -129,19 +129,20 @@ model Translation {
 // Represents a food item with its nutritional information
 // All values are given per 100g edible part of the food
 model Food {
-  id             String               @id @default(uuid())
-  sourceId       String               @unique
-  description    String
-  scientificName String?
-  nutrients      FoodNutrient[]
-  portions       FoodPortion[]
-  brandedFood    BrandedFood?
-  categories     FoodCategoryOnFood[]
-  searchVectors  FoodSearchVector[]
-  importInfo     ImportInfo           @relation(fields: [importInfoId], references: [id])
-  importInfoId   String
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
+  id               String               @id @default(uuid())
+  sourceId         String               @unique
+  description      String
+  scientificName   String?
+  nutrients        FoodNutrient[]
+  portions         FoodPortion[]
+  brandedFood      BrandedFood?
+  categories       FoodCategoryOnFood[]
+  searchVectors    FoodSearchVector[]
+  importInfo       ImportInfo           @relation(fields: [importInfoId], references: [id])
+  importInfoId     String
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  RecipeIngredient RecipeIngredient[]
 }
 
 // Stores search vectors for efficient food searching
@@ -291,4 +292,84 @@ model ImportInfo {
 
   @@unique([dataSource, sourceVersion])
   @@index([importDate])
+}
+
+model Recipe {
+  id           String  @id @default(uuid())
+  title        String  @unique
+  sourceId     String?
+  sourceUrl    String?
+  description  String?
+  cookingTime  String?
+  prepTime     String?
+  instructions String?
+  servingsText String? // Full serving description
+  servingsMin  Int? // Minimum number of servings
+  servingsMax  Int? // Maximum number of servings
+
+  parts       RecipePart[]
+  ingredients RecipeIngredient[]
+  categories  RecipeCategory[]
+  images      RecipeImage[]
+  seasons     Season[]
+  tags        Tag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RecipeImage {
+  id       String  @id @default(uuid())
+  recipe   Recipe  @relation(fields: [recipeId], references: [id])
+  recipeId String
+  url      String
+  altText  String?
+  width    Int?
+  height   Int?
+
+  @@index([recipeId])
+}
+
+model Season {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  recipes Recipe[]
+}
+
+model Tag {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  recipes Recipe[]
+}
+
+model RecipePart {
+  id          String             @id @default(uuid())
+  name        String
+  recipe      Recipe             @relation(fields: [recipeId], references: [id])
+  recipeId    String
+  ingredients RecipeIngredient[]
+
+  @@index([recipeId])
+}
+
+model RecipeIngredient {
+  id       String      @id @default(uuid())
+  recipe   Recipe      @relation(fields: [recipeId], references: [id])
+  recipeId String
+  part     RecipePart? @relation(fields: [partId], references: [id])
+  partId   String?
+  food     Food        @relation(fields: [foodId], references: [id])
+  foodId   String
+  quantity Float
+  unit     String
+
+  @@index([recipeId])
+  @@index([partId])
+  @@index([foodId])
+}
+
+model RecipeCategory {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  recipes Recipe[]
 }

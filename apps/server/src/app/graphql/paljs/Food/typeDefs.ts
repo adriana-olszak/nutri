@@ -4,9 +4,11 @@ export default gql`
   type Food {
     id: String!
     sourceId: String!
+    description: String!
     scientificName: String
-    dataSource: FoodDataSource!
     importInfoId: String!
+    createdAt: DateTime!
+    updatedAt: DateTime!
     nutrients(
       where: FoodNutrientWhereInput
       orderBy: [FoodNutrientOrderByWithRelationInput]
@@ -32,22 +34,6 @@ export default gql`
       skip: Int
       distinct: [FoodCategoryOnFoodScalarFieldEnum]
     ): [FoodCategoryOnFood!]!
-    ingredients(
-      where: InputFoodWhereInput
-      orderBy: [InputFoodOrderByWithRelationInput]
-      cursor: InputFoodWhereUniqueInput
-      take: Int
-      skip: Int
-      distinct: [InputFoodScalarFieldEnum]
-    ): [InputFood!]!
-    usedAsIngredientIn(
-      where: InputFoodWhereInput
-      orderBy: [InputFoodOrderByWithRelationInput]
-      cursor: InputFoodWhereUniqueInput
-      take: Int
-      skip: Int
-      distinct: [InputFoodScalarFieldEnum]
-    ): [InputFood!]!
     searchVectors(
       where: FoodSearchVectorWhereInput
       orderBy: [FoodSearchVectorOrderByWithRelationInput]
@@ -57,57 +43,14 @@ export default gql`
       distinct: [FoodSearchVectorScalarFieldEnum]
     ): [FoodSearchVector!]!
     importInfo: ImportInfo!
+    RecipeIngredient(
+      where: RecipeIngredientWhereInput
+      orderBy: [RecipeIngredientOrderByWithRelationInput]
+      cursor: RecipeIngredientWhereUniqueInput
+      take: Int
+      skip: Int
+      distinct: [RecipeIngredientScalarFieldEnum]
+    ): [RecipeIngredient!]!
     _count: FoodCountOutputType!
-  }
-
-  type Query {
-    findUniqueFood(where: FoodWhereUniqueInput!): Food
-    findFirstFood(
-      where: FoodWhereInput
-      orderBy: [FoodOrderByWithRelationInput]
-      cursor: FoodWhereUniqueInput
-      take: Int
-      skip: Int
-      distinct: [FoodScalarFieldEnum]
-    ): Food
-    findManyFood(
-      where: FoodWhereInput
-      orderBy: [FoodOrderByWithRelationInput]
-      cursor: FoodWhereUniqueInput
-      take: Int
-      skip: Int
-      distinct: [FoodScalarFieldEnum]
-    ): [Food!]!
-    findManyFoodCount(
-      where: FoodWhereInput
-      orderBy: [FoodOrderByWithRelationInput]
-      cursor: FoodWhereUniqueInput
-      take: Int
-      skip: Int
-      distinct: [FoodScalarFieldEnum]
-    ): Int!
-    aggregateFood(
-      where: FoodWhereInput
-      orderBy: [FoodOrderByWithRelationInput]
-      cursor: FoodWhereUniqueInput
-      take: Int
-      skip: Int
-    ): AggregateFood
-  }
-
-  type Mutation {
-    createOneFood(data: FoodCreateInput!): Food!
-    updateOneFood(data: FoodUpdateInput!, where: FoodWhereUniqueInput!): Food!
-    deleteOneFood(where: FoodWhereUniqueInput!): Food
-    upsertOneFood(
-      where: FoodWhereUniqueInput!
-      create: FoodCreateInput!
-      update: FoodUpdateInput!
-    ): Food
-    deleteManyFood(where: FoodWhereInput): BatchPayload
-    updateManyFood(
-      data: FoodUpdateManyMutationInput!
-      where: FoodWhereInput
-    ): BatchPayload
   }
 `

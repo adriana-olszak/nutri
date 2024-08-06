@@ -105,6 +105,7 @@ Table Food {
   importInfoId String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  RecipeIngredient RecipeIngredient [not null]
 }
 
 Table FoodSearchVector {
@@ -224,6 +225,91 @@ Table ImportInfo {
   }
 }
 
+Table Recipe {
+  id String [pk]
+  title String [unique, not null]
+  sourceId String
+  sourceUrl String
+  description String
+  cookingTime String
+  prepTime String
+  instructions String
+  servingsText String
+  servingsMin Int
+  servingsMax Int
+  parts RecipePart [not null]
+  ingredients RecipeIngredient [not null]
+  categories RecipeCategory [not null]
+  images RecipeImage [not null]
+  seasons Season [not null]
+  tags Tag [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table RecipeImage {
+  id String [pk]
+  recipe Recipe [not null]
+  recipeId String [not null]
+  url String [not null]
+  altText String
+  width Int
+  height Int
+}
+
+Table Season {
+  id String [pk]
+  name String [unique, not null]
+  recipes Recipe [not null]
+}
+
+Table Tag {
+  id String [pk]
+  name String [unique, not null]
+  recipes Recipe [not null]
+}
+
+Table RecipePart {
+  id String [pk]
+  name String [not null]
+  recipe Recipe [not null]
+  recipeId String [not null]
+  ingredients RecipeIngredient [not null]
+}
+
+Table RecipeIngredient {
+  id String [pk]
+  recipe Recipe [not null]
+  recipeId String [not null]
+  part RecipePart
+  partId String
+  food Food [not null]
+  foodId String [not null]
+  quantity Float [not null]
+  unit String [not null]
+}
+
+Table RecipeCategory {
+  id String [pk]
+  name String [unique, not null]
+  recipes Recipe [not null]
+}
+
+Table RecipeToRecipeCategory {
+  categoriesId String [ref: > RecipeCategory.id]
+  recipesId String [ref: > Recipe.id]
+}
+
+Table RecipeToSeason {
+  seasonsId String [ref: > Season.id]
+  recipesId String [ref: > Recipe.id]
+}
+
+Table RecipeToTag {
+  tagsId String [ref: > Tag.id]
+  recipesId String [ref: > Recipe.id]
+}
+
 Enum Roles {
   USER
   SUPERADMIN
@@ -279,3 +365,13 @@ Ref: FoodPortion.measureUnitName > MeasureUnit.name
 Ref: FoodPortion.importInfoId > ImportInfo.id
 
 Ref: MeasureUnit.importInfoId > ImportInfo.id
+
+Ref: RecipeImage.recipeId > Recipe.id
+
+Ref: RecipePart.recipeId > Recipe.id
+
+Ref: RecipeIngredient.recipeId > Recipe.id
+
+Ref: RecipeIngredient.partId > RecipePart.id
+
+Ref: RecipeIngredient.foodId > Food.id
