@@ -1,5 +1,0 @@
- mutation CreateManyUserAndReturn($data: [UserCreateManyInput!]!) {
-    createManyUserAndReturn(data: $data) {
-      ...UserFields
-    }
-  }

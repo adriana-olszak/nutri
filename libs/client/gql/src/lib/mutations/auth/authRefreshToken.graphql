@@ -1,5 +1,5 @@
-mutation AuthRefreshToken($data: AuthRefreshTokenInput) {
-  authRefreshToken(data: $data) {
+mutation AuthRefreshToken {
+  authRefreshToken {
     accessToken
     accessTokenExpiresAt
   }

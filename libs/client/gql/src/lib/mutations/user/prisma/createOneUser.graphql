@@ -1,5 +1,0 @@
-mutation CreateOneUser($data: UserCreateInput!) {
-    createOneUser(data: $data) {
-      ...UserFields
-    }
-  }

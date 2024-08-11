@@ -1,5 +1,0 @@
-mutation DeleteOneUser($where: UserWhereUniqueInput!) {
-    deleteOneUser(where: $where) {
-      id
-    }
-  }

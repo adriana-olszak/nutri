@@ -1,5 +1,0 @@
-mutation DeleteManyUser($where: UserWhereInput!) {
-    deleteManyUser(where: $where) {
-      count
-    }
-  }

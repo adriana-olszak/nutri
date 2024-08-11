@@ -1,5 +1,0 @@
-mutation UpdateManyUser($data: UserUpdateManyMutationInput!, $where: UserWhereInput!) {
-    updateManyUser(data: $data, where: $where) {
-      count
-    }
-  }
