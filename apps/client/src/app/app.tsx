@@ -63,6 +63,7 @@ function Home() {
 export function App() {
   return (
     <Routes>
+      <Route path="/" element={<ProtectedRoute/>} />
       <Route path="/login" element={<AuthenticationPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />

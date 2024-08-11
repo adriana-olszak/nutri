@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { Alert, Button, Input, Label } from '@nutri/client-ui';
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { cn } from '@nutri/client-utils';
 import { useNavigate } from 'react-router-dom';
+import gh from './../../../assets/logos/github-mark.svg';
 import { useAuth } from '@nutri/client-auth';
 
 
@@ -89,7 +91,7 @@ export function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLD
           {error && <Alert>
             {error}
           </Alert>}
-          <Button disabled={isLoading}>
+          <Button disabled={isLoading} variant='outline'>
             {isLoading && (
               <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
             )}
@@ -102,7 +104,7 @@ export function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLD
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
+          <span className="bg-white px-2 text-muted-foreground">
             Or continue with
           </span>
         </div>
@@ -111,7 +113,7 @@ export function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLD
         {isLoading ? (
           <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <LoaderCircle className="mr-2 h-4 w-4" />
+          <img src={gh} alt='' className='size-3 mr-1'/>
         )}{' '}
         GitHub
       </Button>
