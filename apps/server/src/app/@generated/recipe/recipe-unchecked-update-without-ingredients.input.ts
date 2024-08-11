@@ -1,0 +1,69 @@
+import { Field } from '@nestjs/graphql';
+import { InputType } from '@nestjs/graphql';
+import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-operations.input';
+import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
+import { NullableIntFieldUpdateOperationsInput } from '../prisma/nullable-int-field-update-operations.input';
+import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input';
+import { RecipePartUncheckedUpdateManyWithoutRecipeNestedInput } from '../recipe-part/recipe-part-unchecked-update-many-without-recipe-nested.input';
+import { RecipeCategoryUncheckedUpdateManyWithoutRecipesNestedInput } from '../recipe-category/recipe-category-unchecked-update-many-without-recipes-nested.input';
+import { RecipeImageUncheckedUpdateManyWithoutRecipeNestedInput } from '../recipe-image/recipe-image-unchecked-update-many-without-recipe-nested.input';
+import { SeasonUncheckedUpdateManyWithoutRecipesNestedInput } from '../season/season-unchecked-update-many-without-recipes-nested.input';
+import { TagUncheckedUpdateManyWithoutRecipesNestedInput } from '../tag/tag-unchecked-update-many-without-recipes-nested.input';
+
+@InputType()
+export class RecipeUncheckedUpdateWithoutIngredientsInput {
+
+    @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
+    id?: StringFieldUpdateOperationsInput;
+
+    @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
+    title?: StringFieldUpdateOperationsInput;
+
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    sourceId?: NullableStringFieldUpdateOperationsInput;
+
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    sourceUrl?: NullableStringFieldUpdateOperationsInput;
+
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    description?: NullableStringFieldUpdateOperationsInput;
+
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    cookingTime?: NullableStringFieldUpdateOperationsInput;
+
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    prepTime?: NullableStringFieldUpdateOperationsInput;
+
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    instructions?: NullableStringFieldUpdateOperationsInput;
+
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    servingsText?: NullableStringFieldUpdateOperationsInput;
+
+    @Field(() => NullableIntFieldUpdateOperationsInput, {nullable:true})
+    servingsMin?: NullableIntFieldUpdateOperationsInput;
+
+    @Field(() => NullableIntFieldUpdateOperationsInput, {nullable:true})
+    servingsMax?: NullableIntFieldUpdateOperationsInput;
+
+    @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
+    createdAt?: DateTimeFieldUpdateOperationsInput;
+
+    @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
+    updatedAt?: DateTimeFieldUpdateOperationsInput;
+
+    @Field(() => RecipePartUncheckedUpdateManyWithoutRecipeNestedInput, {nullable:true})
+    parts?: RecipePartUncheckedUpdateManyWithoutRecipeNestedInput;
+
+    @Field(() => RecipeCategoryUncheckedUpdateManyWithoutRecipesNestedInput, {nullable:true})
+    categories?: RecipeCategoryUncheckedUpdateManyWithoutRecipesNestedInput;
+
+    @Field(() => RecipeImageUncheckedUpdateManyWithoutRecipeNestedInput, {nullable:true})
+    images?: RecipeImageUncheckedUpdateManyWithoutRecipeNestedInput;
+
+    @Field(() => SeasonUncheckedUpdateManyWithoutRecipesNestedInput, {nullable:true})
+    seasons?: SeasonUncheckedUpdateManyWithoutRecipesNestedInput;
+
+    @Field(() => TagUncheckedUpdateManyWithoutRecipesNestedInput, {nullable:true})
+    tags?: TagUncheckedUpdateManyWithoutRecipesNestedInput;
+}

@@ -12,6 +12,13 @@ generator dbml {
   provider = "prisma-dbml-generator"
 }
 
+generator nestgraphql {
+  // provider = "node node_modules/prisma-nestjs-graphql"
+  // for yarn monorepos
+  provider = "prisma-nestjs-graphql"
+  output   = "../../../../apps/server/src/app/@generated"
+}
+
 // generator erd {
 //   provider = "prisma-erd-generator"
 //   mmdcPath = "../../../node_modules/.bin"

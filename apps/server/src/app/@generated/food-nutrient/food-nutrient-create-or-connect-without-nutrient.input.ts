@@ -1,0 +1,18 @@
+import { Field } from '@nestjs/graphql';
+import { InputType } from '@nestjs/graphql';
+import { Prisma } from '@prisma/client';
+import { FoodNutrientWhereUniqueInput } from './food-nutrient-where-unique.input';
+import { Type } from 'class-transformer';
+import { FoodNutrientCreateWithoutNutrientInput } from './food-nutrient-create-without-nutrient.input';
+
+@InputType()
+export class FoodNutrientCreateOrConnectWithoutNutrientInput {
+
+    @Field(() => FoodNutrientWhereUniqueInput, {nullable:false})
+    @Type(() => FoodNutrientWhereUniqueInput)
+    where!: Prisma.AtLeast<FoodNutrientWhereUniqueInput, 'id'>;
+
+    @Field(() => FoodNutrientCreateWithoutNutrientInput, {nullable:false})
+    @Type(() => FoodNutrientCreateWithoutNutrientInput)
+    create!: FoodNutrientCreateWithoutNutrientInput;
+}
