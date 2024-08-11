@@ -35,6 +35,7 @@ export function RolesGuard<R extends string>(...roles: Array<R>) {
     }
 
     override async canActivate(context: ExecutionContext) {
+
       const allowAnonymousHandler = this.reflector.get<boolean | undefined>(
         ALLOW_ANONYMOUS_KEY,
         context.getHandler()
@@ -59,7 +60,6 @@ export function RolesGuard<R extends string>(...roles: Array<R>) {
       } else {
         throw new UnauthorizedException(`Context ${type} not supported`);
       }
-
       if (!req.user) await super.canActivate(context);
 
       if (roles.length === 0) return true;
@@ -85,6 +85,6 @@ export function RolesGuard<R extends string>(...roles: Array<R>) {
 
 export function rbacLogic(userRoles: string[], definedRoles: string[]) {
   return (
-    userRoles.includes('Super') || definedRoles.some(definedRole => userRoles.includes(definedRole))
+    userRoles.includes('Super') || definedRoles.some(definedRole => userRoles.includes(definedRole)) || !definedRoles.length
   );
 }
