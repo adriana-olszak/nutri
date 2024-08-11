@@ -2,7 +2,8 @@ import * as React from "react"
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
 
 import { cn } from "@nutri/client-utils"
-import { ButtonProps, buttonVariants } from "@nutri/client-ui/button"
+import { ButtonProps } from "@nutri/client-ui/button"
+import {ghostButton} from "@nutri/client-ui/button/Button.variants";
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
@@ -48,8 +49,8 @@ const PaginationLink = ({
   <a
     aria-current={isActive ? "page" : undefined}
     className={cn(
-      buttonVariants({
-        variant: isActive ? "outline" : "ghost",
+      ghostButton({
+        colorScheme: isActive ? "blue" : "gray",
         size,
       }),
       className

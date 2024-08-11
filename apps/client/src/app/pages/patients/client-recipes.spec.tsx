@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 
-import ClientRecipes from './client-recipes';
+import Patients from './Patients';
 
 describe('ClientRecipes', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<ClientRecipes />);
+    const { baseElement } = render(<Patients />);
     expect(baseElement).toBeTruthy();
   });
 });

@@ -11,7 +11,7 @@ export const Layout = () => {
       <div className="flex flex-col">
         <Header />
         <main className="flex flex-1 flex-col gap-4 lg:gap-6 lg:p-6 max-h-screen overflow-hidden overflow-y-auto"
-        style={{maxHeight: 'calc(100vh - 60px)'}}
+        style={{maxHeight: 'calc(100vh - 60px)',maxWidth: 'calc(100vw - 200px)' }}
         >
           <Outlet />
         </main>

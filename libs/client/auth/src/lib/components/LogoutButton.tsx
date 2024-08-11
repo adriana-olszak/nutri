@@ -16,8 +16,10 @@ export const LogoutButton: React.FC = (...args) => {
 
   return (
     <Button {...args} onClick={handleLogout} variant="ghost"
-            className={"flex items-center justify-start gap-3 rounded-lg py-2 pl-6 text-muted-foreground transition-all hover:bg-gray-50 hover:text-primary"}
-    >
+            className={cn(
+              'flex items-center justify-start gap-3 rounded-none border-l-4 border-transparent',
+
+            )}    >
       <LogOut className='size-4 text-gray-500'/>
       Logout
     </Button>

@@ -1,7 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { useEffect } from 'react';
 
-import { ClientRecipes } from '@nutri/client-recipes';
 import { ProtectedRoute } from '@nutri/client-auth';
 import { Layout } from './layout/Layout';
 import { RegisterPage, ForgotPasswordPage, ResetPasswordPage, AuthenticationPage } from '@nutri/client-auth';
@@ -11,8 +10,9 @@ import { NotFoundPage } from './pages/NotFoundPage';
 import { useGql } from './hooks/useGql';
 
 import React from 'react';
-import {ChefHat, Users, Calendar, ArrowRight} from 'lucide-react';
 import {WelcomeDashboard} from "./pages/dashboard";
+import {Patients} from "./pages/patients/Patients";
+import {Recipes} from "./pages/recipes/Recipes";
 
 export function App() {
   return (
@@ -25,9 +25,9 @@ export function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<WelcomeDashboard />} />
-          <Route path="/recipes" element={<ClientRecipes />} />
-          <Route path="/patients" element={<ClientRecipes />} />
-          <Route path="/settings" element={<ClientRecipes />} />
+          <Route path="/recipes" element={<Recipes />} />
+          <Route path="/patients" element={<Patients />} />
+          <Route path="/settings" element={<Recipes />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>

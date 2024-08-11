@@ -23,7 +23,7 @@ const Sidebar = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
 
   return (
     <div className={cn('flex h-full max-h-screen flex-col gap-2', className)}>
-      <div className="flex h-14 items-center border-b px-3">
+      <div className="flex min-h-14 items-center border-b px-3">
         <Button
           variant="ghost"
           onClick={() => navigate('/dashboard')}
@@ -41,9 +41,9 @@ const Sidebar = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
               key={link.path}
               variant="ghost"
               className={cn(
-                'flex items-center justify-start gap-3 rounded-lg py-2 pl-6 text-muted-foreground transition-all hover:bg-gray-50 hover:text-primary',
+                'flex items-center justify-start gap-3 rounded-none border-l-4 border-transparent',
                 isActive &&
-                  'bg-gray-50 text-primary font-semibold border-l-4 border-primary-600',
+                  'bg-gray-50 text-primary border-primary-600',
               )}
               onClick={() => navigate(link.path)}
             >
@@ -66,9 +66,9 @@ const Sidebar = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
                 key={link.path}
                 variant="ghost"
                 className={cn(
-                  'flex items-center justify-start gap-3 rounded-lg py-2 pl-6 text-muted-foreground transition-all hover:bg-gray-50 hover:text-primary',
+                  'flex items-center justify-start gap-3 rounded-none border-l-4 border-transparent',
                   isActive &&
-                    'bg-gray-50 text-primary font-semibold border-l-4 border-primary-600',
+                  'bg-gray-50 text-primary border-primary-600',
                 )}
                 onClick={() => navigate(link.path)}
               >
