@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input, Card, CardHeader, CardContent, CardFooter } from '@nutri/client-ui';
+import {
+  Button,
+  Input,
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from '@nutri/client-ui';
 import { useAuth } from '../AuthContext';
+import { LoginLayout } from '../components/LoginLayout';
 
 export const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -24,41 +32,39 @@ export const RegisterPage = () => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto mt-8">
-      <CardHeader>
-        <h2 className="text-2xl font-bold">Register</h2>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleRegister}>
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mb-4"
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mb-4"
-          />
-          {error && <p className="text-red-500 mb-4">{error}</p>}
-          <Button type="submit" className="w-full">Register</Button>
-        </form>
-      </CardContent>
-      <CardFooter>
-        <p className="text-center">
+    <LoginLayout>
+      <form onSubmit={handleRegister}>
+        <Input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="mb-4"
+        />
+        <Input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="mb-4"
+        />
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <Button type="submit" variant="outline" className="w-full font-medium">
+          Register
+        </Button>
+      </form>
+      <div>
+        <p className="text-center text-sm test-gray-600">
           Already have an account?{' '}
           <Button
-            variant="ghost"
+            variant="link"
+            className="p-0 underline"
             onClick={() => navigate('/login')}
           >
             Login
           </Button>
         </p>
-      </CardFooter>
-    </Card>
+      </div>
+    </LoginLayout>
   );
 };

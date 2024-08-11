@@ -1,21 +1,11 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '@nutri/client-utils';
-import {
-  Home,
-  User,
-  BookOpen,
-  Bell,
-  Package2
-} from 'lucide-react';
+import { Home, User, BookOpen, Banana, UsersRound, Cog } from 'lucide-react';
 import {
   Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
 } from '@nutri/client-ui';
+import { LogoutButton } from '@nutri/client-auth';
 
 const Sidebar = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const navigate = useNavigate();
@@ -24,52 +14,78 @@ const Sidebar = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
   const sidebarLinks = [
     { path: '/dashboard', label: 'Dashboard', icon: Home },
     { path: '/recipes', label: 'Recipes', icon: BookOpen },
-    { path: '/profile', label: 'Profile', icon: User }
+    { path: '/patients', label: 'Patients', icon: UsersRound },
+  ];
+  const sidebarBottomSectionLinks = [
+    { path: '/profile', label: 'My Profile', icon: User },
+    { path: '/settings', label: 'Settings', icon: Cog },
   ];
 
   return (
     <div className={cn('flex h-full max-h-screen flex-col gap-2', className)}>
-      <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-        <Button variant="ghost" onClick={() => navigate('/dashboard')}
-                className="flex items-center gap-2 font-semibold">
-          <Package2 className="h-6 w-6" />
-          <span className="">Nutri App</span>
-        </Button>
-        <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
-          <Bell className="h-4 w-4" />
-          <span className="sr-only">Toggle notifications</span>
+      <div className="flex h-14 items-center border-b px-3">
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/dashboard')}
+          className="flex items-center gap-2 font-semibold"
+        >
+          <Banana className="h-6 w-6" />
+          <span className="">Diet Draft App</span>
         </Button>
       </div>
-      <div className="flex-1">
-        <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-          {sidebarLinks.map((link) => (
+      <nav className="flex flex-col gap-1 h-full">
+        {sidebarLinks.map((link) => {
+          const isActive = location.pathname === link.path;
+          return (
             <Button
               key={link.path}
-              variant={location.pathname === link.path ? 'secondary' : 'ghost'}
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+              variant="ghost"
+              className={cn(
+                'flex items-center justify-start gap-3 rounded-lg py-2 pl-6 text-muted-foreground transition-all hover:bg-gray-50 hover:text-primary',
+                isActive &&
+                  'bg-gray-50 text-primary font-semibold border-l-4 border-primary-600',
+              )}
               onClick={() => navigate(link.path)}
             >
-              <link.icon className="h-4 w-4" />
+              <link.icon
+                className={cn(
+                  'h-4 w-4',
+                  isActive ? 'text-gray-600' : 'text-gray-500',
+                )}
+              />
               {link.label}
             </Button>
-          ))}
-        </nav>
-      </div>
-      <div className="mt-auto p-4">
-        <Card>
-          <CardHeader className="p-2 pt-0 md:p-4">
-            <CardTitle>Upgrade to Pro</CardTitle>
-            <CardDescription>
-              Unlock all features and get unlimited access to our support team.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-            <Button size="sm" className="w-full">
-              Upgrade
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+          );
+        })}
+
+        <div className="flex flex-1 pb-4 flex-col justify-end ">
+          {sidebarBottomSectionLinks.map((link) => {
+            const isActive = location.pathname === link.path;
+            return (
+              <Button
+                key={link.path}
+                variant="ghost"
+                className={cn(
+                  'flex items-center justify-start gap-3 rounded-lg py-2 pl-6 text-muted-foreground transition-all hover:bg-gray-50 hover:text-primary',
+                  isActive &&
+                    'bg-gray-50 text-primary font-semibold border-l-4 border-primary-600',
+                )}
+                onClick={() => navigate(link.path)}
+              >
+                <link.icon
+                  className={cn(
+                    'h-4 w-4',
+                    isActive ? 'text-gray-600' : 'text-gray-500',
+                  )}
+                />
+                {link.label}
+              </Button>
+            );
+          })}
+
+          <LogoutButton className={cn('h-4 w-4')} />
+        </div>
+      </nav>
     </div>
   );
 };

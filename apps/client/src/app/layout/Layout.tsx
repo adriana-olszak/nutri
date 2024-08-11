@@ -6,13 +6,13 @@ import { Header } from './Header';
 
 export const Layout = () => {
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <div className="hidden border-r bg-muted/40 md:block">
+    <div className="grid h-screen w-full md:grid-cols-[180px_1fr] lg:grid-cols-[200px_1fr]">
         <Sidebar />
-      </div>
       <div className="flex flex-col">
         <Header />
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+        <main className="flex flex-1 flex-col gap-4 lg:gap-6 lg:p-6 max-h-screen overflow-hidden overflow-y-auto"
+        style={{maxHeight: 'calc(100vh - 60px)'}}
+        >
           <Outlet />
         </main>
       </div>
