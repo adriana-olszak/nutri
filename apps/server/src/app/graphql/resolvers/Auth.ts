@@ -7,21 +7,20 @@ import {
   RequestUserDto,
   RolesGuard
 } from '@nutri/server-auth';
-import gql from 'graphql-tag';
 import { GqlThrottlerGuard } from '../gql-throttler.guard';
-import {
-  AccountInfo,
-  AuthLoginInput,
-  AuthPasswordChangeInput,
-  AuthPasswordResetConfirmationInput,
-  AuthPasswordResetRequestInput,
-  AuthRegisterInput
-} from '../models';
 import { ConfigService } from '@nutri/server-config';
 import { PrismaService } from '@nutri/server-db-client';
 import { ApiErrors } from '@nutri/common-consts';
-import { AuthService, AuthSession } from '@nutri/server-auth';
+import { AuthService } from '@nutri/server-auth';
 import { Request, Response } from 'express';
+import { AuthLoginInput } from '../inputs/auth/auth-login.input';
+import { AuthPasswordResetRequestInput } from '../inputs/auth/auth-password-reset-request.input';
+import { AuthPasswordResetConfirmationInput } from '../inputs/auth/auth-password-reset-confirmation.input';
+import { AuthRegisterInput } from '../inputs/auth/auth-register.input';
+import { AuthPasswordChangeInput } from '../inputs/auth/auth-password-change.input';
+import { AuthSessionModel } from '../models/auth/auth-session.model';
+import { AuthAccountInfoModel } from '../models/auth/auth-account-info.model';
+import { AuthRefreshTokenModel } from '../models/auth/auth-refresh-token.model';
 
 @Resolver()
 @UseGuards(GqlThrottlerGuard)
@@ -34,11 +33,11 @@ export class AuthResolver {
   ) {
   }
 
-  @Mutation('authLogin')
+  @Mutation(() => AuthSessionModel, { name: 'authLogin' })
   async login(
     @Context() context: { req: Request; res: Response },
     @Args('data') { email, password }: AuthLoginInput
-  ): Promise<AuthSession> {
+  ): Promise<AuthSessionModel> {
     const session = await this.authService.login({
       email,
       password,
@@ -52,31 +51,38 @@ export class AuthResolver {
       userId: session.userId,
       accessToken: session.accessToken,
       roles: session.roles,
-      accessTokenExpiresAt: session.accessTokenExpiresAt,
+      accessTokenExpiresAt: session.accessTokenExpiresAt
     };
   }
 
-  @Query()
+  @Query(() => AuthAccountInfoModel)
   @UseGuards(RolesGuard())
-  async accountInfo(@CurrentUser() reqUser: RequestUserDto) {
+  async accountInfo(@CurrentUser() reqUser: RequestUserDto): Promise<AuthAccountInfoModel> {
     const user = await this.prisma.user.findUnique({
       where: { id: reqUser.id },
       select: { email: true, password: true, googleProfile: true }
     });
 
     if (!user) throw new UnauthorizedException(ApiErrors.Codes.USER_NOT_FOUND);
-
+    const googleProfile = user.googleProfile ? JSON.parse(user.googleProfile as string) : null;
     return {
       email: user.email,
       hasPassword: !!user.password,
-      googleProfile: user.googleProfile as AccountInfo['googleProfile']
-    } satisfies AccountInfo;
+      googleProfile: googleProfile ? {
+        email: googleProfile.email,
+        family_name: googleProfile.family_name,
+        name: googleProfile.name,
+        given_name: googleProfile.given_name,
+        locale: googleProfile.locale,
+        picture: googleProfile.picture
+      } : undefined
+    };
   }
 
-  @Mutation()
+  @Mutation(() => AuthRefreshTokenModel)
   async authRefreshToken(
     @Context() { req, res }: { req: Request, res: Response }
-  ) {
+  ): Promise<AuthRefreshTokenModel> {
     const refreshToken = req.cookies['refreshToken'];
 
     if (!refreshToken) {
@@ -93,25 +99,27 @@ export class AuthResolver {
     };
   }
 
-  @Mutation()
+  @Mutation(() => Boolean)
   async authPasswordResetRequest(
     @Args('data') args: AuthPasswordResetRequestInput
-  ) {
-    return this.authService.requestPasswordReset(args.email);
+  ): Promise<true> {
+    await this.authService.requestPasswordReset(args.email);
+    return true;
   }
 
-  @Mutation()
+  @Mutation(() => Boolean)
   async authPasswordResetConfirmation(
     @Args('data') args: AuthPasswordResetConfirmationInput
-  ) {
-    return this.authService.resetPassword(args.token, args.newPassword);
+  ): Promise<true> {
+    await this.authService.resetPassword(args.token, args.newPassword);
+    return true;
   }
 
-  @Mutation()
+  @Mutation(() => AuthSessionModel)
   async authRegister(
     @Args('data') args: AuthRegisterInput,
     @Context() context: { req: Request }
-  ): Promise<AuthSession> {
+  ): Promise<AuthSessionModel> {
     if (!this.config.publicRegistration) {
       throw new UnauthorizedException('No public registrations allowed');
     }
@@ -124,7 +132,7 @@ export class AuthResolver {
     });
   }
 
-  @Mutation()
+  @Mutation(() => Boolean)
   @UseGuards(RolesGuard())
   async authLogout(
     @Context() { req }: { req: Request },
@@ -135,17 +143,18 @@ export class AuthResolver {
     return true;
   }
 
-  @Mutation()
+  @Mutation(() => Boolean)
   @UseGuards(RolesGuard())
   async authPasswordChange(
     @Args('data') args: AuthPasswordChangeInput,
     @CurrentUser() reqUser: RequestUserDto
-  ) {
-    return this.authService.changePassword(
+  ): Promise<true> {
+    await this.authService.changePassword(
       reqUser.id,
       args.oldPassword,
       args.newPassword
     );
+    return true;
   }
 
   private _extractIpAddress(req: Request): string {
@@ -166,76 +175,3 @@ export class AuthResolver {
     });
   }
 }
-
-export const typeDefs = gql`
-  directive @public on FIELD_DEFINITION | OBJECT
-
-  extend type Query {
-    accountInfo: AccountInfo!
-  }
-
-  extend type Mutation {
-    authLogin(data: AuthLoginInput!): AuthSession! @public
-    authRefreshToken(data: AuthRefreshTokenInput): RefreshToken!
-    authPasswordResetRequest(data: AuthPasswordResetRequestInput!): Boolean @public
-    authPasswordChange(data: AuthPasswordChangeInput!): Boolean
-    authPasswordResetConfirmation(data: AuthPasswordResetConfirmationInput!): AuthSession!
-    authRegister(data: AuthRegisterInput!): AuthSession! @public
-    authLogout: Boolean!
-  }
-  type AuthSession {
-    userId: String!
-    accessToken: String!
-    accessTokenExpiresAt: DateTime!,
-    roles: [String!]!
-  }
-
-  type RefreshToken {
-    accessToken: String!
-    accessTokenExpiresAt: DateTime!,
-    refreshToken: String!
-  }
-
-  type GoogleProfile {
-    name: String
-    given_name: String
-    family_name: String
-    locale: String
-    email: String
-    picture: String
-  }
-
-  type AccountInfo {
-    email: String
-    hasPassword: Boolean!
-    googleProfile: GoogleProfile
-  }
-
-  input AuthLoginInput {
-    email: String!
-    password: String!
-  }
-
-  input AuthRefreshTokenInput {
-    refreshToken: String!
-  }
-
-  input AuthPasswordChangeInput {
-    oldPassword: String!
-    newPassword: String!
-  }
-
-  input AuthPasswordResetConfirmationInput {
-    newPassword: String!
-    token: String!
-  }
-
-  input AuthPasswordResetRequestInput {
-    email: String!
-  }
-
-  input AuthRegisterInput {
-    email: String!
-    password: String!
-  }
-`;

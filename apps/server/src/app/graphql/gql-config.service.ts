@@ -6,10 +6,7 @@ import {
 import { ApolloDriverConfig } from '@nestjs/apollo';
 import { Injectable } from '@nestjs/common';
 import { GqlOptionsFactory } from '@nestjs/graphql';
-import { print } from 'graphql';
-
-import { IContext } from './models';
-import { ALL_TYPE_DEFS } from './resolvers';
+import { IContext } from './interfaces';
 import { ConfigService } from '@nutri/server-config';
 
 // TODO https://dev.to/tugascript/nestjs-graphql-image-upload-to-a-s3-bucket-1njg
@@ -28,9 +25,9 @@ export class GqlConfigService implements GqlOptionsFactory {
       plugins.push(ApolloServerPluginLandingPageProductionDefault());
 
     return {
-      typeDefs:  print(ALL_TYPE_DEFS),
       playground: false,
       plugins,
+      autoSchemaFile: true,
       introspection: !!this.config.graphql.introspection,
       allowBatchedHttpRequests: true,
       csrfPrevention: this.config.graphql.csrfPrevention,
