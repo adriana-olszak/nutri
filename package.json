@@ -2,7 +2,11 @@
   "name": "@nutri/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "dev": "npx nx run-many -t serve",
+    "gen:gql:codegen": "npx nx run client-gql:gen",
+    "gen:prisma:client": "npx nx run server-db-client:generate-types"
+  },
   "private": true,
   "dependencies": {
     "@apollo/server": "^4.10.4",
