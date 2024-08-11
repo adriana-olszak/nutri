@@ -34,6 +34,7 @@
       ],
       "@nutri/server-db-client": ["libs/server/db-client/src/index.ts"],
       "@nutri/server-metrics": ["libs/server/metrics/src/index.ts"],
+      "@nutri/server-parse-recipe": ["libs/server/parse-recipe/src/index.ts"],
       "@nutri/server-testing": ["libs/server/testing/src/index.ts"],
       "@nutri/server-utils": ["libs/server/utils/src/index.ts"]
     }

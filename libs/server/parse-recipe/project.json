@@ -1,0 +1,9 @@
+{
+  "name": "server-parse-recipe",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/server/parse-recipe/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project server-parse-recipe --web",
+  "targets": {}
+}
