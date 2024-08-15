@@ -4,6 +4,7 @@ import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
 import { NullableIntFieldUpdateOperationsInput } from '../prisma/nullable-int-field-update-operations.input';
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input';
+import { RecipeInstructionsUpdateManyWithoutRecipeNestedInput } from '../recipe-instructions/recipe-instructions-update-many-without-recipe-nested.input';
 import { RecipePartUpdateManyWithoutRecipeNestedInput } from '../recipe-part/recipe-part-update-many-without-recipe-nested.input';
 import { RecipeIngredientUpdateManyWithoutRecipeNestedInput } from '../recipe-ingredient/recipe-ingredient-update-many-without-recipe-nested.input';
 import { RecipeCategoryUpdateManyWithoutRecipesNestedInput } from '../recipe-category/recipe-category-update-many-without-recipes-nested.input';
@@ -35,9 +36,6 @@ export class RecipeUpdateWithoutTagsInput {
     prepTime?: NullableStringFieldUpdateOperationsInput;
 
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
-    instructions?: NullableStringFieldUpdateOperationsInput;
-
-    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
     servingsText?: NullableStringFieldUpdateOperationsInput;
 
     @Field(() => NullableIntFieldUpdateOperationsInput, {nullable:true})
@@ -51,6 +49,9 @@ export class RecipeUpdateWithoutTagsInput {
 
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     updatedAt?: DateTimeFieldUpdateOperationsInput;
+
+    @Field(() => RecipeInstructionsUpdateManyWithoutRecipeNestedInput, {nullable:true})
+    instructions?: RecipeInstructionsUpdateManyWithoutRecipeNestedInput;
 
     @Field(() => RecipePartUpdateManyWithoutRecipeNestedInput, {nullable:true})
     parts?: RecipePartUpdateManyWithoutRecipeNestedInput;

@@ -6,4 +6,10 @@ export class RecipeIngredientSumAggregateInput {
 
     @Field(() => Boolean, {nullable:true})
     quantity?: true;
+
+    @Field(() => Boolean, {nullable:true})
+    minQuantity?: true;
+
+    @Field(() => Boolean, {nullable:true})
+    maxQuantity?: true;
 }

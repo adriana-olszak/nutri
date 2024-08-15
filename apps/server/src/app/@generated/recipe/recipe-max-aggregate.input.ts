@@ -26,9 +26,6 @@ export class RecipeMaxAggregateInput {
     prepTime?: true;
 
     @Field(() => Boolean, {nullable:true})
-    instructions?: true;
-
-    @Field(() => Boolean, {nullable:true})
     servingsText?: true;
 
     @Field(() => Boolean, {nullable:true})

@@ -1,6 +1,7 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { Int } from '@nestjs/graphql';
+import { RecipeInstructionsUncheckedCreateNestedManyWithoutRecipeInput } from '../recipe-instructions/recipe-instructions-unchecked-create-nested-many-without-recipe.input';
 import { RecipeIngredientUncheckedCreateNestedManyWithoutRecipeInput } from '../recipe-ingredient/recipe-ingredient-unchecked-create-nested-many-without-recipe.input';
 import { RecipeCategoryUncheckedCreateNestedManyWithoutRecipesInput } from '../recipe-category/recipe-category-unchecked-create-nested-many-without-recipes.input';
 import { RecipeImageUncheckedCreateNestedManyWithoutRecipeInput } from '../recipe-image/recipe-image-unchecked-create-nested-many-without-recipe.input';
@@ -32,9 +33,6 @@ export class RecipeUncheckedCreateWithoutPartsInput {
     prepTime?: string;
 
     @Field(() => String, {nullable:true})
-    instructions?: string;
-
-    @Field(() => String, {nullable:true})
     servingsText?: string;
 
     @Field(() => Int, {nullable:true})
@@ -48,6 +46,9 @@ export class RecipeUncheckedCreateWithoutPartsInput {
 
     @Field(() => Date, {nullable:true})
     updatedAt?: Date | string;
+
+    @Field(() => RecipeInstructionsUncheckedCreateNestedManyWithoutRecipeInput, {nullable:true})
+    instructions?: RecipeInstructionsUncheckedCreateNestedManyWithoutRecipeInput;
 
     @Field(() => RecipeIngredientUncheckedCreateNestedManyWithoutRecipeInput, {nullable:true})
     ingredients?: RecipeIngredientUncheckedCreateNestedManyWithoutRecipeInput;

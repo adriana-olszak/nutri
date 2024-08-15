@@ -6,6 +6,7 @@ import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
 import { FloatNullableFilter } from '../prisma/float-nullable-filter.input';
 import { FoodRelationFilter } from '../food/food-relation-filter.input';
 import { ImportInfoRelationFilter } from '../import-info/import-info-relation-filter.input';
+import { NutritionLabelNullableRelationFilter } from '../nutrition-label/nutrition-label-nullable-relation-filter.input';
 
 @InputType()
 export class BrandedFoodWhereUniqueInput {
@@ -51,4 +52,7 @@ export class BrandedFoodWhereUniqueInput {
 
     @Field(() => ImportInfoRelationFilter, {nullable:true})
     importInfo?: ImportInfoRelationFilter;
+
+    @Field(() => NutritionLabelNullableRelationFilter, {nullable:true})
+    nutritionLabel?: NutritionLabelNullableRelationFilter;
 }

@@ -4,6 +4,7 @@ import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
 import { NullableIntFieldUpdateOperationsInput } from '../prisma/nullable-int-field-update-operations.input';
 import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-update-operations.input';
+import { RecipeInstructionsUncheckedUpdateManyWithoutRecipeNestedInput } from '../recipe-instructions/recipe-instructions-unchecked-update-many-without-recipe-nested.input';
 import { RecipePartUncheckedUpdateManyWithoutRecipeNestedInput } from '../recipe-part/recipe-part-unchecked-update-many-without-recipe-nested.input';
 import { RecipeIngredientUncheckedUpdateManyWithoutRecipeNestedInput } from '../recipe-ingredient/recipe-ingredient-unchecked-update-many-without-recipe-nested.input';
 import { RecipeCategoryUncheckedUpdateManyWithoutRecipesNestedInput } from '../recipe-category/recipe-category-unchecked-update-many-without-recipes-nested.input';
@@ -35,9 +36,6 @@ export class RecipeUncheckedUpdateWithoutTagsInput {
     prepTime?: NullableStringFieldUpdateOperationsInput;
 
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
-    instructions?: NullableStringFieldUpdateOperationsInput;
-
-    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
     servingsText?: NullableStringFieldUpdateOperationsInput;
 
     @Field(() => NullableIntFieldUpdateOperationsInput, {nullable:true})
@@ -51,6 +49,9 @@ export class RecipeUncheckedUpdateWithoutTagsInput {
 
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     updatedAt?: DateTimeFieldUpdateOperationsInput;
+
+    @Field(() => RecipeInstructionsUncheckedUpdateManyWithoutRecipeNestedInput, {nullable:true})
+    instructions?: RecipeInstructionsUncheckedUpdateManyWithoutRecipeNestedInput;
 
     @Field(() => RecipePartUncheckedUpdateManyWithoutRecipeNestedInput, {nullable:true})
     parts?: RecipePartUncheckedUpdateManyWithoutRecipeNestedInput;

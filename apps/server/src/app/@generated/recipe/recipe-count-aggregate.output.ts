@@ -27,9 +27,6 @@ export class RecipeCountAggregate {
     prepTime!: number;
 
     @Field(() => Int, {nullable:false})
-    instructions!: number;
-
-    @Field(() => Int, {nullable:false})
     servingsText!: number;
 
     @Field(() => Int, {nullable:false})

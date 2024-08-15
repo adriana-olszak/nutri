@@ -46,7 +46,7 @@ export async function importBrandedFoods(prisma: PrismaTransactionalClient, food
       },
       create: {
         id: foodUuid,
-        description,
+        description:`${description} | ${brandOwner}`,
         sourceId: String(fdcId),
         importInfoId,
         brandedFood: {

@@ -3,6 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { Float } from '@nestjs/graphql';
 import { FoodCreateNestedOneWithoutBrandedFoodInput } from '../food/food-create-nested-one-without-branded-food.input';
 import { ImportInfoCreateNestedOneWithoutBrandedFoodsInput } from '../import-info/import-info-create-nested-one-without-branded-foods.input';
+import { NutritionLabelCreateNestedOneWithoutBrandedFoodInput } from '../nutrition-label/nutrition-label-create-nested-one-without-branded-food.input';
 
 @InputType()
 export class BrandedFoodCreateInput {
@@ -33,4 +34,7 @@ export class BrandedFoodCreateInput {
 
     @Field(() => ImportInfoCreateNestedOneWithoutBrandedFoodsInput, {nullable:false})
     importInfo!: ImportInfoCreateNestedOneWithoutBrandedFoodsInput;
+
+    @Field(() => NutritionLabelCreateNestedOneWithoutBrandedFoodInput, {nullable:true})
+    nutritionLabel?: NutritionLabelCreateNestedOneWithoutBrandedFoodInput;
 }

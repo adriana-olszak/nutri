@@ -20,5 +20,23 @@ export class RecipeIngredientMaxAggregateInput {
     quantity?: true;
 
     @Field(() => Boolean, {nullable:true})
+    quantityText?: true;
+
+    @Field(() => Boolean, {nullable:true})
+    minQuantity?: true;
+
+    @Field(() => Boolean, {nullable:true})
+    maxQuantity?: true;
+
+    @Field(() => Boolean, {nullable:true})
     unit?: true;
+
+    @Field(() => Boolean, {nullable:true})
+    unitText?: true;
+
+    @Field(() => Boolean, {nullable:true})
+    ingredientText?: true;
+
+    @Field(() => Boolean, {nullable:true})
+    extraInfo?: true;
 }

@@ -27,9 +27,6 @@ export class RecipeCountOrderByAggregateInput {
     prepTime?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})
-    instructions?: keyof typeof SortOrder;
-
-    @Field(() => SortOrder, {nullable:true})
     servingsText?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})

@@ -152,6 +152,9 @@ model Food {
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
   RecipeIngredient RecipeIngredient[]
+
+  @@index([id, description]) // Composite index for JOIN conditions
+  @@index([description(ops: raw("gin_trgm_ops"))], type: Gin)
 }
 
 // Stores search vectors for efficient food searching
@@ -215,6 +218,7 @@ model BrandedFood {
 
   @@index([brandOwner])
   @@index([gtinUpc])
+  @@index([foodId]) // Covering index including id for JOIN conditions
 }
 
 // Represents nutritional label information for branded foods
@@ -446,4 +450,39 @@ model RecipeCategory {
   id      String   @id @default(uuid())
   name    String   @unique
   recipes Recipe[]
+}
+
+model TableViewDefinition {
+  id         String       @id @default(uuid())
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  userId     String?
+  tableId    String
+  tableType  String
+  name       String
+  order      Int
+  icon       String?
+  filters    String?
+  sorting    String?
+  isPreset   Boolean      @default(false)
+  isShared   Boolean      @default(false)
+  ColumnView ColumnView[]
+
+  @@index([userId])
+  @@index([tableType])
+}
+
+model ColumnView {
+  id         String  @id @default(uuid())
+  columnId   Int
+  columnType String
+  width      Int
+  visible    Boolean
+  name       String
+  filter     String?
+
+  tableViewDefinition   TableViewDefinition @relation(fields: [tableViewDefinitionId], references: [id])
+  tableViewDefinitionId String
+
+  @@index([tableViewDefinitionId])
 }

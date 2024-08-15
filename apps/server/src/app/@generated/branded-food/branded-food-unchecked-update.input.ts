@@ -3,6 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-operations.input';
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
 import { NullableFloatFieldUpdateOperationsInput } from '../prisma/nullable-float-field-update-operations.input';
+import { NutritionLabelUncheckedUpdateOneWithoutBrandedFoodNestedInput } from '../nutrition-label/nutrition-label-unchecked-update-one-without-branded-food-nested.input';
 
 @InputType()
 export class BrandedFoodUncheckedUpdateInput {
@@ -33,4 +34,7 @@ export class BrandedFoodUncheckedUpdateInput {
 
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     importInfoId?: StringFieldUpdateOperationsInput;
+
+    @Field(() => NutritionLabelUncheckedUpdateOneWithoutBrandedFoodNestedInput, {nullable:true})
+    nutritionLabel?: NutritionLabelUncheckedUpdateOneWithoutBrandedFoodNestedInput;
 }

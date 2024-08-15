@@ -21,5 +21,23 @@ export class RecipeIngredientMinOrderByAggregateInput {
     quantity?: keyof typeof SortOrder;
 
     @Field(() => SortOrder, {nullable:true})
+    quantityText?: keyof typeof SortOrder;
+
+    @Field(() => SortOrder, {nullable:true})
+    minQuantity?: keyof typeof SortOrder;
+
+    @Field(() => SortOrder, {nullable:true})
+    maxQuantity?: keyof typeof SortOrder;
+
+    @Field(() => SortOrder, {nullable:true})
     unit?: keyof typeof SortOrder;
+
+    @Field(() => SortOrder, {nullable:true})
+    unitText?: keyof typeof SortOrder;
+
+    @Field(() => SortOrder, {nullable:true})
+    ingredientText?: keyof typeof SortOrder;
+
+    @Field(() => SortOrder, {nullable:true})
+    extraInfo?: keyof typeof SortOrder;
 }

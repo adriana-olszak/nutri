@@ -2,6 +2,7 @@ import { Field } from '@nestjs/graphql';
 import { ObjectType } from '@nestjs/graphql';
 import { ID } from '@nestjs/graphql';
 import { Int } from '@nestjs/graphql';
+import { RecipeInstructions } from '../recipe-instructions/recipe-instructions.model';
 import { RecipePart } from '../recipe-part/recipe-part.model';
 import { RecipeIngredient } from '../recipe-ingredient/recipe-ingredient.model';
 import { RecipeCategory } from '../recipe-category/recipe-category.model';
@@ -35,9 +36,6 @@ export class Recipe {
     prepTime!: string | null;
 
     @Field(() => String, {nullable:true})
-    instructions!: string | null;
-
-    @Field(() => String, {nullable:true})
     servingsText!: string | null;
 
     @Field(() => Int, {nullable:true})
@@ -51,6 +49,9 @@ export class Recipe {
 
     @Field(() => Date, {nullable:false})
     updatedAt!: Date;
+
+    @Field(() => [RecipeInstructions], {nullable:true})
+    instructions?: Array<RecipeInstructions>;
 
     @Field(() => [RecipePart], {nullable:true})
     parts?: Array<RecipePart>;

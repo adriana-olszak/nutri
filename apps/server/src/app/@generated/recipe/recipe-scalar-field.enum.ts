@@ -8,7 +8,6 @@ export enum RecipeScalarFieldEnum {
     description = "description",
     cookingTime = "cookingTime",
     prepTime = "prepTime",
-    instructions = "instructions",
     servingsText = "servingsText",
     servingsMin = "servingsMin",
     servingsMax = "servingsMax",

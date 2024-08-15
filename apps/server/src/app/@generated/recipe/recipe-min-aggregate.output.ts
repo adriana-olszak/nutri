@@ -27,9 +27,6 @@ export class RecipeMinAggregate {
     prepTime?: string;
 
     @Field(() => String, {nullable:true})
-    instructions?: string;
-
-    @Field(() => String, {nullable:true})
     servingsText?: string;
 
     @Field(() => Int, {nullable:true})

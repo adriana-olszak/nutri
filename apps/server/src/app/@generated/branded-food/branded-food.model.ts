@@ -4,6 +4,7 @@ import { ID } from '@nestjs/graphql';
 import { Float } from '@nestjs/graphql';
 import { Food } from '../food/food.model';
 import { ImportInfo } from '../import-info/import-info.model';
+import { NutritionLabel } from '../nutrition-label/nutrition-label.model';
 
 @ObjectType()
 export class BrandedFood {
@@ -40,4 +41,7 @@ export class BrandedFood {
 
     @Field(() => ImportInfo, {nullable:false})
     importInfo?: ImportInfo;
+
+    @Field(() => NutritionLabel, {nullable:true})
+    nutritionLabel?: NutritionLabel | null;
 }

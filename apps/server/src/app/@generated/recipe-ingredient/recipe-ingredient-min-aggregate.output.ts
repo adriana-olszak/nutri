@@ -21,5 +21,23 @@ export class RecipeIngredientMinAggregate {
     quantity?: number;
 
     @Field(() => String, {nullable:true})
+    quantityText?: string;
+
+    @Field(() => Float, {nullable:true})
+    minQuantity?: number;
+
+    @Field(() => Float, {nullable:true})
+    maxQuantity?: number;
+
+    @Field(() => String, {nullable:true})
     unit?: string;
+
+    @Field(() => String, {nullable:true})
+    unitText?: string;
+
+    @Field(() => String, {nullable:true})
+    ingredientText?: string;
+
+    @Field(() => String, {nullable:true})
+    extraInfo?: string;
 }

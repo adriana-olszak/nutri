@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { ParsedRecipe, ParsedIngredient, ParsedImage, EntityType, EntityHandler } from './types';
 
 export async function populateDatabase(prisma: PrismaClient, parsedRecipes: ParsedRecipe[]) {
@@ -25,15 +25,19 @@ async function createRecipe(prisma: PrismaClient, recipe: ParsedRecipe) {
 async function createRecipeImages(prisma: PrismaClient, recipeId: string, images: ParsedImage[]) {
   for (const image of images) {
     try {
-      await prisma.recipeImage.create({
-        data: {
-          recipeId,
-          url: image.url,
-          altText: image.altText,
-          width: image.width,
-          height: image.height
-        }
+      const imageEntity = await prisma.recipeImage.findFirst({
+        where: { url: image.url, recipeId }
       });
+      if (!imageEntity)
+        await prisma.recipeImage.create({
+          data: {
+            recipeId,
+            url: image.url,
+            altText: image.altText,
+            width: image.width,
+            height: image.height
+          }
+        });
     } catch (error) {
       console.error(`Error creating image for recipe ${recipeId}: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -131,8 +135,10 @@ async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, i
 }
 
 async function findOrCreateFood(prisma: PrismaClient, foodName: string) {
+  const matches = await matchIngredientToFood(prisma, foodName);
+
   let food = await prisma.food.findFirst({
-    where: { description: { contains: foodName, mode: 'insensitive' } }
+    where: { description: { contains: foodName, mode: 'insensitive' }, id: { in: matches.map(m => m.foodId) } }
   });
 
   if (!food) {
@@ -185,4 +191,18 @@ export async function findOrCreateRecipe(prisma: PrismaClient, recipeData: Parse
   } catch (error) {
     throw new Error(`Error finding or creating recipe "${recipeData.title}": ${error instanceof Error ? error.message : String(error)}`);
   }
+}
+
+
+export async function matchIngredientToFood(prisma: PrismaClient, ingredientName: string) {
+  const searchQuery = Prisma.sql`
+    select fv.id, fv."foodId", fv."searchVector",
+       ts_rank(fv."searchVector", plainto_tsquery('${ingredientName}')) as rank
+from "FoodSearchVector" fv
+where fv."searchVector" @@ plainto_tsquery('${ingredientName}')
+order by rank desc
+limit 10;
+  `;
+
+  return await prisma.$queryRaw<{ foodId: string }[]>(searchQuery);
 }

@@ -6,7 +6,13 @@ export enum RecipeIngredientScalarFieldEnum {
     partId = "partId",
     foodId = "foodId",
     quantity = "quantity",
-    unit = "unit"
+    quantityText = "quantityText",
+    minQuantity = "minQuantity",
+    maxQuantity = "maxQuantity",
+    unit = "unit",
+    unitText = "unitText",
+    ingredientText = "ingredientText",
+    extraInfo = "extraInfo"
 }
 
 

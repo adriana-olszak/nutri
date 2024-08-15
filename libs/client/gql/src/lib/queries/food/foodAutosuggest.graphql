@@ -1,0 +1,10 @@
+query FoodAutosuggest($input: FoodSearchInput!, $limit: Int) {
+	foodAutosuggest(input: $input, limit: $limit) {
+		description
+		rank
+		food {
+			description
+			id
+		}
+	}
+}

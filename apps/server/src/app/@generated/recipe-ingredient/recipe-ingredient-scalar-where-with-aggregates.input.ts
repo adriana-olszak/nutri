@@ -3,6 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { StringWithAggregatesFilter } from '../prisma/string-with-aggregates-filter.input';
 import { StringNullableWithAggregatesFilter } from '../prisma/string-nullable-with-aggregates-filter.input';
 import { FloatWithAggregatesFilter } from '../prisma/float-with-aggregates-filter.input';
+import { FloatNullableWithAggregatesFilter } from '../prisma/float-nullable-with-aggregates-filter.input';
 
 @InputType()
 export class RecipeIngredientScalarWhereWithAggregatesInput {
@@ -31,6 +32,24 @@ export class RecipeIngredientScalarWhereWithAggregatesInput {
     @Field(() => FloatWithAggregatesFilter, {nullable:true})
     quantity?: FloatWithAggregatesFilter;
 
+    @Field(() => StringNullableWithAggregatesFilter, {nullable:true})
+    quantityText?: StringNullableWithAggregatesFilter;
+
+    @Field(() => FloatNullableWithAggregatesFilter, {nullable:true})
+    minQuantity?: FloatNullableWithAggregatesFilter;
+
+    @Field(() => FloatNullableWithAggregatesFilter, {nullable:true})
+    maxQuantity?: FloatNullableWithAggregatesFilter;
+
     @Field(() => StringWithAggregatesFilter, {nullable:true})
     unit?: StringWithAggregatesFilter;
+
+    @Field(() => StringNullableWithAggregatesFilter, {nullable:true})
+    unitText?: StringNullableWithAggregatesFilter;
+
+    @Field(() => StringNullableWithAggregatesFilter, {nullable:true})
+    ingredientText?: StringNullableWithAggregatesFilter;
+
+    @Field(() => StringNullableWithAggregatesFilter, {nullable:true})
+    extraInfo?: StringNullableWithAggregatesFilter;
 }

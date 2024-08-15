@@ -4,6 +4,7 @@ import { StringFilter } from '../prisma/string-filter.input';
 import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
 import { IntNullableFilter } from '../prisma/int-nullable-filter.input';
 import { DateTimeFilter } from '../prisma/date-time-filter.input';
+import { RecipeInstructionsListRelationFilter } from '../recipe-instructions/recipe-instructions-list-relation-filter.input';
 import { RecipePartListRelationFilter } from '../recipe-part/recipe-part-list-relation-filter.input';
 import { RecipeIngredientListRelationFilter } from '../recipe-ingredient/recipe-ingredient-list-relation-filter.input';
 import { RecipeCategoryListRelationFilter } from '../recipe-category/recipe-category-list-relation-filter.input';
@@ -45,9 +46,6 @@ export class RecipeWhereInput {
     prepTime?: StringNullableFilter;
 
     @Field(() => StringNullableFilter, {nullable:true})
-    instructions?: StringNullableFilter;
-
-    @Field(() => StringNullableFilter, {nullable:true})
     servingsText?: StringNullableFilter;
 
     @Field(() => IntNullableFilter, {nullable:true})
@@ -61,6 +59,9 @@ export class RecipeWhereInput {
 
     @Field(() => DateTimeFilter, {nullable:true})
     updatedAt?: DateTimeFilter;
+
+    @Field(() => RecipeInstructionsListRelationFilter, {nullable:true})
+    instructions?: RecipeInstructionsListRelationFilter;
 
     @Field(() => RecipePartListRelationFilter, {nullable:true})
     parts?: RecipePartListRelationFilter;

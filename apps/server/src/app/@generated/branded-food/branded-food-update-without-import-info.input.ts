@@ -4,6 +4,7 @@ import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
 import { NullableFloatFieldUpdateOperationsInput } from '../prisma/nullable-float-field-update-operations.input';
 import { FoodUpdateOneRequiredWithoutBrandedFoodNestedInput } from '../food/food-update-one-required-without-branded-food-nested.input';
+import { NutritionLabelUpdateOneWithoutBrandedFoodNestedInput } from '../nutrition-label/nutrition-label-update-one-without-branded-food-nested.input';
 
 @InputType()
 export class BrandedFoodUpdateWithoutImportInfoInput {
@@ -31,4 +32,7 @@ export class BrandedFoodUpdateWithoutImportInfoInput {
 
     @Field(() => FoodUpdateOneRequiredWithoutBrandedFoodNestedInput, {nullable:true})
     food?: FoodUpdateOneRequiredWithoutBrandedFoodNestedInput;
+
+    @Field(() => NutritionLabelUpdateOneWithoutBrandedFoodNestedInput, {nullable:true})
+    nutritionLabel?: NutritionLabelUpdateOneWithoutBrandedFoodNestedInput;
 }

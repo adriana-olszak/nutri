@@ -33,9 +33,6 @@ export class RecipeOrderByWithAggregationInput {
     prepTime?: SortOrderInput;
 
     @Field(() => SortOrderInput, {nullable:true})
-    instructions?: SortOrderInput;
-
-    @Field(() => SortOrderInput, {nullable:true})
     servingsText?: SortOrderInput;
 
     @Field(() => SortOrderInput, {nullable:true})

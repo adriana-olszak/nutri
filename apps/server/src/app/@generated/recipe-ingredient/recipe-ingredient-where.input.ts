@@ -3,6 +3,7 @@ import { InputType } from '@nestjs/graphql';
 import { StringFilter } from '../prisma/string-filter.input';
 import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
 import { FloatFilter } from '../prisma/float-filter.input';
+import { FloatNullableFilter } from '../prisma/float-nullable-filter.input';
 import { RecipeRelationFilter } from '../recipe/recipe-relation-filter.input';
 import { RecipePartNullableRelationFilter } from '../recipe-part/recipe-part-nullable-relation-filter.input';
 import { FoodRelationFilter } from '../food/food-relation-filter.input';
@@ -34,8 +35,26 @@ export class RecipeIngredientWhereInput {
     @Field(() => FloatFilter, {nullable:true})
     quantity?: FloatFilter;
 
+    @Field(() => StringNullableFilter, {nullable:true})
+    quantityText?: StringNullableFilter;
+
+    @Field(() => FloatNullableFilter, {nullable:true})
+    minQuantity?: FloatNullableFilter;
+
+    @Field(() => FloatNullableFilter, {nullable:true})
+    maxQuantity?: FloatNullableFilter;
+
     @Field(() => StringFilter, {nullable:true})
     unit?: StringFilter;
+
+    @Field(() => StringNullableFilter, {nullable:true})
+    unitText?: StringNullableFilter;
+
+    @Field(() => StringNullableFilter, {nullable:true})
+    ingredientText?: StringNullableFilter;
+
+    @Field(() => StringNullableFilter, {nullable:true})
+    extraInfo?: StringNullableFilter;
 
     @Field(() => RecipeRelationFilter, {nullable:true})
     recipe?: RecipeRelationFilter;

@@ -1,5 +1,6 @@
 import { AuthResolver } from './auth.resolver';
 import { RecipeResolver } from './recipe.resolver';
-import { FoodResolver } from './food.resolver';
+import { TableViewDefinitionResolver } from './table-view-definition.resolver';
+import { FOOD_RESOLVERS } from './food';
 
-export const ALL_RESOLVERS = [AuthResolver, RecipeResolver, FoodResolver];
+export const ALL_RESOLVERS = [AuthResolver, RecipeResolver, ...FOOD_RESOLVERS, TableViewDefinitionResolver];

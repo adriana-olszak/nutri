@@ -4,6 +4,7 @@ import { SortOrder } from '../prisma/sort-order.enum';
 import { SortOrderInput } from '../prisma/sort-order.input';
 import { FoodOrderByWithRelationInput } from '../food/food-order-by-with-relation.input';
 import { ImportInfoOrderByWithRelationInput } from '../import-info/import-info-order-by-with-relation.input';
+import { NutritionLabelOrderByWithRelationInput } from '../nutrition-label/nutrition-label-order-by-with-relation.input';
 
 @InputType()
 export class BrandedFoodOrderByWithRelationInput {
@@ -40,4 +41,7 @@ export class BrandedFoodOrderByWithRelationInput {
 
     @Field(() => ImportInfoOrderByWithRelationInput, {nullable:true})
     importInfo?: ImportInfoOrderByWithRelationInput;
+
+    @Field(() => NutritionLabelOrderByWithRelationInput, {nullable:true})
+    nutritionLabel?: NutritionLabelOrderByWithRelationInput;
 }

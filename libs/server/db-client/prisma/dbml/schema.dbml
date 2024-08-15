@@ -350,6 +350,35 @@ Table RecipeCategory {
   recipes Recipe [not null]
 }
 
+Table TableViewDefinition {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String
+  tableId String [not null]
+  tableType String [not null]
+  name String [not null]
+  order Int [not null]
+  icon String
+  filters String
+  sorting String
+  isPreset Boolean [not null, default: false]
+  isShared Boolean [not null, default: false]
+  ColumnView ColumnView [not null]
+}
+
+Table ColumnView {
+  id String [pk]
+  columnId Int [not null]
+  columnType String [not null]
+  width Int [not null]
+  visible Boolean [not null]
+  name String [not null]
+  filter String
+  tableViewDefinition TableViewDefinition [not null]
+  tableViewDefinitionId String [not null]
+}
+
 Table RecipeToRecipeCategory {
   categoriesId String [ref: > RecipeCategory.id]
   recipesId String [ref: > Recipe.id]
@@ -440,3 +469,5 @@ Ref: RecipeIngredient.recipeId > Recipe.id
 Ref: RecipeIngredient.partId > RecipePart.id
 
 Ref: RecipeIngredient.foodId > Food.id
+
+Ref: ColumnView.tableViewDefinitionId > TableViewDefinition.id

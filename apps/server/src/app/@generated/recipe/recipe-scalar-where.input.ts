@@ -39,9 +39,6 @@ export class RecipeScalarWhereInput {
     prepTime?: StringNullableFilter;
 
     @Field(() => StringNullableFilter, {nullable:true})
-    instructions?: StringNullableFilter;
-
-    @Field(() => StringNullableFilter, {nullable:true})
     servingsText?: StringNullableFilter;
 
     @Field(() => IntNullableFilter, {nullable:true})

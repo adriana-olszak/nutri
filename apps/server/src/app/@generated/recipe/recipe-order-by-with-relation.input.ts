@@ -2,6 +2,7 @@ import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { SortOrder } from '../prisma/sort-order.enum';
 import { SortOrderInput } from '../prisma/sort-order.input';
+import { RecipeInstructionsOrderByRelationAggregateInput } from '../recipe-instructions/recipe-instructions-order-by-relation-aggregate.input';
 import { RecipePartOrderByRelationAggregateInput } from '../recipe-part/recipe-part-order-by-relation-aggregate.input';
 import { RecipeIngredientOrderByRelationAggregateInput } from '../recipe-ingredient/recipe-ingredient-order-by-relation-aggregate.input';
 import { RecipeCategoryOrderByRelationAggregateInput } from '../recipe-category/recipe-category-order-by-relation-aggregate.input';
@@ -34,9 +35,6 @@ export class RecipeOrderByWithRelationInput {
     prepTime?: SortOrderInput;
 
     @Field(() => SortOrderInput, {nullable:true})
-    instructions?: SortOrderInput;
-
-    @Field(() => SortOrderInput, {nullable:true})
     servingsText?: SortOrderInput;
 
     @Field(() => SortOrderInput, {nullable:true})
@@ -50,6 +48,9 @@ export class RecipeOrderByWithRelationInput {
 
     @Field(() => SortOrder, {nullable:true})
     updatedAt?: keyof typeof SortOrder;
+
+    @Field(() => RecipeInstructionsOrderByRelationAggregateInput, {nullable:true})
+    instructions?: RecipeInstructionsOrderByRelationAggregateInput;
 
     @Field(() => RecipePartOrderByRelationAggregateInput, {nullable:true})
     parts?: RecipePartOrderByRelationAggregateInput;

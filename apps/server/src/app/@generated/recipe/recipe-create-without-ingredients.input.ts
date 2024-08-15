@@ -1,6 +1,7 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { Int } from '@nestjs/graphql';
+import { RecipeInstructionsCreateNestedManyWithoutRecipeInput } from '../recipe-instructions/recipe-instructions-create-nested-many-without-recipe.input';
 import { RecipePartCreateNestedManyWithoutRecipeInput } from '../recipe-part/recipe-part-create-nested-many-without-recipe.input';
 import { RecipeCategoryCreateNestedManyWithoutRecipesInput } from '../recipe-category/recipe-category-create-nested-many-without-recipes.input';
 import { RecipeImageCreateNestedManyWithoutRecipeInput } from '../recipe-image/recipe-image-create-nested-many-without-recipe.input';
@@ -32,9 +33,6 @@ export class RecipeCreateWithoutIngredientsInput {
     prepTime?: string;
 
     @Field(() => String, {nullable:true})
-    instructions?: string;
-
-    @Field(() => String, {nullable:true})
     servingsText?: string;
 
     @Field(() => Int, {nullable:true})
@@ -48,6 +46,9 @@ export class RecipeCreateWithoutIngredientsInput {
 
     @Field(() => Date, {nullable:true})
     updatedAt?: Date | string;
+
+    @Field(() => RecipeInstructionsCreateNestedManyWithoutRecipeInput, {nullable:true})
+    instructions?: RecipeInstructionsCreateNestedManyWithoutRecipeInput;
 
     @Field(() => RecipePartCreateNestedManyWithoutRecipeInput, {nullable:true})
     parts?: RecipePartCreateNestedManyWithoutRecipeInput;

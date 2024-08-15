@@ -21,7 +21,25 @@ export class RecipeIngredientCountAggregate {
     quantity!: number;
 
     @Field(() => Int, {nullable:false})
+    quantityText!: number;
+
+    @Field(() => Int, {nullable:false})
+    minQuantity!: number;
+
+    @Field(() => Int, {nullable:false})
+    maxQuantity!: number;
+
+    @Field(() => Int, {nullable:false})
     unit!: number;
+
+    @Field(() => Int, {nullable:false})
+    unitText!: number;
+
+    @Field(() => Int, {nullable:false})
+    ingredientText!: number;
+
+    @Field(() => Int, {nullable:false})
+    extraInfo!: number;
 
     @Field(() => Int, {nullable:false})
     _all!: number;
