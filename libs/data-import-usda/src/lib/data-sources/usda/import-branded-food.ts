@@ -1,41 +1,38 @@
-import { FoundationFoodItem } from './interfaces';
 import { v4 as uuid } from 'uuid';
 import { PrismaTransactionalClient } from '@nutri/server-db-client';
-import {Prisma} from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { BrandedFoodItemModel } from './models';
 
-export async function importFoundationFood(prisma: PrismaTransactionalClient, foodItem: FoundationFoodItem, importInfoId: string) {
+export async function importBrandedFoods(prisma: PrismaTransactionalClient, foodItem: BrandedFoodItemModel, importInfoId: string) {
   const {
     fdcId,
     description,
-    foodCategory,
+    brandedFoodCategory,
+    brandOwner,
     foodClass,
     foodNutrients,
-    foodPortions,
-    nutrientConversionFactors,
     dataType,
-    scientificName,
-    foodComponents,
-    footNote,
-    inputFoods
+    gtinUpc,
+    ingredients,
+    labelNutrients,
+    householdServingFullText,
+    servingSize,
+    servingSizeUnit
   } = foodItem;
-
-  (nutrientConversionFactors || []).map((conversionFactor) => {
-    const { type, value } = conversionFactor;
-  });
 
   const foodUuid = uuid();
 
   const { id: foodCategoryId } = await prisma.foodCategory.upsert({
-    where: { sourceId: String(foodCategory.description) },
+    where: { sourceId: String(brandedFoodCategory) },
     update: {
-      description: foodCategory.description
+      description: brandedFoodCategory
     },
     create: {
       id: uuid(),
-      description: foodCategory.description,
+      description: brandedFoodCategory,
       level: 1,
       importInfoId,
-      sourceId: String(foodCategory.description)
+      sourceId: String(brandedFoodCategory)
     },
     select: {
       id: true
@@ -45,15 +42,49 @@ export async function importFoundationFood(prisma: PrismaTransactionalClient, fo
   await prisma.food.upsert({
       where: { sourceId: String(fdcId) },
       update: {
-        scientificName,
         importInfoId
       },
       create: {
         id: foodUuid,
         description,
         sourceId: String(fdcId),
-        scientificName,
         importInfoId,
+        brandedFood: {
+          create: {
+            id: uuid(),
+            brandOwner,
+            gtinUpc,
+            ingredients,
+            servingSize,
+            servingUnit: servingSizeUnit,
+            sourceId: String(fdcId),
+            nutritionLabel: {
+              create: {
+                id: uuid(),
+                calories: labelNutrients?.calories?.value,
+                totalFat: labelNutrients?.fat?.value,
+                saturatedFat: labelNutrients?.saturatedFat?.value,
+                transFat: labelNutrients?.transFat?.value,
+                cholesterol: labelNutrients?.cholesterol?.value,
+                sodium: labelNutrients?.sodium?.value,
+                totalCarbohydrate: labelNutrients?.carbohydrates?.value,
+                dietaryFiber: labelNutrients?.fiber?.value,
+                totalSugars: labelNutrients?.sugars?.value,
+                addedSugars: labelNutrients?.addedSugar?.value,
+                protein: labelNutrients?.protein?.value,
+                calcium: labelNutrients?.calcium?.value,
+                iron: labelNutrients?.iron?.value,
+                potassium: labelNutrients?.potassium?.value,
+                householdServingFullText: householdServingFullText,
+              }
+            },
+            importInfo: {
+              connect: {
+                id: importInfoId
+              }
+            }
+          }
+        },
         nutrients: {
           create: (foodNutrients || []).map(({ nutrient, amount, id, max, median, min }) => {
             if (!amount) return;
@@ -87,34 +118,6 @@ export async function importFoundationFood(prisma: PrismaTransactionalClient, fo
             };
           }).filter(Boolean)
         },
-        portions: {
-          create: (foodPortions || []).map(({ amount, gramWeight, id, measureUnit, portionDescription }) => ({
-            amount,
-            gramWeight,
-            id: uuid(),
-            measureUnit: {
-              connectOrCreate: {
-                where: { name: measureUnit.name },
-                create: {
-                  name: measureUnit.name.trim(),
-                  importInfo: {
-                    connect: {
-                      id: importInfoId
-                    }
-                  }
-
-                }
-              }
-            },
-            portionDescription,
-            sourceId: String(id),
-            importInfo: {
-              connect: {
-                id: importInfoId
-              }
-            }
-          }))
-        },
         categories: {
           create: {
             isPrimaryCategory: true,
@@ -146,20 +149,20 @@ export async function importFoundationFood(prisma: PrismaTransactionalClient, fo
   await populateFoodSearchVector(prisma, {
     foodId: foodUuid,
     description,
-    categoryDescription: foodCategory.description
+    brandName: brandOwner
   });
 }
 
 export async function populateFoodSearchVector(prisma: PrismaTransactionalClient, params: {
   foodId: string,
   description: string,
-  categoryDescription: string
+  brandName: string
 }) {
-  const { foodId, description } = params;
-
+  const { foodId, description, brandName } = params;
+  const vector = `${description} ${brandName}`;
   const upsertQuery = Prisma.sql`
     INSERT INTO "FoodSearchVector" ("id", "foodId", "languageCode", "searchVector")
-    VALUES (${uuid()}, ${foodId}, 'en', to_tsvector(${description}));
+    VALUES (${uuid()}, ${foodId}, 'en', to_tsvector(${vector}));
   `;
 
   await prisma.$executeRaw(upsertQuery);

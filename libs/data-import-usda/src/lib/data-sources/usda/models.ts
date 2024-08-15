@@ -207,6 +207,11 @@ export class BrandedFoodItemLabelNutrientsModel implements BrandedFoodItemLabelN
 
   @IsOptional()
   @ValidateNested()
+  @Type(() => BrandedFoodItemLabelNutrientsSugarsModel)
+  addedSugar?: BrandedFoodItemLabelNutrientsSugarsModel;
+
+  @IsOptional()
+  @ValidateNested()
   @Type(() => BrandedFoodItemLabelNutrientsProteinModel)
   protein?: BrandedFoodItemLabelNutrientsProteinModel;
 

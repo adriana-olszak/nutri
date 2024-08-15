@@ -5,3 +5,5 @@ data_sources:
     files:
       - name: foundationDownload
         path: ./__data__/foundationDownload.json
+      - name: brandedDownload
+        path: ./__data__/brandedDownload.json

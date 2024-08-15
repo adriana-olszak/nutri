@@ -298,6 +298,12 @@ export interface BrandedFoodItemLabelNutrients {
   sugars?: BrandedFoodItemLabelNutrientsSugars;
   /**
    *
+   * @type {BrandedFoodItemLabelNutrientsSugars}
+   * @memberof BrandedFoodItemLabelNutrients
+   */
+  addedSugar?: BrandedFoodItemLabelNutrientsSugars;
+  /**
+   *
    * @type {BrandedFoodItemLabelNutrientsProtein}
    * @memberof BrandedFoodItemLabelNutrients
    */

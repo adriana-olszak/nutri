@@ -1,12 +1,14 @@
-import { getParser } from './parser';
 import { Config, loadConfig } from './config';
 import * as path from 'node:path';
-import { FoundationFoodItemModel } from './data-sources/usda/models';
+import { BrandedFoodItemModel, FoundationFoodItemModel } from './data-sources/usda/models';
 import { plainToClass } from 'class-transformer';
 import { importFoundationFood } from './data-sources/usda/import-foundation-food';
 import { PrismaClient } from '@prisma/client';
 import * as cliProgress from 'cli-progress';
 import { validateSync } from 'class-validator';
+import { importBrandedFoods } from './data-sources/usda/import-branded-food';
+import * as fs from 'fs';
+import * as StreamArray from 'stream-json/streamers/StreamArray';
 
 async function main() {
   const prisma = new PrismaClient();
@@ -23,8 +25,7 @@ async function main() {
 }
 
 async function processFiles(config: Config, prisma: PrismaClient): Promise<void> {
-  const files = config.data_sources
-    .flatMap(source => source.files);
+  const files = config.data_sources.flatMap(source => source.files);
   const importInfo = await prisma.importInfo.create({
     data: {
       sourceVersion: config.data_sources[0].sourceVersion,
@@ -35,36 +36,63 @@ async function processFiles(config: Config, prisma: PrismaClient): Promise<void>
 
   try {
     for (const file of files) {
-      const parser = getParser('json');
-      const data: any = parser.parse(path.join(__dirname, file.path));
+      const filePath = path.join(__dirname, file.path);
+      await processJsonFile(filePath, prisma, importInfo.id);
+    }
+  } catch (error) {
+    console.error(`Error processing files: ${error.message}`);
+    await prisma.importInfo.delete({ where: { id: importInfo.id } });
+    throw error;
+  }
+}
 
-      if ('FoundationFoods' in data) {
-        const progressBar = new cliProgress.SingleBar({ format: `Foundation foods [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}` }, cliProgress.Presets.shades_classic);
-        const foundationFoods: FoundationFoodItemModel[] = data.FoundationFoods.map((food: any) => {
-          const instance = plainToClass(FoundationFoodItemModel, food);
+async function processJsonFile(filePath: string, prisma: PrismaClient, importInfoId: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const stream = fs.createReadStream(filePath).pipe(StreamArray.withParser());
+
+    let foundationFoodsCount = 0;
+    let brandedFoodsCount = 0;
+    const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+    progressBar.start(100, 0);
+
+    stream.on('data', async ({ key, value }) => {
+      stream.pause();
+      try {
+        if (value.foodClass === 'FinalFood') {
+          const instance = plainToClass(FoundationFoodItemModel, value);
           const errors = validateSync(instance);
-
           if (errors.length) {
             throw new Error(`Validation error: ${errors}`);
           }
-          return instance;
-        });
-        console.log(' >>>>>>>>>@>  (foundationFoods)', foundationFoods);
-
-        progressBar.start(foundationFoods.length, 0);
-
-        for (const food of foundationFoods) {
-          await importFoundationFood(prisma, food, importInfo.id);
-          progressBar.increment();
+          await importFoundationFood(prisma, instance, importInfoId);
+          foundationFoodsCount++;
+        } else if (value.foodClass === 'Branded') {
+          const instance = plainToClass(BrandedFoodItemModel, value);
+          const errors = validateSync(instance);
+          if (errors.length) {
+            throw new Error(`Validation error: ${errors}`);
+          }
+          await importBrandedFoods(prisma, instance, importInfoId);
+          brandedFoodsCount++;
         }
-        progressBar.stop();
+        progressBar.increment();
+      } catch (error) {
+        stream.destroy(error);
       }
-    }
-  } catch (error) {
-    await prisma.importInfo.delete({ where: { id: importInfo.id } });
-    console.error(`Error processing files: ${error.message}`);
-    throw error;
-  }
+      stream.resume();
+    });
+
+    stream.on('end', () => {
+      progressBar.stop();
+      console.log(`Processed ${foundationFoodsCount} foundation foods and ${brandedFoodsCount} branded foods.`);
+      resolve();
+    });
+
+    stream.on('error', (error) => {
+      progressBar.stop();
+      reject(error);
+    });
+  });
 }
 
 main().catch(console.error);

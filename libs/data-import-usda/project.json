@@ -10,7 +10,11 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "command": "ts-node src/index.ts",
+        "parallel": false,
+        "commands": [
+          "./src/preprocess.sh ./src/lib/__data__/brandedDownload.json ./src/lib/__data__/foundationDownload.json",
+          "ts-node src/index.ts"
+        ],
         "cwd": "libs/data-import-usda"
       }
     }
