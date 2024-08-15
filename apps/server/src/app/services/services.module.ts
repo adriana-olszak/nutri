@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { DbClientModule } from '@nutri/server-db-client';
-import { RecipeService } from './recipe.service';
+import { ALL_SERVICES } from './index';
 
 
 @Module({
   imports: [
     DbClientModule
   ],
-  providers: [RecipeService],
-  exports: [RecipeService]
+  providers: ALL_SERVICES,
+  exports: ALL_SERVICES
 })
 export class ServicesModule {
 }

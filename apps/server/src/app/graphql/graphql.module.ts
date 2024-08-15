@@ -8,6 +8,7 @@ import { ApolloDriver } from '@nestjs/apollo';
 import { ALL_RESOLVERS } from './resolvers';
 import { DbClientModule } from '@nutri/server-db-client';
 import { ServicesModule } from '../services/services.module';
+import { ALL_DATALOADERS } from './data-loaders';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { ServicesModule } from '../services/services.module';
       imports: [ConfigModule],
     }),
   ],
-  providers: [...ALL_RESOLVERS],
+  providers: [...ALL_RESOLVERS, ...ALL_DATALOADERS],
 })
 export class GraphqlModule {}
