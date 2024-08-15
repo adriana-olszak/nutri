@@ -12,14 +12,13 @@ services:
     ports:
       - "${DATABASE_PORT}:5432"
     volumes:
-#      - ./deploy/docker-compose/postgres-nutri:/docker-entrypoint-initdb.d
+      - ./deploy/docker-compose/postgres-nutri:/docker-entrypoint-initdb.d
       - pgdata-postgres-nutri:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
-
 
 volumes:
   pgdata-postgres-nutri:

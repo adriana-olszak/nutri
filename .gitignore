@@ -42,3 +42,4 @@ Thumbs.db
 .nx/workspace-data
 
 .env
+/libs/data-import-usda/src/lib/__data__/

@@ -20,7 +20,7 @@ container_name="$2"
 read -p "Enter port value for db: $dbname " port
 read -p "Enter username value for db: $dbname " username
 
-chmod -R 700 ./docker
+chmod -R 700 ./deploy
 
 # Get the current timestamp in the desired format
 # Example format: YYYYMMDD-HHMMSS
