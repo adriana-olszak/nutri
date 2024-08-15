@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 generator dbml {
@@ -25,9 +26,10 @@ generator nestgraphql {
 // }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
   // FIXME: when deploying we have to use ENV. For whatever reson it does not work.
-  url      = "postgresql://nutri:nutri@localhost:3100/nutri"
+  url        = "postgresql://nutri:nutri@localhost:3100/nutri"
+  extensions = [pg_trgm, fuzzystrmatch]
 }
 
 model User {
@@ -198,20 +200,63 @@ model FoodCategoryOnFood {
 
 // Represents branded food products
 model BrandedFood {
-  id           String     @id @default(uuid())
-  food         Food       @relation(fields: [foodId], references: [id])
-  foodId       String     @unique
-  brandOwner   String
-  gtinUpc      String?
-  ingredients  String?
-  servingSize  Float?
-  servingUnit  String?
-  sourceId     String
-  importInfo   ImportInfo @relation(fields: [importInfoId], references: [id])
-  importInfoId String
+  id             String          @id @default(uuid())
+  food           Food            @relation(fields: [foodId], references: [id])
+  foodId         String          @unique
+  brandOwner     String
+  gtinUpc        String?
+  ingredients    String?
+  servingSize    Float?
+  servingUnit    String?
+  sourceId       String
+  importInfo     ImportInfo      @relation(fields: [importInfoId], references: [id])
+  importInfoId   String
+  nutritionLabel NutritionLabel?
 
   @@index([brandOwner])
   @@index([gtinUpc])
+}
+
+// Represents nutritional label information for branded foods
+model NutritionLabel {
+  id            String      @id @default(uuid())
+  brandedFood   BrandedFood @relation(fields: [brandedFoodId], references: [id])
+  brandedFoodId String      @unique
+
+  calories          Float?
+  totalFat          Float?
+  saturatedFat      Float?
+  transFat          Float?
+  cholesterol       Float?
+  sodium            Float?
+  totalCarbohydrate Float?
+  dietaryFiber      Float?
+  totalSugars       Float?
+  addedSugars       Float?
+  protein           Float?
+  vitaminA          Float?
+  vitaminC          Float?
+  vitaminD          Float?
+  calcium           Float?
+  iron              Float?
+  potassium         Float?
+
+  servingsPerContainer     Float?
+  householdServingFullText String?
+
+  percentDailyValueFat          Float?
+  percentDailyValueSaturatedFat Float?
+  percentDailyValueCholesterol  Float?
+  percentDailyValueSodium       Float?
+  percentDailyValueCarbohydrate Float?
+  percentDailyValueFiber        Float?
+  percentDailyValueProtein      Float?
+  percentDailyValueVitaminA     Float?
+  percentDailyValueVitaminC     Float?
+  percentDailyValueVitaminD     Float?
+  percentDailyValueCalcium      Float?
+  percentDailyValueIron         Float?
+  percentDailyValuePotassium    Float?
 }
 
 // Represents nutrients and their properties
@@ -309,17 +354,17 @@ model Recipe {
   description  String?
   cookingTime  String?
   prepTime     String?
-  instructions String?
   servingsText String? // Full serving description
   servingsMin  Int? // Minimum number of servings
   servingsMax  Int? // Maximum number of servings
 
-  parts       RecipePart[]
-  ingredients RecipeIngredient[]
-  categories  RecipeCategory[]
-  images      RecipeImage[]
-  seasons     Season[]
-  tags        Tag[]
+  instructions RecipeInstructions[]
+  parts        RecipePart[]
+  ingredients  RecipeIngredient[]
+  categories   RecipeCategory[]
+  images       RecipeImage[]
+  seasons      Season[]
+  tags         Tag[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -359,16 +404,38 @@ model RecipePart {
   @@index([recipeId])
 }
 
+enum RecipeInstructionsType {
+  TEXT
+  IMAGE
+  PART
+}
+
+model RecipeInstructions {
+  id        String                 @id @default(uuid())
+  recipe    Recipe                 @relation(fields: [recipeId], references: [id])
+  recipeId  String
+  content   String
+  type      RecipeInstructionsType
+  order     Int
+  listIndex Int?
+}
+
 model RecipeIngredient {
-  id       String      @id @default(uuid())
-  recipe   Recipe      @relation(fields: [recipeId], references: [id])
-  recipeId String
-  part     RecipePart? @relation(fields: [partId], references: [id])
-  partId   String?
-  food     Food        @relation(fields: [foodId], references: [id])
-  foodId   String
-  quantity Float
-  unit     String
+  id             String      @id @default(uuid())
+  recipe         Recipe      @relation(fields: [recipeId], references: [id])
+  recipeId       String
+  part           RecipePart? @relation(fields: [partId], references: [id])
+  partId         String?
+  food           Food        @relation(fields: [foodId], references: [id])
+  foodId         String
+  quantity       Float
+  quantityText   String?
+  minQuantity    Float?
+  maxQuantity    Float?
+  unit           String
+  unitText       String?
+  ingredientText String?
+  extraInfo      String?
 
   @@index([recipeId])
   @@index([partId])

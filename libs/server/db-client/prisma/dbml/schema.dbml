@@ -158,6 +158,45 @@ Table BrandedFood {
   sourceId String [not null]
   importInfo ImportInfo [not null]
   importInfoId String [not null]
+  nutritionLabel NutritionLabel
+}
+
+Table NutritionLabel {
+  id String [pk]
+  brandedFood BrandedFood [not null]
+  brandedFoodId String [unique, not null]
+  calories Float
+  totalFat Float
+  saturatedFat Float
+  transFat Float
+  cholesterol Float
+  sodium Float
+  totalCarbohydrate Float
+  dietaryFiber Float
+  totalSugars Float
+  addedSugars Float
+  protein Float
+  vitaminA Float
+  vitaminC Float
+  vitaminD Float
+  calcium Float
+  iron Float
+  potassium Float
+  servingsPerContainer Float
+  householdServingFullText String
+  percentDailyValueFat Float
+  percentDailyValueSaturatedFat Float
+  percentDailyValueCholesterol Float
+  percentDailyValueSodium Float
+  percentDailyValueCarbohydrate Float
+  percentDailyValueFiber Float
+  percentDailyValueProtein Float
+  percentDailyValueVitaminA Float
+  percentDailyValueVitaminC Float
+  percentDailyValueVitaminD Float
+  percentDailyValueCalcium Float
+  percentDailyValueIron Float
+  percentDailyValuePotassium Float
 }
 
 Table Nutrient {
@@ -233,10 +272,10 @@ Table Recipe {
   description String
   cookingTime String
   prepTime String
-  instructions String
   servingsText String
   servingsMin Int
   servingsMax Int
+  instructions RecipeInstructions [not null]
   parts RecipePart [not null]
   ingredients RecipeIngredient [not null]
   categories RecipeCategory [not null]
@@ -277,6 +316,16 @@ Table RecipePart {
   ingredients RecipeIngredient [not null]
 }
 
+Table RecipeInstructions {
+  id String [pk]
+  recipe Recipe [not null]
+  recipeId String [not null]
+  content String [not null]
+  type RecipeInstructionsType [not null]
+  order Int [not null]
+  listIndex Int
+}
+
 Table RecipeIngredient {
   id String [pk]
   recipe Recipe [not null]
@@ -286,7 +335,13 @@ Table RecipeIngredient {
   food Food [not null]
   foodId String [not null]
   quantity Float [not null]
+  quantityText String
+  minQuantity Float
+  maxQuantity Float
   unit String [not null]
+  unitText String
+  ingredientText String
+  extraInfo String
 }
 
 Table RecipeCategory {
@@ -322,6 +377,12 @@ Enum FoodDataSource {
   USER_INPUT
 }
 
+Enum RecipeInstructionsType {
+  TEXT
+  IMAGE
+  PART
+}
+
 Ref: RefreshToken.userId > User.id [delete: Cascade]
 
 Ref: Session.userId > User.id [delete: Cascade]
@@ -350,6 +411,8 @@ Ref: BrandedFood.foodId - Food.id
 
 Ref: BrandedFood.importInfoId > ImportInfo.id
 
+Ref: NutritionLabel.brandedFoodId - BrandedFood.id
+
 Ref: Nutrient.importInfoId > ImportInfo.id
 
 Ref: FoodNutrient.foodId > Food.id
@@ -369,6 +432,8 @@ Ref: MeasureUnit.importInfoId > ImportInfo.id
 Ref: RecipeImage.recipeId > Recipe.id
 
 Ref: RecipePart.recipeId > Recipe.id
+
+Ref: RecipeInstructions.recipeId > Recipe.id
 
 Ref: RecipeIngredient.recipeId > Recipe.id
 
