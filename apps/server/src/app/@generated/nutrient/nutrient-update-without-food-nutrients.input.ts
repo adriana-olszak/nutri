@@ -1,7 +1,7 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-operations.input';
-import { ImportInfoUpdateOneRequiredWithoutNutrientsNestedInput } from '../import-info/import-info-update-one-required-without-nutrients-nested.input';
+import { ImportInfoUpdateOneWithoutNutrientsNestedInput } from '../import-info/import-info-update-one-without-nutrients-nested.input';
 
 @InputType()
 export class NutrientUpdateWithoutFoodNutrientsInput {
@@ -18,6 +18,6 @@ export class NutrientUpdateWithoutFoodNutrientsInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     sourceId?: StringFieldUpdateOperationsInput;
 
-    @Field(() => ImportInfoUpdateOneRequiredWithoutNutrientsNestedInput, {nullable:true})
-    importInfo?: ImportInfoUpdateOneRequiredWithoutNutrientsNestedInput;
+    @Field(() => ImportInfoUpdateOneWithoutNutrientsNestedInput, {nullable:true})
+    importInfo?: ImportInfoUpdateOneWithoutNutrientsNestedInput;
 }

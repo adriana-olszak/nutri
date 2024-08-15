@@ -33,14 +33,14 @@ export class BrandedFood {
     @Field(() => String, {nullable:false})
     sourceId!: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId!: string | null;
 
     @Field(() => Food, {nullable:false})
     food?: Food;
 
-    @Field(() => ImportInfo, {nullable:false})
-    importInfo?: ImportInfo;
+    @Field(() => ImportInfo, {nullable:true})
+    importInfo?: ImportInfo | null;
 
     @Field(() => NutritionLabel, {nullable:true})
     nutritionLabel?: NutritionLabel | null;

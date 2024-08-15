@@ -21,8 +21,8 @@ export class FoodOrderByWithAggregationInput {
     @Field(() => SortOrderInput, {nullable:true})
     scientificName?: SortOrderInput;
 
-    @Field(() => SortOrder, {nullable:true})
-    importInfoId?: keyof typeof SortOrder;
+    @Field(() => SortOrderInput, {nullable:true})
+    importInfoId?: SortOrderInput;
 
     @Field(() => SortOrder, {nullable:true})
     createdAt?: keyof typeof SortOrder;

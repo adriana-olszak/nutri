@@ -31,8 +31,8 @@ export class FoodPortionGroupBy {
     @Field(() => String, {nullable:false})
     measureUnitName!: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId?: string;
 
     @Field(() => FoodPortionCountAggregate, {nullable:true})
     _count?: FoodPortionCountAggregate;

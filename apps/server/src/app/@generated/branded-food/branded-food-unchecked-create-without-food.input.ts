@@ -27,8 +27,8 @@ export class BrandedFoodUncheckedCreateWithoutFoodInput {
     @Field(() => String, {nullable:false})
     sourceId!: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId?: string;
 
     @Field(() => NutritionLabelUncheckedCreateNestedOneWithoutBrandedFoodInput, {nullable:true})
     nutritionLabel?: NutritionLabelUncheckedCreateNestedOneWithoutBrandedFoodInput;

@@ -23,6 +23,6 @@ export class FoodPortionCreateManyFoodInput {
     @Field(() => String, {nullable:false})
     measureUnitName!: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId?: string;
 }

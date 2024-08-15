@@ -34,8 +34,8 @@ export class BrandedFoodGroupBy {
     @Field(() => String, {nullable:false})
     sourceId!: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId?: string;
 
     @Field(() => BrandedFoodCountAggregate, {nullable:true})
     _count?: BrandedFoodCountAggregate;

@@ -35,6 +35,6 @@ export class FoodNutrientCreateInput {
     @Field(() => NutrientCreateNestedOneWithoutFoodNutrientsInput, {nullable:false})
     nutrient!: NutrientCreateNestedOneWithoutFoodNutrientsInput;
 
-    @Field(() => ImportInfoCreateNestedOneWithoutFoodNutrientsInput, {nullable:false})
-    importInfo!: ImportInfoCreateNestedOneWithoutFoodNutrientsInput;
+    @Field(() => ImportInfoCreateNestedOneWithoutFoodNutrientsInput, {nullable:true})
+    importInfo?: ImportInfoCreateNestedOneWithoutFoodNutrientsInput;
 }

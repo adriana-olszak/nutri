@@ -101,8 +101,8 @@ Table Food {
   brandedFood BrandedFood
   categories FoodCategoryOnFood [not null]
   searchVectors FoodSearchVector [not null]
-  importInfo ImportInfo [not null]
-  importInfoId String [not null]
+  importInfo ImportInfo
+  importInfoId String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   RecipeIngredient RecipeIngredient [not null]
@@ -128,8 +128,8 @@ Table FoodCategory {
   level Int [not null]
   sourceId String [unique, not null]
   foods FoodCategoryOnFood [not null]
-  importInfo ImportInfo [not null]
-  importInfoId String [not null]
+  importInfo ImportInfo
+  importInfoId String
   parentCategory FoodCategory
   childCategories FoodCategory [not null]
 }
@@ -156,8 +156,8 @@ Table BrandedFood {
   servingSize Float
   servingUnit String
   sourceId String [not null]
-  importInfo ImportInfo [not null]
-  importInfoId String [not null]
+  importInfo ImportInfo
+  importInfoId String
   nutritionLabel NutritionLabel
 }
 
@@ -205,8 +205,8 @@ Table Nutrient {
   unitName String [not null]
   sourceId String [unique, not null]
   foodNutrients FoodNutrient [not null]
-  importInfo ImportInfo [not null]
-  importInfoId String [not null]
+  importInfo ImportInfo
+  importInfoId String
 }
 
 Table FoodNutrient {
@@ -221,8 +221,8 @@ Table FoodNutrient {
   max Float
   confidenceCode String
   sourceId String [not null]
-  importInfo ImportInfo [not null]
-  importInfoId String [not null]
+  importInfo ImportInfo
+  importInfoId String
 }
 
 Table FoodPortion {
@@ -235,15 +235,15 @@ Table FoodPortion {
   foodId String [not null]
   measureUnitName String [not null]
   measureUnit MeasureUnit [not null]
-  importInfo ImportInfo [not null]
-  importInfoId String [not null]
+  importInfo ImportInfo
+  importInfoId String
 }
 
 Table MeasureUnit {
   name String [pk]
   FoodPortion FoodPortion [not null]
-  importInfo ImportInfo [not null]
-  importInfoId String [not null]
+  importInfo ImportInfo
+  importInfoId String
 }
 
 Table ImportInfo {

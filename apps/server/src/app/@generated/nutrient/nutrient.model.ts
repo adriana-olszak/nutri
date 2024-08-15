@@ -20,14 +20,14 @@ export class Nutrient {
     @Field(() => String, {nullable:false})
     sourceId!: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId!: string | null;
 
     @Field(() => [FoodNutrient], {nullable:true})
     foodNutrients?: Array<FoodNutrient>;
 
-    @Field(() => ImportInfo, {nullable:false})
-    importInfo?: ImportInfo;
+    @Field(() => ImportInfo, {nullable:true})
+    importInfo?: ImportInfo | null;
 
     @Field(() => NutrientCount, {nullable:false})
     _count?: NutrientCount;

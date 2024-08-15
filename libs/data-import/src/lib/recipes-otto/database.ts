@@ -1,5 +1,6 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, RecipeInstructionsType } from '@prisma/client';
 import { ParsedRecipe, ParsedIngredient, ParsedImage, EntityType, EntityHandler } from './types';
+
 
 export async function populateDatabase(prisma: PrismaClient, parsedRecipes: ParsedRecipe[]) {
   for (const recipe of parsedRecipes) {
@@ -124,7 +125,13 @@ async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, i
             partId: currentPartId,
             foodId: food.id,
             quantity: ingredient.quantity,
-            unit: ingredient.unit
+            quantityText: ingredient.quantityText,
+            minQuantity: ingredient.minQuantity,
+            maxQuantity: ingredient.maxQuantity,
+            unit: ingredient.unit,
+            unitText: ingredient.unitText,
+            ingredientText: ingredient.ingredient,
+            extraInfo: ingredient.extra
           }
         });
       }
@@ -136,23 +143,18 @@ async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, i
 
 async function findOrCreateFood(prisma: PrismaClient, foodName: string) {
   const matches = await matchIngredientToFood(prisma, foodName);
+  console.log(' >>>>>>>>>@>  (matches)', matches);
 
-  let food = await prisma.food.findFirst({
-    where: { description: { contains: foodName, mode: 'insensitive' }, id: { in: matches.map(m => m.foodId) } }
-  });
 
-  if (!food) {
+  let food = matches.length ? await prisma.food.findUnique({
+    where: { id: matches[0].foodId }
+  }) : null;
+
+  if (!matches.length) {
     food = await prisma.food.create({
       data: {
         description: foodName,
-        sourceId: `IMPORT_${Date.now()}`,
-        importInfo: {
-          create: {
-            sourceVersion: '1.0',
-            importDate: new Date(),
-            dataSource: 'USER_INPUT'
-          }
-        }
+        sourceId: `OTTO_${foodName}`
       }
     });
   }
@@ -182,7 +184,14 @@ export async function findOrCreateRecipe(prisma: PrismaClient, recipeData: Parse
         servingsText: recipeData.servingsText,
         servingsMin: recipeData.servingsMin,
         servingsMax: recipeData.servingsMax,
-        instructions: recipeData.instructions
+        instructions: {
+          create: recipeData.instructions.map(step => ({
+            content: step.content,
+            type: RecipeInstructionsType.TEXT,
+            order: step.stepNumber,
+            listIndex: step.listIndex
+          }))
+        }
       }
     });
 
@@ -194,15 +203,36 @@ export async function findOrCreateRecipe(prisma: PrismaClient, recipeData: Parse
 }
 
 
-export async function matchIngredientToFood(prisma: PrismaClient, ingredientName: string) {
+export async function matchIngredientToFood(prisma: PrismaClient, name: string): Promise<[{
+  foodId: string,
+  rank: number
+}]> {
+  const similarityThreshold = 0.3;
+  const nonBrandedBoost = 1.5;
+
+  const formattedName = _formatTsQuery(name);
+
   const searchQuery = Prisma.sql`
-    select fv.id, fv."foodId", fv."searchVector",
-       ts_rank(fv."searchVector", plainto_tsquery('${ingredientName}')) as rank
-from "FoodSearchVector" fv
-where fv."searchVector" @@ plainto_tsquery('${ingredientName}')
-order by rank desc
-limit 10;
+    SELECT f.id "foodId",
+           CASE
+               WHEN bf.id IS NULL THEN
+                   (ts_rank(fv."searchVector", to_tsquery(${formattedName})) + word_similarity(f.description, ${name})) *
+                   ${nonBrandedBoost}
+               ELSE ts_rank(fv."searchVector", to_tsquery(${formattedName})) + word_similarity(f.description, ${name})
+           END as "rank"
+    FROM "FoodSearchVector" fv
+    JOIN "Food" f ON f.id = fv."foodId"
+    LEFT JOIN "BrandedFood" bf ON bf."foodId" = f.id
+    WHERE fv."searchVector" @@ to_tsquery(${formattedName})
+      AND word_similarity(f.description, ${name}) > ${similarityThreshold}
+    ORDER BY "rank" DESC
+    LIMIT 1;
   `;
 
-  return await prisma.$queryRaw<{ foodId: string }[]>(searchQuery);
+  return prisma.$queryRaw(searchQuery);
+}
+
+function _formatTsQuery(input: string): string {
+  const words = input.split(/\s+/).filter(word => word.length > 0);
+  return words.join(' & ');
 }

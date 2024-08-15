@@ -10,8 +10,8 @@ export class MeasureUnitGroupBy {
     @Field(() => String, {nullable:false})
     name!: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId?: string;
 
     @Field(() => MeasureUnitCountAggregate, {nullable:true})
     _count?: MeasureUnitCountAggregate;

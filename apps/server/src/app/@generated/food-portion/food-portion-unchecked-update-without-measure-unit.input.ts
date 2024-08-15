@@ -25,6 +25,6 @@ export class FoodPortionUncheckedUpdateWithoutMeasureUnitInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     foodId?: StringFieldUpdateOperationsInput;
 
-    @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    importInfoId?: StringFieldUpdateOperationsInput;
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    importInfoId?: NullableStringFieldUpdateOperationsInput;
 }

@@ -23,8 +23,8 @@ export class FoodCategoryCreateWithoutFoodsInput {
     @Field(() => String, {nullable:false})
     sourceId!: string;
 
-    @Field(() => ImportInfoCreateNestedOneWithoutFoodCategoriesInput, {nullable:false})
-    importInfo!: ImportInfoCreateNestedOneWithoutFoodCategoriesInput;
+    @Field(() => ImportInfoCreateNestedOneWithoutFoodCategoriesInput, {nullable:true})
+    importInfo?: ImportInfoCreateNestedOneWithoutFoodCategoriesInput;
 
     @Field(() => FoodCategoryCreateNestedOneWithoutChildCategoriesInput, {nullable:true})
     parentCategory?: FoodCategoryCreateNestedOneWithoutChildCategoriesInput;

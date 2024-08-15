@@ -27,8 +27,8 @@ export class FoodCategoryOrderByWithRelationInput {
     @Field(() => SortOrder, {nullable:true})
     sourceId?: keyof typeof SortOrder;
 
-    @Field(() => SortOrder, {nullable:true})
-    importInfoId?: keyof typeof SortOrder;
+    @Field(() => SortOrderInput, {nullable:true})
+    importInfoId?: SortOrderInput;
 
     @Field(() => FoodCategoryOnFoodOrderByRelationAggregateInput, {nullable:true})
     foods?: FoodCategoryOnFoodOrderByRelationAggregateInput;

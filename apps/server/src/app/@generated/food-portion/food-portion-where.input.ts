@@ -5,7 +5,7 @@ import { FloatFilter } from '../prisma/float-filter.input';
 import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
 import { FoodRelationFilter } from '../food/food-relation-filter.input';
 import { MeasureUnitRelationFilter } from '../measure-unit/measure-unit-relation-filter.input';
-import { ImportInfoRelationFilter } from '../import-info/import-info-relation-filter.input';
+import { ImportInfoNullableRelationFilter } from '../import-info/import-info-nullable-relation-filter.input';
 
 @InputType()
 export class FoodPortionWhereInput {
@@ -40,8 +40,8 @@ export class FoodPortionWhereInput {
     @Field(() => StringFilter, {nullable:true})
     measureUnitName?: StringFilter;
 
-    @Field(() => StringFilter, {nullable:true})
-    importInfoId?: StringFilter;
+    @Field(() => StringNullableFilter, {nullable:true})
+    importInfoId?: StringNullableFilter;
 
     @Field(() => FoodRelationFilter, {nullable:true})
     food?: FoodRelationFilter;
@@ -49,6 +49,6 @@ export class FoodPortionWhereInput {
     @Field(() => MeasureUnitRelationFilter, {nullable:true})
     measureUnit?: MeasureUnitRelationFilter;
 
-    @Field(() => ImportInfoRelationFilter, {nullable:true})
-    importInfo?: ImportInfoRelationFilter;
+    @Field(() => ImportInfoNullableRelationFilter, {nullable:true})
+    importInfo?: ImportInfoNullableRelationFilter;
 }

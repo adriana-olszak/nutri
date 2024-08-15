@@ -35,8 +35,8 @@ export class BrandedFoodOrderByWithAggregationInput {
     @Field(() => SortOrder, {nullable:true})
     sourceId?: keyof typeof SortOrder;
 
-    @Field(() => SortOrder, {nullable:true})
-    importInfoId?: keyof typeof SortOrder;
+    @Field(() => SortOrderInput, {nullable:true})
+    importInfoId?: SortOrderInput;
 
     @Field(() => BrandedFoodCountOrderByAggregateInput, {nullable:true})
     _count?: BrandedFoodCountOrderByAggregateInput;

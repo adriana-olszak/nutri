@@ -25,8 +25,8 @@ export class Food {
     @Field(() => String, {nullable:true})
     scientificName!: string | null;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId!: string | null;
 
     @Field(() => Date, {nullable:false})
     createdAt!: Date;
@@ -49,8 +49,8 @@ export class Food {
     @Field(() => [FoodSearchVector], {nullable:true})
     searchVectors?: Array<FoodSearchVector>;
 
-    @Field(() => ImportInfo, {nullable:false})
-    importInfo?: ImportInfo;
+    @Field(() => ImportInfo, {nullable:true})
+    importInfo?: ImportInfo | null;
 
     @Field(() => [RecipeIngredient], {nullable:true})
     RecipeIngredient?: Array<RecipeIngredient>;

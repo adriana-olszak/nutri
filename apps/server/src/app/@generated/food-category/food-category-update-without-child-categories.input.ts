@@ -4,7 +4,7 @@ import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
 import { IntFieldUpdateOperationsInput } from '../prisma/int-field-update-operations.input';
 import { FoodCategoryOnFoodUpdateManyWithoutCategoryNestedInput } from '../food-category-on-food/food-category-on-food-update-many-without-category-nested.input';
-import { ImportInfoUpdateOneRequiredWithoutFoodCategoriesNestedInput } from '../import-info/import-info-update-one-required-without-food-categories-nested.input';
+import { ImportInfoUpdateOneWithoutFoodCategoriesNestedInput } from '../import-info/import-info-update-one-without-food-categories-nested.input';
 import { FoodCategoryUpdateOneWithoutChildCategoriesNestedInput } from './food-category-update-one-without-child-categories-nested.input';
 
 @InputType()
@@ -28,8 +28,8 @@ export class FoodCategoryUpdateWithoutChildCategoriesInput {
     @Field(() => FoodCategoryOnFoodUpdateManyWithoutCategoryNestedInput, {nullable:true})
     foods?: FoodCategoryOnFoodUpdateManyWithoutCategoryNestedInput;
 
-    @Field(() => ImportInfoUpdateOneRequiredWithoutFoodCategoriesNestedInput, {nullable:true})
-    importInfo?: ImportInfoUpdateOneRequiredWithoutFoodCategoriesNestedInput;
+    @Field(() => ImportInfoUpdateOneWithoutFoodCategoriesNestedInput, {nullable:true})
+    importInfo?: ImportInfoUpdateOneWithoutFoodCategoriesNestedInput;
 
     @Field(() => FoodCategoryUpdateOneWithoutChildCategoriesNestedInput, {nullable:true})
     parentCategory?: FoodCategoryUpdateOneWithoutChildCategoriesNestedInput;

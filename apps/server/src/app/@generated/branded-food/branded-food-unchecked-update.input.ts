@@ -32,8 +32,8 @@ export class BrandedFoodUncheckedUpdateInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     sourceId?: StringFieldUpdateOperationsInput;
 
-    @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    importInfoId?: StringFieldUpdateOperationsInput;
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    importInfoId?: NullableStringFieldUpdateOperationsInput;
 
     @Field(() => NutritionLabelUncheckedUpdateOneWithoutBrandedFoodNestedInput, {nullable:true})
     nutritionLabel?: NutritionLabelUncheckedUpdateOneWithoutBrandedFoodNestedInput;

@@ -32,8 +32,8 @@ export class FoodPortionOrderByWithAggregationInput {
     @Field(() => SortOrder, {nullable:true})
     measureUnitName?: keyof typeof SortOrder;
 
-    @Field(() => SortOrder, {nullable:true})
-    importInfoId?: keyof typeof SortOrder;
+    @Field(() => SortOrderInput, {nullable:true})
+    importInfoId?: SortOrderInput;
 
     @Field(() => FoodPortionCountOrderByAggregateInput, {nullable:true})
     _count?: FoodPortionCountOrderByAggregateInput;

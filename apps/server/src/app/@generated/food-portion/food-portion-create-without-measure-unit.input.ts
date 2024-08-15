@@ -25,6 +25,6 @@ export class FoodPortionCreateWithoutMeasureUnitInput {
     @Field(() => FoodCreateNestedOneWithoutPortionsInput, {nullable:false})
     food!: FoodCreateNestedOneWithoutPortionsInput;
 
-    @Field(() => ImportInfoCreateNestedOneWithoutFoodPortionsInput, {nullable:false})
-    importInfo!: ImportInfoCreateNestedOneWithoutFoodPortionsInput;
+    @Field(() => ImportInfoCreateNestedOneWithoutFoodPortionsInput, {nullable:true})
+    importInfo?: ImportInfoCreateNestedOneWithoutFoodPortionsInput;
 }

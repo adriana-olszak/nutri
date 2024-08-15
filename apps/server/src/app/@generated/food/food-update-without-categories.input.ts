@@ -7,7 +7,7 @@ import { FoodNutrientUpdateManyWithoutFoodNestedInput } from '../food-nutrient/f
 import { FoodPortionUpdateManyWithoutFoodNestedInput } from '../food-portion/food-portion-update-many-without-food-nested.input';
 import { BrandedFoodUpdateOneWithoutFoodNestedInput } from '../branded-food/branded-food-update-one-without-food-nested.input';
 import { FoodSearchVectorUpdateManyWithoutFoodNestedInput } from '../food-search-vector/food-search-vector-update-many-without-food-nested.input';
-import { ImportInfoUpdateOneRequiredWithoutFoodsNestedInput } from '../import-info/import-info-update-one-required-without-foods-nested.input';
+import { ImportInfoUpdateOneWithoutFoodsNestedInput } from '../import-info/import-info-update-one-without-foods-nested.input';
 import { RecipeIngredientUpdateManyWithoutFoodNestedInput } from '../recipe-ingredient/recipe-ingredient-update-many-without-food-nested.input';
 
 @InputType()
@@ -43,8 +43,8 @@ export class FoodUpdateWithoutCategoriesInput {
     @Field(() => FoodSearchVectorUpdateManyWithoutFoodNestedInput, {nullable:true})
     searchVectors?: FoodSearchVectorUpdateManyWithoutFoodNestedInput;
 
-    @Field(() => ImportInfoUpdateOneRequiredWithoutFoodsNestedInput, {nullable:true})
-    importInfo?: ImportInfoUpdateOneRequiredWithoutFoodsNestedInput;
+    @Field(() => ImportInfoUpdateOneWithoutFoodsNestedInput, {nullable:true})
+    importInfo?: ImportInfoUpdateOneWithoutFoodsNestedInput;
 
     @Field(() => RecipeIngredientUpdateManyWithoutFoodNestedInput, {nullable:true})
     RecipeIngredient?: RecipeIngredientUpdateManyWithoutFoodNestedInput;

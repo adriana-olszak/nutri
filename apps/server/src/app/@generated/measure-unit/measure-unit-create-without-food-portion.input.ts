@@ -8,6 +8,6 @@ export class MeasureUnitCreateWithoutFoodPortionInput {
     @Field(() => String, {nullable:false})
     name!: string;
 
-    @Field(() => ImportInfoCreateNestedOneWithoutMeasureUnitsInput, {nullable:false})
-    importInfo!: ImportInfoCreateNestedOneWithoutMeasureUnitsInput;
+    @Field(() => ImportInfoCreateNestedOneWithoutMeasureUnitsInput, {nullable:true})
+    importInfo?: ImportInfoCreateNestedOneWithoutMeasureUnitsInput;
 }

@@ -27,14 +27,14 @@ export class FoodCategory {
     @Field(() => String, {nullable:false})
     sourceId!: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId!: string | null;
 
     @Field(() => [FoodCategoryOnFood], {nullable:true})
     foods?: Array<FoodCategoryOnFood>;
 
-    @Field(() => ImportInfo, {nullable:false})
-    importInfo?: ImportInfo;
+    @Field(() => ImportInfo, {nullable:true})
+    importInfo?: ImportInfo | null;
 
     @Field(() => FoodCategory, {nullable:true})
     parentCategory?: FoodCategory | null;

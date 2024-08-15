@@ -4,6 +4,7 @@ import { RecipeData, ParsedRecipe } from './types';
 import { readJsonFile } from './utils';
 import { parseRecipe } from './parser/parser';
 import 'reflect-metadata';
+import { populateDatabase } from './database';
 
 
 const prisma = new PrismaClient();
@@ -29,7 +30,7 @@ async function importRecipes() {
     console.log(' >>>>>>>>>@>  (JSON)', JSON.stringify(parsedRecipes, null, 2));
 
     console.log('Recipe parsing completed. Starting database population...');
-    // await populateDatabase(prisma, parsedRecipes);
+    await populateDatabase(prisma, parsedRecipes);
 
     console.log('Recipe import completed successfully!');
   } catch (error) {

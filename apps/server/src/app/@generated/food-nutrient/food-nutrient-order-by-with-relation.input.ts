@@ -36,8 +36,8 @@ export class FoodNutrientOrderByWithRelationInput {
     @Field(() => SortOrder, {nullable:true})
     sourceId?: keyof typeof SortOrder;
 
-    @Field(() => SortOrder, {nullable:true})
-    importInfoId?: keyof typeof SortOrder;
+    @Field(() => SortOrderInput, {nullable:true})
+    importInfoId?: SortOrderInput;
 
     @Field(() => FoodOrderByWithRelationInput, {nullable:true})
     food?: FoodOrderByWithRelationInput;

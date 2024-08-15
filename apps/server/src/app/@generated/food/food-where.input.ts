@@ -8,7 +8,7 @@ import { FoodPortionListRelationFilter } from '../food-portion/food-portion-list
 import { BrandedFoodNullableRelationFilter } from '../branded-food/branded-food-nullable-relation-filter.input';
 import { FoodCategoryOnFoodListRelationFilter } from '../food-category-on-food/food-category-on-food-list-relation-filter.input';
 import { FoodSearchVectorListRelationFilter } from '../food-search-vector/food-search-vector-list-relation-filter.input';
-import { ImportInfoRelationFilter } from '../import-info/import-info-relation-filter.input';
+import { ImportInfoNullableRelationFilter } from '../import-info/import-info-nullable-relation-filter.input';
 import { RecipeIngredientListRelationFilter } from '../recipe-ingredient/recipe-ingredient-list-relation-filter.input';
 
 @InputType()
@@ -35,8 +35,8 @@ export class FoodWhereInput {
     @Field(() => StringNullableFilter, {nullable:true})
     scientificName?: StringNullableFilter;
 
-    @Field(() => StringFilter, {nullable:true})
-    importInfoId?: StringFilter;
+    @Field(() => StringNullableFilter, {nullable:true})
+    importInfoId?: StringNullableFilter;
 
     @Field(() => DateTimeFilter, {nullable:true})
     createdAt?: DateTimeFilter;
@@ -59,8 +59,8 @@ export class FoodWhereInput {
     @Field(() => FoodSearchVectorListRelationFilter, {nullable:true})
     searchVectors?: FoodSearchVectorListRelationFilter;
 
-    @Field(() => ImportInfoRelationFilter, {nullable:true})
-    importInfo?: ImportInfoRelationFilter;
+    @Field(() => ImportInfoNullableRelationFilter, {nullable:true})
+    importInfo?: ImportInfoNullableRelationFilter;
 
     @Field(() => RecipeIngredientListRelationFilter, {nullable:true})
     RecipeIngredient?: RecipeIngredientListRelationFilter;

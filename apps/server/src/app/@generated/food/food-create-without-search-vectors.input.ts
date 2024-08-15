@@ -40,8 +40,8 @@ export class FoodCreateWithoutSearchVectorsInput {
     @Field(() => FoodCategoryOnFoodCreateNestedManyWithoutFoodInput, {nullable:true})
     categories?: FoodCategoryOnFoodCreateNestedManyWithoutFoodInput;
 
-    @Field(() => ImportInfoCreateNestedOneWithoutFoodsInput, {nullable:false})
-    importInfo!: ImportInfoCreateNestedOneWithoutFoodsInput;
+    @Field(() => ImportInfoCreateNestedOneWithoutFoodsInput, {nullable:true})
+    importInfo?: ImportInfoCreateNestedOneWithoutFoodsInput;
 
     @Field(() => RecipeIngredientCreateNestedManyWithoutFoodInput, {nullable:true})
     RecipeIngredient?: RecipeIngredientCreateNestedManyWithoutFoodInput;

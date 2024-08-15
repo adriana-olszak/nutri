@@ -1,6 +1,7 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { StringFilter } from '../prisma/string-filter.input';
+import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
 
 @InputType()
 export class MeasureUnitScalarWhereInput {
@@ -17,6 +18,6 @@ export class MeasureUnitScalarWhereInput {
     @Field(() => StringFilter, {nullable:true})
     name?: StringFilter;
 
-    @Field(() => StringFilter, {nullable:true})
-    importInfoId?: StringFilter;
+    @Field(() => StringNullableFilter, {nullable:true})
+    importInfoId?: StringNullableFilter;
 }

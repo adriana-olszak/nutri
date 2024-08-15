@@ -19,8 +19,8 @@ export class FoodGroupBy {
     @Field(() => String, {nullable:true})
     scientificName?: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId?: string;
 
     @Field(() => Date, {nullable:false})
     createdAt!: Date | string;

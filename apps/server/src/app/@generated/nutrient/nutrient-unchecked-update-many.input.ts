@@ -1,6 +1,7 @@
 import { Field } from '@nestjs/graphql';
 import { InputType } from '@nestjs/graphql';
 import { StringFieldUpdateOperationsInput } from '../prisma/string-field-update-operations.input';
+import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
 
 @InputType()
 export class NutrientUncheckedUpdateManyInput {
@@ -17,6 +18,6 @@ export class NutrientUncheckedUpdateManyInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     sourceId?: StringFieldUpdateOperationsInput;
 
-    @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    importInfoId?: StringFieldUpdateOperationsInput;
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    importInfoId?: NullableStringFieldUpdateOperationsInput;
 }

@@ -30,8 +30,8 @@ export class FoodPortionOrderByWithRelationInput {
     @Field(() => SortOrder, {nullable:true})
     measureUnitName?: keyof typeof SortOrder;
 
-    @Field(() => SortOrder, {nullable:true})
-    importInfoId?: keyof typeof SortOrder;
+    @Field(() => SortOrderInput, {nullable:true})
+    importInfoId?: SortOrderInput;
 
     @Field(() => FoodOrderByWithRelationInput, {nullable:true})
     food?: FoodOrderByWithRelationInput;

@@ -37,6 +37,6 @@ export class FoodPortionScalarWhereWithAggregatesInput {
     @Field(() => StringWithAggregatesFilter, {nullable:true})
     measureUnitName?: StringWithAggregatesFilter;
 
-    @Field(() => StringWithAggregatesFilter, {nullable:true})
-    importInfoId?: StringWithAggregatesFilter;
+    @Field(() => StringNullableWithAggregatesFilter, {nullable:true})
+    importInfoId?: StringNullableWithAggregatesFilter;
 }

@@ -24,8 +24,8 @@ export class FoodUncheckedUpdateWithoutCategoriesInput {
     @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
     scientificName?: NullableStringFieldUpdateOperationsInput;
 
-    @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    importInfoId?: StringFieldUpdateOperationsInput;
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    importInfoId?: NullableStringFieldUpdateOperationsInput;
 
     @Field(() => DateTimeFieldUpdateOperationsInput, {nullable:true})
     createdAt?: DateTimeFieldUpdateOperationsInput;

@@ -27,8 +27,8 @@ export class FoodCategoryUncheckedUpdateInput {
     @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
     sourceId?: StringFieldUpdateOperationsInput;
 
-    @Field(() => StringFieldUpdateOperationsInput, {nullable:true})
-    importInfoId?: StringFieldUpdateOperationsInput;
+    @Field(() => NullableStringFieldUpdateOperationsInput, {nullable:true})
+    importInfoId?: NullableStringFieldUpdateOperationsInput;
 
     @Field(() => FoodCategoryOnFoodUncheckedUpdateManyWithoutCategoryNestedInput, {nullable:true})
     foods?: FoodCategoryOnFoodUncheckedUpdateManyWithoutCategoryNestedInput;

@@ -16,6 +16,6 @@ export class NutrientUncheckedCreateWithoutFoodNutrientsInput {
     @Field(() => String, {nullable:false})
     sourceId!: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId?: string;
 }

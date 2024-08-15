@@ -65,12 +65,6 @@ export class FoodResolver {
     return (await this.foodService.findOne(food.id)).scientificName;
   }
 
-  @ResolveField(() => String)
-  async importInfoId(@Parent() food: Partial<Food>) {
-    if (food.importInfoId !== undefined) return food.importInfoId;
-    return (await this.foodService.findOne(food.id)).importInfoId;
-  }
-
   @ResolveField(() => Date)
   async createdAt(@Parent() food: Partial<Food>) {
     if (food.createdAt !== undefined) return food.createdAt;

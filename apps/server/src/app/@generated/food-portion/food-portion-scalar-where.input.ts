@@ -37,6 +37,6 @@ export class FoodPortionScalarWhereInput {
     @Field(() => StringFilter, {nullable:true})
     measureUnitName?: StringFilter;
 
-    @Field(() => StringFilter, {nullable:true})
-    importInfoId?: StringFilter;
+    @Field(() => StringNullableFilter, {nullable:true})
+    importInfoId?: StringNullableFilter;
 }

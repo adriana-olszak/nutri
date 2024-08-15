@@ -147,8 +147,8 @@ model Food {
   brandedFood      BrandedFood?
   categories       FoodCategoryOnFood[]
   searchVectors    FoodSearchVector[]
-  importInfo       ImportInfo           @relation(fields: [importInfoId], references: [id])
-  importInfoId     String
+  importInfo       ImportInfo?          @relation(fields: [importInfoId], references: [id])
+  importInfoId     String?
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
   RecipeIngredient RecipeIngredient[]
@@ -179,8 +179,8 @@ model FoodCategory {
   level            Int
   sourceId         String               @unique
   foods            FoodCategoryOnFood[] // New field
-  importInfo       ImportInfo           @relation(fields: [importInfoId], references: [id])
-  importInfoId     String
+  importInfo       ImportInfo?          @relation(fields: [importInfoId], references: [id])
+  importInfoId     String?
 
   parentCategory  FoodCategory?  @relation("ParentChild", fields: [parentCategoryId], references: [id])
   childCategories FoodCategory[] @relation("ParentChild")
@@ -212,8 +212,8 @@ model BrandedFood {
   servingSize    Float?
   servingUnit    String?
   sourceId       String
-  importInfo     ImportInfo      @relation(fields: [importInfoId], references: [id])
-  importInfoId   String
+  importInfo     ImportInfo?     @relation(fields: [importInfoId], references: [id])
+  importInfoId   String?
   nutritionLabel NutritionLabel?
 
   @@index([brandOwner])
@@ -272,18 +272,18 @@ model Nutrient {
   sourceId String @unique
 
   foodNutrients FoodNutrient[]
-  importInfo    ImportInfo     @relation(fields: [importInfoId], references: [id])
-  importInfoId  String
+  importInfo    ImportInfo?    @relation(fields: [importInfoId], references: [id])
+  importInfoId  String?
 
   @@index([name])
 }
 
 // Represents the nutritional content of a food
 model FoodNutrient {
-  id             String     @id @default(uuid())
-  food           Food       @relation(fields: [foodId], references: [id])
+  id             String      @id @default(uuid())
+  food           Food        @relation(fields: [foodId], references: [id])
   foodId         String
-  nutrient       Nutrient   @relation(fields: [nutrientId], references: [id])
+  nutrient       Nutrient    @relation(fields: [nutrientId], references: [id])
   nutrientId     String
   amount         Float
   min            Float?
@@ -291,8 +291,8 @@ model FoodNutrient {
   max            Float?
   confidenceCode String?
   sourceId       String
-  importInfo     ImportInfo @relation(fields: [importInfoId], references: [id])
-  importInfoId   String
+  importInfo     ImportInfo? @relation(fields: [importInfoId], references: [id])
+  importInfoId   String?
 
   @@index([foodId])
   @@index([nutrientId])
@@ -311,8 +311,8 @@ model FoodPortion {
   foodId          String
   measureUnitName String
   measureUnit     MeasureUnit @relation(fields: [measureUnitName], references: [name])
-  importInfo      ImportInfo  @relation(fields: [importInfoId], references: [id])
-  importInfoId    String
+  importInfo      ImportInfo? @relation(fields: [importInfoId], references: [id])
+  importInfoId    String?
 
   @@index([foodId])
 }
@@ -320,8 +320,8 @@ model FoodPortion {
 model MeasureUnit {
   name         String        @id @unique
   FoodPortion  FoodPortion[]
-  importInfo   ImportInfo    @relation(fields: [importInfoId], references: [id])
-  importInfoId String
+  importInfo   ImportInfo?   @relation(fields: [importInfoId], references: [id])
+  importInfoId String?
 }
 
 // Represents the source of food data (e.g., USDA, FDA, EUROFIR, CIQUAL, CUSTOM)

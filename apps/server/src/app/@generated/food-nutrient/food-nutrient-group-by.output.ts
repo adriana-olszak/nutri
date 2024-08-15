@@ -37,8 +37,8 @@ export class FoodNutrientGroupBy {
     @Field(() => String, {nullable:false})
     sourceId!: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId?: string;
 
     @Field(() => FoodNutrientCountAggregate, {nullable:true})
     _count?: FoodNutrientCountAggregate;

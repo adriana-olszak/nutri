@@ -8,8 +8,8 @@ export class MeasureUnitUncheckedCreateInput {
     @Field(() => String, {nullable:false})
     name!: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId?: string;
 
     @Field(() => FoodPortionUncheckedCreateNestedManyWithoutMeasureUnitInput, {nullable:true})
     FoodPortion?: FoodPortionUncheckedCreateNestedManyWithoutMeasureUnitInput;

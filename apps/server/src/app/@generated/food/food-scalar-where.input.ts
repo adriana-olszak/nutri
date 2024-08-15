@@ -28,8 +28,8 @@ export class FoodScalarWhereInput {
     @Field(() => StringNullableFilter, {nullable:true})
     scientificName?: StringNullableFilter;
 
-    @Field(() => StringFilter, {nullable:true})
-    importInfoId?: StringFilter;
+    @Field(() => StringNullableFilter, {nullable:true})
+    importInfoId?: StringNullableFilter;
 
     @Field(() => DateTimeFilter, {nullable:true})
     createdAt?: DateTimeFilter;

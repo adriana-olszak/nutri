@@ -5,7 +5,7 @@ import { FloatFieldUpdateOperationsInput } from '../prisma/float-field-update-op
 import { NullableStringFieldUpdateOperationsInput } from '../prisma/nullable-string-field-update-operations.input';
 import { FoodUpdateOneRequiredWithoutPortionsNestedInput } from '../food/food-update-one-required-without-portions-nested.input';
 import { MeasureUnitUpdateOneRequiredWithoutFoodPortionNestedInput } from '../measure-unit/measure-unit-update-one-required-without-food-portion-nested.input';
-import { ImportInfoUpdateOneRequiredWithoutFoodPortionsNestedInput } from '../import-info/import-info-update-one-required-without-food-portions-nested.input';
+import { ImportInfoUpdateOneWithoutFoodPortionsNestedInput } from '../import-info/import-info-update-one-without-food-portions-nested.input';
 
 @InputType()
 export class FoodPortionUpdateInput {
@@ -31,6 +31,6 @@ export class FoodPortionUpdateInput {
     @Field(() => MeasureUnitUpdateOneRequiredWithoutFoodPortionNestedInput, {nullable:true})
     measureUnit?: MeasureUnitUpdateOneRequiredWithoutFoodPortionNestedInput;
 
-    @Field(() => ImportInfoUpdateOneRequiredWithoutFoodPortionsNestedInput, {nullable:true})
-    importInfo?: ImportInfoUpdateOneRequiredWithoutFoodPortionsNestedInput;
+    @Field(() => ImportInfoUpdateOneWithoutFoodPortionsNestedInput, {nullable:true})
+    importInfo?: ImportInfoUpdateOneWithoutFoodPortionsNestedInput;
 }

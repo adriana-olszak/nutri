@@ -22,8 +22,8 @@ export class FoodUncheckedCreateInput {
     @Field(() => String, {nullable:true})
     scientificName?: string;
 
-    @Field(() => String, {nullable:false})
-    importInfoId!: string;
+    @Field(() => String, {nullable:true})
+    importInfoId?: string;
 
     @Field(() => Date, {nullable:true})
     createdAt?: Date | string;
