@@ -143,14 +143,14 @@ async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, i
 
 async function findOrCreateFood(prisma: PrismaClient, foodName: string) {
   const matches = await matchIngredientToFood(prisma, foodName);
-  console.log(' >>>>>>>>>@>  (matches)', matches);
-
 
   let food = matches.length ? await prisma.food.findUnique({
     where: { id: matches[0].foodId }
-  }) : null;
+  }) : await prisma.food.findUnique({
+    where: { sourceId: `OTTO_${foodName}` }
+  });
 
-  if (!matches.length) {
+  if (!food) {
     food = await prisma.food.create({
       data: {
         description: foodName,

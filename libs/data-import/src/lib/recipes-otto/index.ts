@@ -16,18 +16,18 @@ async function importRecipes() {
     console.log(`Found ${recipes.length} recipes to process.`);
 
     const parsedRecipes: ParsedRecipe[] = [];
-    for (let i = 0; i < 3; i++) {
-      console.log(`Parsing recipe ${i + 1}/${recipes.length}: ${recipes[i].title.value}`);
+    let processedIndex = 0;
+    for (const recipe of recipes) {
+      console.log(`Parsing recipe ${processedIndex + 1}/${recipes.length}: ${recipe.title.value}`);
       try {
-        const parsedRecipe = parseRecipe(recipes[i]);
+        const parsedRecipe = parseRecipe(recipe);
         parsedRecipes.push(parsedRecipe);
       } catch (error) {
-        console.error(`Error parsing recipe "${recipes[i].title.value}" (ID: ${recipes[i].id}):`);
+        console.error(`Error parsing recipe "${recipe.title.value}" (ID: ${recipe.id}):`);
         console.error(error);
       }
+      processedIndex++;
     }
-
-    console.log(' >>>>>>>>>@>  (JSON)', JSON.stringify(parsedRecipes, null, 2));
 
     console.log('Recipe parsing completed. Starting database population...');
     await populateDatabase(prisma, parsedRecipes);

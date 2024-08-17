@@ -1,18 +1,18 @@
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { CreateOneRecipeArgs } from '../../@generated/recipe/create-one-recipe.args';
-import { FindManyRecipeArgs } from '../../@generated/recipe/find-many-recipe.args';
-import { UpdateOneRecipeArgs } from '../../@generated/recipe/update-one-recipe.args';
-import { PaginationArgs } from '../args/pagination.args';
-import { RecipePaginatedModel } from '../models/recipe/recipe-paginated.model';
-import { Recipe } from '../../@generated/recipe/recipe.model';
-import { RecipeService } from '../../services/recipe.service';
-import { RecipeDataLoader } from '../data-loaders/recipe.data-loader';
-import { RecipePart } from '../../@generated/recipe-part/recipe-part.model';
-import { RecipeIngredient } from '../../@generated/recipe-ingredient/recipe-ingredient.model';
-import { RecipeCategory } from '../../@generated/recipe-category/recipe-category.model';
-import { RecipeImage } from '../../@generated/recipe-image/recipe-image.model';
-import { Season } from '../../@generated/season/season.model';
-import { Tag } from '../../@generated/tag/tag.model';
+import { CreateOneRecipeArgs } from '../../../@generated/recipe/create-one-recipe.args';
+import { FindManyRecipeArgs } from '../../../@generated/recipe/find-many-recipe.args';
+import { UpdateOneRecipeArgs } from '../../../@generated/recipe/update-one-recipe.args';
+import { PaginationArgs } from '../../args/pagination.args';
+import { RecipePaginatedModel } from '../../models/recipe/recipe-paginated.model';
+import { Recipe } from '../../../@generated/recipe/recipe.model';
+import { RecipeService } from '../../../services/recipe.service';
+import { RecipeDataLoader } from '../../data-loaders/recipe.data-loader';
+import { RecipePart } from '../../../@generated/recipe-part/recipe-part.model';
+import { RecipeIngredient } from '../../../@generated/recipe-ingredient/recipe-ingredient.model';
+import { RecipeCategory } from '../../../@generated/recipe-category/recipe-category.model';
+import { RecipeImage } from '../../../@generated/recipe-image/recipe-image.model';
+import { Season } from '../../../@generated/season/season.model';
+import { Tag } from '../../../@generated/tag/tag.model';
 
 
 @Resolver(() => Recipe)

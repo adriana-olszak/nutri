@@ -7,6 +7,7 @@ import { RecipeImage } from '../../@generated/recipe-image/recipe-image.model';
 import { Season } from '../../@generated/season/season.model';
 import { Tag } from '../../@generated/tag/tag.model';
 import { RecipeIngredient } from '../../@generated/recipe-ingredient/recipe-ingredient.model';
+import { Food } from '../../@generated/food/food.model';
 
 @Injectable({ scope: Scope.REQUEST })
 export class RecipeDataLoader {
@@ -131,6 +132,40 @@ export class RecipeDataLoader {
         return recipeIds.map(id => tagMap.get(id) || []);
       } catch (error) {
         return recipeIds.map(() => error instanceof Error ? error : new Error('An unknown error occurred'));
+      }
+    }
+  );
+
+  public readonly batchIngredientsByPart = new DataLoader<string, RecipeIngredient[]>(
+    async (partIds: readonly string[]): Promise<(RecipeIngredient[] | Error)[]> => {
+      try {
+        const ingredients = await this.prisma.recipeIngredient.findMany({
+          where: { partId: { in: partIds as string[] } }
+        });
+        const ingredientMap = new Map<string, RecipeIngredient[]>();
+        ingredients.forEach(ingredient => {
+          if (!ingredientMap.has(ingredient.partId!)) {
+            ingredientMap.set(ingredient.partId!, []);
+          }
+          ingredientMap.get(ingredient.partId!)!.push(ingredient);
+        });
+        return partIds.map(id => ingredientMap.get(id) || []);
+      } catch (error) {
+        return partIds.map(() => error instanceof Error ? error : new Error('An unknown error occurred'));
+      }
+    }
+  );
+
+  public readonly batchFoods = new DataLoader<string, Food>(
+    async (foodIds: readonly string[]): Promise<(Food | Error)[]> => {
+      try {
+        const foods = await this.prisma.food.findMany({
+          where: { id: { in: foodIds as string[] } }
+        });
+        const foodMap = new Map(foods.map(food => [food.id, food]));
+        return foodIds.map(id => foodMap.get(id) || new Error(`Food with id ${id} not found`));
+      } catch (error) {
+        return foodIds.map(() => error instanceof Error ? error : new Error('An unknown error occurred'));
       }
     }
   );
