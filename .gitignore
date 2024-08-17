@@ -43,3 +43,5 @@ Thumbs.db
 
 .env
 /libs/data-import-usda/src/lib/__data__/
+
+deploy/docker-compose/postgres-nutri/*.sql
