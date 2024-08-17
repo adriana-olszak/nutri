@@ -16,4 +16,7 @@ export class UserCount {
 
     @Field(() => Int, {nullable:false})
     passwordResetTokens?: number;
+
+    @Field(() => Int, {nullable:false})
+    submissions?: number;
 }

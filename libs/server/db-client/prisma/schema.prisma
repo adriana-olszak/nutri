@@ -46,6 +46,8 @@ model User {
   loginLogs           LoginLog[]
   passwordResetTokens PasswordResetToken[]
 
+  submissions Submission[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -485,4 +487,83 @@ model ColumnView {
   tableViewDefinitionId String
 
   @@index([tableViewDefinitionId])
+}
+
+model Tenant {
+  id             String          @id @default(uuid())
+  name           String
+  questionnaires Questionnaire[]
+}
+
+model Questionnaire {
+  id          String                 @id @default(uuid())
+  tenantId    String?
+  tenant      Tenant?                @relation(fields: [tenantId], references: [id])
+  title       String
+  description String?
+  isPublic    Boolean                @default(false)
+  versions    QuestionnaireVersion[]
+  submissions Submission[]
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+}
+
+model QuestionnaireVersion {
+  id              String        @id @default(uuid())
+  questionnaireId String
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
+  versionNumber   Int
+  isActive        Boolean       @default(false)
+  sections        Section[]
+  submissions     Submission[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([questionnaireId, versionNumber])
+}
+
+model Section {
+  id                     String               @id @default(uuid())
+  questionnaireVersionId String
+  questionnaireVersion   QuestionnaireVersion @relation(fields: [questionnaireVersionId], references: [id])
+  title                  String
+  description            String?
+  order                  Int
+  questions              Question[]
+}
+
+model Question {
+  id          String   @id @default(uuid())
+  sectionId   String
+  section     Section  @relation(fields: [sectionId], references: [id])
+  type        String // Use an enum in application code
+  title       String
+  description String?
+  isRequired  Boolean  @default(false)
+  order       Int
+  config      Json // Includes options and other configuration
+  answers     Answer[]
+}
+
+model Submission {
+  id                     String               @id @default(uuid())
+  questionnaireId        String
+  questionnaire          Questionnaire        @relation(fields: [questionnaireId], references: [id])
+  questionnaireVersionId String
+  questionnaireVersion   QuestionnaireVersion @relation(fields: [questionnaireVersionId], references: [id])
+  userId                 String
+  user                   User                 @relation(fields: [userId], references: [id])
+  answers                Answer[]
+  isComplete             Boolean              @default(false)
+  startedAt              DateTime             @default(now())
+  completedAt            DateTime?
+}
+
+model Answer {
+  id           String     @id @default(uuid())
+  submissionId String
+  submission   Submission @relation(fields: [submissionId], references: [id])
+  questionId   String
+  question     Question   @relation(fields: [questionId], references: [id])
+  value        Json // Stores all types of answers
 }

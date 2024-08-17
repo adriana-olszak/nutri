@@ -5,6 +5,7 @@ import { GraphQLJSON } from 'graphql-type-json';
 import { RefreshTokenCreateNestedManyWithoutUserInput } from '../refresh-token/refresh-token-create-nested-many-without-user.input';
 import { SessionCreateNestedManyWithoutUserInput } from '../session/session-create-nested-many-without-user.input';
 import { LoginLogCreateNestedManyWithoutUserInput } from '../login-log/login-log-create-nested-many-without-user.input';
+import { SubmissionCreateNestedManyWithoutUserInput } from '../submission/submission-create-nested-many-without-user.input';
 
 @InputType()
 export class UserCreateWithoutPasswordResetTokensInput {
@@ -41,4 +42,7 @@ export class UserCreateWithoutPasswordResetTokensInput {
 
     @Field(() => LoginLogCreateNestedManyWithoutUserInput, {nullable:true})
     loginLogs?: LoginLogCreateNestedManyWithoutUserInput;
+
+    @Field(() => SubmissionCreateNestedManyWithoutUserInput, {nullable:true})
+    submissions?: SubmissionCreateNestedManyWithoutUserInput;
 }

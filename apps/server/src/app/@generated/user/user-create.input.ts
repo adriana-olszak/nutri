@@ -6,6 +6,7 @@ import { RefreshTokenCreateNestedManyWithoutUserInput } from '../refresh-token/r
 import { SessionCreateNestedManyWithoutUserInput } from '../session/session-create-nested-many-without-user.input';
 import { LoginLogCreateNestedManyWithoutUserInput } from '../login-log/login-log-create-nested-many-without-user.input';
 import { PasswordResetTokenCreateNestedManyWithoutUserInput } from '../password-reset-token/password-reset-token-create-nested-many-without-user.input';
+import { SubmissionCreateNestedManyWithoutUserInput } from '../submission/submission-create-nested-many-without-user.input';
 
 @InputType()
 export class UserCreateInput {
@@ -45,4 +46,7 @@ export class UserCreateInput {
 
     @Field(() => PasswordResetTokenCreateNestedManyWithoutUserInput, {nullable:true})
     passwordResetTokens?: PasswordResetTokenCreateNestedManyWithoutUserInput;
+
+    @Field(() => SubmissionCreateNestedManyWithoutUserInput, {nullable:true})
+    submissions?: SubmissionCreateNestedManyWithoutUserInput;
 }

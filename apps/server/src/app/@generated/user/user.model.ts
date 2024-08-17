@@ -7,6 +7,7 @@ import { RefreshToken } from '../refresh-token/refresh-token.model';
 import { Session } from '../session/session.model';
 import { LoginLog } from '../login-log/login-log.model';
 import { PasswordResetToken } from '../password-reset-token/password-reset-token.model';
+import { Submission } from '../submission/submission.model';
 import { UserCount } from './user-count.output';
 
 @ObjectType()
@@ -47,6 +48,9 @@ export class User {
 
     @Field(() => [PasswordResetToken], {nullable:true})
     passwordResetTokens?: Array<PasswordResetToken>;
+
+    @Field(() => [Submission], {nullable:true})
+    submissions?: Array<Submission>;
 
     @Field(() => UserCount, {nullable:false})
     _count?: UserCount;

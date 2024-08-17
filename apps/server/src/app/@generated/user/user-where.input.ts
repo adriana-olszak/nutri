@@ -9,6 +9,7 @@ import { RefreshTokenListRelationFilter } from '../refresh-token/refresh-token-l
 import { SessionListRelationFilter } from '../session/session-list-relation-filter.input';
 import { LoginLogListRelationFilter } from '../login-log/login-log-list-relation-filter.input';
 import { PasswordResetTokenListRelationFilter } from '../password-reset-token/password-reset-token-list-relation-filter.input';
+import { SubmissionListRelationFilter } from '../submission/submission-list-relation-filter.input';
 
 @InputType()
 export class UserWhereInput {
@@ -57,4 +58,7 @@ export class UserWhereInput {
 
     @Field(() => PasswordResetTokenListRelationFilter, {nullable:true})
     passwordResetTokens?: PasswordResetTokenListRelationFilter;
+
+    @Field(() => SubmissionListRelationFilter, {nullable:true})
+    submissions?: SubmissionListRelationFilter;
 }

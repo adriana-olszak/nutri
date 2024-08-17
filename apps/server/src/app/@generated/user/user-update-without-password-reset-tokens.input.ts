@@ -8,6 +8,7 @@ import { DateTimeFieldUpdateOperationsInput } from '../prisma/date-time-field-up
 import { RefreshTokenUpdateManyWithoutUserNestedInput } from '../refresh-token/refresh-token-update-many-without-user-nested.input';
 import { SessionUpdateManyWithoutUserNestedInput } from '../session/session-update-many-without-user-nested.input';
 import { LoginLogUpdateManyWithoutUserNestedInput } from '../login-log/login-log-update-many-without-user-nested.input';
+import { SubmissionUpdateManyWithoutUserNestedInput } from '../submission/submission-update-many-without-user-nested.input';
 
 @InputType()
 export class UserUpdateWithoutPasswordResetTokensInput {
@@ -44,4 +45,7 @@ export class UserUpdateWithoutPasswordResetTokensInput {
 
     @Field(() => LoginLogUpdateManyWithoutUserNestedInput, {nullable:true})
     loginLogs?: LoginLogUpdateManyWithoutUserNestedInput;
+
+    @Field(() => SubmissionUpdateManyWithoutUserNestedInput, {nullable:true})
+    submissions?: SubmissionUpdateManyWithoutUserNestedInput;
 }

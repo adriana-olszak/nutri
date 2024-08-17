@@ -6,6 +6,7 @@ import { RefreshTokenOrderByRelationAggregateInput } from '../refresh-token/refr
 import { SessionOrderByRelationAggregateInput } from '../session/session-order-by-relation-aggregate.input';
 import { LoginLogOrderByRelationAggregateInput } from '../login-log/login-log-order-by-relation-aggregate.input';
 import { PasswordResetTokenOrderByRelationAggregateInput } from '../password-reset-token/password-reset-token-order-by-relation-aggregate.input';
+import { SubmissionOrderByRelationAggregateInput } from '../submission/submission-order-by-relation-aggregate.input';
 
 @InputType()
 export class UserOrderByWithRelationInput {
@@ -45,4 +46,7 @@ export class UserOrderByWithRelationInput {
 
     @Field(() => PasswordResetTokenOrderByRelationAggregateInput, {nullable:true})
     passwordResetTokens?: PasswordResetTokenOrderByRelationAggregateInput;
+
+    @Field(() => SubmissionOrderByRelationAggregateInput, {nullable:true})
+    submissions?: SubmissionOrderByRelationAggregateInput;
 }
