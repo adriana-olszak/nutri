@@ -1,0 +1,58 @@
+query Recipes($where: RecipeWhereInput) {
+  recipes(where: $where) {
+    cookingTime
+    prepTime
+    parts {
+      name
+      ingredients {
+        id
+        extraInfo
+        ingredientText
+        quantity
+        maxQuantity
+        minQuantity
+        unit
+        unitText
+      }
+    }
+    categories {
+      name
+    }
+    ingredients {
+      id
+      extraInfo
+      ingredientText
+      quantity
+      maxQuantity
+      minQuantity
+      unit
+      unitText
+    }
+    images {
+      altText
+      url
+    }
+    tags {
+      name
+    }
+    description
+    id
+    seasons {
+      id
+      name
+
+    }
+    instructions {
+      content
+      listIndex
+      order
+      type
+    }
+    servingsMax
+    servingsMin
+    servingsText
+    sourceId
+    sourceUrl
+    title
+  }
+}

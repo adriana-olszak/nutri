@@ -64,7 +64,7 @@ export class RecipeResolver {
 
   @ResolveField(() => [RecipeIngredient])
   async ingredients(@Parent() recipe: Recipe): Promise<RecipeIngredient[]> {
-    const results = await this.recipeDataLoader.batchIngredients.loadMany([recipe.id]);
+    const results = await this.recipeDataLoader.batchIngredients.load(recipe.id);
     const errors = results.filter(result => result instanceof Error);
     if (errors.length > 0) {
       throw errors[0];

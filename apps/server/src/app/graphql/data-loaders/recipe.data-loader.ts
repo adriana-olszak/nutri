@@ -35,11 +35,24 @@ export class RecipeDataLoader {
       }
     }
   );
-  public readonly batchIngredients = new DataLoader(async (recipeIds: string[]): Promise<RecipeIngredient[]> => {
-    const ingredients = await this.prisma.recipeIngredient.findMany({
-      where: { recipeId: { in: recipeIds } }
-    });
-    return recipeIds.flatMap(id => ingredients.filter(ingredient => ingredient.recipeId === id));
+  public readonly batchIngredients = new DataLoader<string, RecipeIngredient[]>(async (recipeIds: string[]): Promise<(RecipeIngredient[] | Error)[]> => {
+    try {
+      const ingredients: RecipeIngredient[] = await this.prisma.recipeIngredient.findMany({
+        where: { recipeId: { in: recipeIds } }
+      });
+
+      const map = new Map<string, RecipeIngredient[]>();
+      ingredients.forEach(part => {
+        if (!map.has(part.recipeId)) {
+          map.set(part.recipeId, []);
+        }
+        map.get(part.recipeId)?.push(part);
+      });
+
+      return recipeIds.map(id => map.get(id) || []);
+    } catch (error) {
+      return recipeIds.map(() => error instanceof Error ? error : new Error('An unknown error occurred'));
+    }
   });
 
   public readonly batchCategories = new DataLoader<string, Pick<RecipeCategory, 'id' | 'name'>[]>(

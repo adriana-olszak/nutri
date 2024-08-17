@@ -86,9 +86,10 @@ export type BrandedFood = {
   foodId: Scalars['String']['output'];
   gtinUpc?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  importInfo: ImportInfo;
-  importInfoId: Scalars['String']['output'];
+  importInfo?: Maybe<ImportInfo>;
+  importInfoId?: Maybe<Scalars['String']['output']>;
   ingredients?: Maybe<Scalars['String']['output']>;
+  nutritionLabel?: Maybe<NutritionLabel>;
   servingSize?: Maybe<Scalars['Float']['output']>;
   servingUnit?: Maybe<Scalars['String']['output']>;
   sourceId: Scalars['String']['output'];
@@ -137,8 +138,9 @@ export type BrandedFoodCreateWithoutFoodInput = {
   brandOwner: Scalars['String']['input'];
   gtinUpc?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutBrandedFoodsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutBrandedFoodsInput>;
   ingredients?: InputMaybe<Scalars['String']['input']>;
+  nutritionLabel?: InputMaybe<NutritionLabelCreateNestedOneWithoutBrandedFoodInput>;
   servingSize?: InputMaybe<Scalars['Float']['input']>;
   servingUnit?: InputMaybe<Scalars['String']['input']>;
   sourceId: Scalars['String']['input'];
@@ -150,6 +152,7 @@ export type BrandedFoodCreateWithoutImportInfoInput = {
   gtinUpc?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   ingredients?: InputMaybe<Scalars['String']['input']>;
+  nutritionLabel?: InputMaybe<NutritionLabelCreateNestedOneWithoutBrandedFoodInput>;
   servingSize?: InputMaybe<Scalars['Float']['input']>;
   servingUnit?: InputMaybe<Scalars['String']['input']>;
   sourceId: Scalars['String']['input'];
@@ -166,6 +169,11 @@ export type BrandedFoodNullableRelationFilter = {
   isNot?: InputMaybe<BrandedFoodWhereInput>;
 };
 
+export type BrandedFoodRelationFilter = {
+  is?: InputMaybe<BrandedFoodWhereInput>;
+  isNot?: InputMaybe<BrandedFoodWhereInput>;
+};
+
 export type BrandedFoodScalarWhereInput = {
   AND?: InputMaybe<Array<BrandedFoodScalarWhereInput>>;
   NOT?: InputMaybe<Array<BrandedFoodScalarWhereInput>>;
@@ -174,7 +182,7 @@ export type BrandedFoodScalarWhereInput = {
   foodId?: InputMaybe<StringFilter>;
   gtinUpc?: InputMaybe<StringNullableFilter>;
   id?: InputMaybe<StringFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   ingredients?: InputMaybe<StringNullableFilter>;
   servingSize?: InputMaybe<FloatNullableFilter>;
   servingUnit?: InputMaybe<StringNullableFilter>;
@@ -234,8 +242,9 @@ export type BrandedFoodUpdateWithoutFoodInput = {
   brandOwner?: InputMaybe<StringFieldUpdateOperationsInput>;
   gtinUpc?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutBrandedFoodsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutBrandedFoodsNestedInput>;
   ingredients?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  nutritionLabel?: InputMaybe<NutritionLabelUpdateOneWithoutBrandedFoodNestedInput>;
   servingSize?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
   servingUnit?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   sourceId?: InputMaybe<StringFieldUpdateOperationsInput>;
@@ -247,6 +256,7 @@ export type BrandedFoodUpdateWithoutImportInfoInput = {
   gtinUpc?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
   ingredients?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  nutritionLabel?: InputMaybe<NutritionLabelUpdateOneWithoutBrandedFoodNestedInput>;
   servingSize?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
   servingUnit?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   sourceId?: InputMaybe<StringFieldUpdateOperationsInput>;
@@ -273,9 +283,10 @@ export type BrandedFoodWhereInput = {
   foodId?: InputMaybe<StringFilter>;
   gtinUpc?: InputMaybe<StringNullableFilter>;
   id?: InputMaybe<StringFilter>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   ingredients?: InputMaybe<StringNullableFilter>;
+  nutritionLabel?: InputMaybe<NutritionLabelNullableRelationFilter>;
   servingSize?: InputMaybe<FloatNullableFilter>;
   servingUnit?: InputMaybe<StringNullableFilter>;
   sourceId?: InputMaybe<StringFilter>;
@@ -290,12 +301,47 @@ export type BrandedFoodWhereUniqueInput = {
   foodId?: InputMaybe<Scalars['String']['input']>;
   gtinUpc?: InputMaybe<StringNullableFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   ingredients?: InputMaybe<StringNullableFilter>;
+  nutritionLabel?: InputMaybe<NutritionLabelNullableRelationFilter>;
   servingSize?: InputMaybe<FloatNullableFilter>;
   servingUnit?: InputMaybe<StringNullableFilter>;
   sourceId?: InputMaybe<StringFilter>;
+};
+
+export type ColumnView = {
+  __typename?: 'ColumnView';
+  columnId: Scalars['Int']['output'];
+  columnType: Scalars['String']['output'];
+  filter?: Maybe<Scalars['String']['output']>;
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  tableViewDefinitionId: Scalars['String']['output'];
+  visible: Scalars['Boolean']['output'];
+  width: Scalars['Int']['output'];
+};
+
+export type CreateColumnViewInput = {
+  columnId: Scalars['Int']['input'];
+  columnType: Scalars['String']['input'];
+  filter?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  visible: Scalars['Boolean']['input'];
+  width: Scalars['Int']['input'];
+};
+
+export type CreateTableViewDefinitionInput = {
+  columns: Array<CreateColumnViewInput>;
+  filters?: InputMaybe<Scalars['String']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
+  isPreset: Scalars['Boolean']['input'];
+  isShared: Scalars['Boolean']['input'];
+  name: Scalars['String']['input'];
+  order: Scalars['Int']['input'];
+  sorting?: InputMaybe<Scalars['String']['input']>;
+  tableId: Scalars['String']['input'];
+  tableType: Scalars['String']['input'];
 };
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -322,6 +368,17 @@ export type EnumFoodDataSourceFilter = {
   in?: InputMaybe<Array<FoodDataSource>>;
   not?: InputMaybe<NestedEnumFoodDataSourceFilter>;
   notIn?: InputMaybe<Array<FoodDataSource>>;
+};
+
+export type EnumRecipeInstructionsTypeFieldUpdateOperationsInput = {
+  set?: InputMaybe<RecipeInstructionsType>;
+};
+
+export type EnumRecipeInstructionsTypeFilter = {
+  equals?: InputMaybe<RecipeInstructionsType>;
+  in?: InputMaybe<Array<RecipeInstructionsType>>;
+  not?: InputMaybe<NestedEnumRecipeInstructionsTypeFilter>;
+  notIn?: InputMaybe<Array<RecipeInstructionsType>>;
 };
 
 export type FloatFieldUpdateOperationsInput = {
@@ -363,8 +420,8 @@ export type Food = {
   createdAt: Scalars['DateTime']['output'];
   description: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  importInfo: ImportInfo;
-  importInfoId: Scalars['String']['output'];
+  importInfo?: Maybe<ImportInfo>;
+  importInfoId?: Maybe<Scalars['String']['output']>;
   nutrients?: Maybe<Array<FoodNutrient>>;
   portions?: Maybe<Array<FoodPortion>>;
   scientificName?: Maybe<Scalars['String']['output']>;
@@ -381,8 +438,8 @@ export type FoodCategory = {
   description?: Maybe<Scalars['String']['output']>;
   foods?: Maybe<Array<FoodCategoryOnFood>>;
   id: Scalars['ID']['output'];
-  importInfo: ImportInfo;
-  importInfoId: Scalars['String']['output'];
+  importInfo?: Maybe<ImportInfo>;
+  importInfoId?: Maybe<Scalars['String']['output']>;
   level: Scalars['Int']['output'];
   parentCategory?: Maybe<FoodCategory>;
   parentCategoryId?: Maybe<Scalars['String']['output']>;
@@ -413,7 +470,7 @@ export type FoodCategoryCreateManyParentCategoryInput = {
   code?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfoId: Scalars['String']['input'];
+  importInfoId?: InputMaybe<Scalars['String']['input']>;
   level: Scalars['Int']['input'];
   sourceId: Scalars['String']['input'];
 };
@@ -474,7 +531,7 @@ export type FoodCategoryCreateWithoutChildCategoriesInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   foods?: InputMaybe<FoodCategoryOnFoodCreateNestedManyWithoutCategoryInput>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodCategoriesInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodCategoriesInput>;
   level: Scalars['Int']['input'];
   parentCategory?: InputMaybe<FoodCategoryCreateNestedOneWithoutChildCategoriesInput>;
   sourceId: Scalars['String']['input'];
@@ -485,7 +542,7 @@ export type FoodCategoryCreateWithoutFoodsInput = {
   code?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodCategoriesInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodCategoriesInput>;
   level: Scalars['Int']['input'];
   parentCategory?: InputMaybe<FoodCategoryCreateNestedOneWithoutChildCategoriesInput>;
   sourceId: Scalars['String']['input'];
@@ -508,7 +565,7 @@ export type FoodCategoryCreateWithoutParentCategoryInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   foods?: InputMaybe<FoodCategoryOnFoodCreateNestedManyWithoutCategoryInput>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodCategoriesInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodCategoriesInput>;
   level: Scalars['Int']['input'];
   sourceId: Scalars['String']['input'];
 };
@@ -716,7 +773,7 @@ export type FoodCategoryScalarWhereInput = {
   code?: InputMaybe<StringNullableFilter>;
   description?: InputMaybe<StringNullableFilter>;
   id?: InputMaybe<StringFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   level?: InputMaybe<IntFilter>;
   parentCategoryId?: InputMaybe<StringNullableFilter>;
   sourceId?: InputMaybe<StringFilter>;
@@ -811,7 +868,7 @@ export type FoodCategoryUpdateWithoutChildCategoriesInput = {
   description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   foods?: InputMaybe<FoodCategoryOnFoodUpdateManyWithoutCategoryNestedInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodCategoriesNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodCategoriesNestedInput>;
   level?: InputMaybe<IntFieldUpdateOperationsInput>;
   parentCategory?: InputMaybe<FoodCategoryUpdateOneWithoutChildCategoriesNestedInput>;
   sourceId?: InputMaybe<StringFieldUpdateOperationsInput>;
@@ -822,7 +879,7 @@ export type FoodCategoryUpdateWithoutFoodsInput = {
   code?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodCategoriesNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodCategoriesNestedInput>;
   level?: InputMaybe<IntFieldUpdateOperationsInput>;
   parentCategory?: InputMaybe<FoodCategoryUpdateOneWithoutChildCategoriesNestedInput>;
   sourceId?: InputMaybe<StringFieldUpdateOperationsInput>;
@@ -845,7 +902,7 @@ export type FoodCategoryUpdateWithoutParentCategoryInput = {
   description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   foods?: InputMaybe<FoodCategoryOnFoodUpdateManyWithoutCategoryNestedInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodCategoriesNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodCategoriesNestedInput>;
   level?: InputMaybe<IntFieldUpdateOperationsInput>;
   sourceId?: InputMaybe<StringFieldUpdateOperationsInput>;
 };
@@ -883,8 +940,8 @@ export type FoodCategoryWhereInput = {
   description?: InputMaybe<StringNullableFilter>;
   foods?: InputMaybe<FoodCategoryOnFoodListRelationFilter>;
   id?: InputMaybe<StringFilter>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   level?: InputMaybe<IntFilter>;
   parentCategory?: InputMaybe<FoodCategoryNullableRelationFilter>;
   parentCategoryId?: InputMaybe<StringNullableFilter>;
@@ -900,8 +957,8 @@ export type FoodCategoryWhereUniqueInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   foods?: InputMaybe<FoodCategoryOnFoodListRelationFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   level?: InputMaybe<IntFilter>;
   parentCategory?: InputMaybe<FoodCategoryNullableRelationFilter>;
   parentCategoryId?: InputMaybe<StringNullableFilter>;
@@ -1004,7 +1061,7 @@ export type FoodCreateWithoutBrandedFoodInput = {
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   description: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodsInput>;
   nutrients?: InputMaybe<FoodNutrientCreateNestedManyWithoutFoodInput>;
   portions?: InputMaybe<FoodPortionCreateNestedManyWithoutFoodInput>;
   scientificName?: InputMaybe<Scalars['String']['input']>;
@@ -1019,7 +1076,7 @@ export type FoodCreateWithoutCategoriesInput = {
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   description: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodsInput>;
   nutrients?: InputMaybe<FoodNutrientCreateNestedManyWithoutFoodInput>;
   portions?: InputMaybe<FoodPortionCreateNestedManyWithoutFoodInput>;
   scientificName?: InputMaybe<Scalars['String']['input']>;
@@ -1050,7 +1107,7 @@ export type FoodCreateWithoutNutrientsInput = {
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   description: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodsInput>;
   portions?: InputMaybe<FoodPortionCreateNestedManyWithoutFoodInput>;
   scientificName?: InputMaybe<Scalars['String']['input']>;
   searchVectors?: InputMaybe<FoodSearchVectorCreateNestedManyWithoutFoodInput>;
@@ -1065,7 +1122,7 @@ export type FoodCreateWithoutPortionsInput = {
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   description: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodsInput>;
   nutrients?: InputMaybe<FoodNutrientCreateNestedManyWithoutFoodInput>;
   scientificName?: InputMaybe<Scalars['String']['input']>;
   searchVectors?: InputMaybe<FoodSearchVectorCreateNestedManyWithoutFoodInput>;
@@ -1079,7 +1136,7 @@ export type FoodCreateWithoutRecipeIngredientInput = {
   createdAt?: InputMaybe<Scalars['DateTime']['input']>;
   description: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodsInput>;
   nutrients?: InputMaybe<FoodNutrientCreateNestedManyWithoutFoodInput>;
   portions?: InputMaybe<FoodPortionCreateNestedManyWithoutFoodInput>;
   scientificName?: InputMaybe<Scalars['String']['input']>;
@@ -1108,8 +1165,8 @@ export type FoodNutrient = {
   food: Food;
   foodId: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  importInfo: ImportInfo;
-  importInfoId: Scalars['String']['output'];
+  importInfo?: Maybe<ImportInfo>;
+  importInfoId?: Maybe<Scalars['String']['output']>;
   max?: Maybe<Scalars['Float']['output']>;
   median?: Maybe<Scalars['Float']['output']>;
   min?: Maybe<Scalars['Float']['output']>;
@@ -1122,7 +1179,7 @@ export type FoodNutrientCreateManyFoodInput = {
   amount: Scalars['Float']['input'];
   confidenceCode?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfoId: Scalars['String']['input'];
+  importInfoId?: InputMaybe<Scalars['String']['input']>;
   max?: InputMaybe<Scalars['Float']['input']>;
   median?: InputMaybe<Scalars['Float']['input']>;
   min?: InputMaybe<Scalars['Float']['input']>;
@@ -1157,7 +1214,7 @@ export type FoodNutrientCreateManyNutrientInput = {
   confidenceCode?: InputMaybe<Scalars['String']['input']>;
   foodId: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfoId: Scalars['String']['input'];
+  importInfoId?: InputMaybe<Scalars['String']['input']>;
   max?: InputMaybe<Scalars['Float']['input']>;
   median?: InputMaybe<Scalars['Float']['input']>;
   min?: InputMaybe<Scalars['Float']['input']>;
@@ -1209,7 +1266,7 @@ export type FoodNutrientCreateWithoutFoodInput = {
   amount: Scalars['Float']['input'];
   confidenceCode?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodNutrientsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodNutrientsInput>;
   max?: InputMaybe<Scalars['Float']['input']>;
   median?: InputMaybe<Scalars['Float']['input']>;
   min?: InputMaybe<Scalars['Float']['input']>;
@@ -1234,7 +1291,7 @@ export type FoodNutrientCreateWithoutNutrientInput = {
   confidenceCode?: InputMaybe<Scalars['String']['input']>;
   food: FoodCreateNestedOneWithoutNutrientsInput;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodNutrientsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodNutrientsInput>;
   max?: InputMaybe<Scalars['Float']['input']>;
   median?: InputMaybe<Scalars['Float']['input']>;
   min?: InputMaybe<Scalars['Float']['input']>;
@@ -1255,7 +1312,7 @@ export type FoodNutrientScalarWhereInput = {
   confidenceCode?: InputMaybe<StringNullableFilter>;
   foodId?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   max?: InputMaybe<FloatNullableFilter>;
   median?: InputMaybe<FloatNullableFilter>;
   min?: InputMaybe<FloatNullableFilter>;
@@ -1349,7 +1406,7 @@ export type FoodNutrientUpdateWithoutFoodInput = {
   amount?: InputMaybe<FloatFieldUpdateOperationsInput>;
   confidenceCode?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodNutrientsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodNutrientsNestedInput>;
   max?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
   median?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
   min?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
@@ -1374,7 +1431,7 @@ export type FoodNutrientUpdateWithoutNutrientInput = {
   confidenceCode?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   food?: InputMaybe<FoodUpdateOneRequiredWithoutNutrientsNestedInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodNutrientsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodNutrientsNestedInput>;
   max?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
   median?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
   min?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
@@ -1408,8 +1465,8 @@ export type FoodNutrientWhereInput = {
   food?: InputMaybe<FoodRelationFilter>;
   foodId?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   max?: InputMaybe<FloatNullableFilter>;
   median?: InputMaybe<FloatNullableFilter>;
   min?: InputMaybe<FloatNullableFilter>;
@@ -1427,8 +1484,8 @@ export type FoodNutrientWhereUniqueInput = {
   food?: InputMaybe<FoodRelationFilter>;
   foodId?: InputMaybe<StringFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   max?: InputMaybe<FloatNullableFilter>;
   median?: InputMaybe<FloatNullableFilter>;
   min?: InputMaybe<FloatNullableFilter>;
@@ -1444,8 +1501,8 @@ export type FoodPortion = {
   foodId: Scalars['String']['output'];
   gramWeight: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
-  importInfo: ImportInfo;
-  importInfoId: Scalars['String']['output'];
+  importInfo?: Maybe<ImportInfo>;
+  importInfoId?: Maybe<Scalars['String']['output']>;
   measureUnit: MeasureUnit;
   measureUnitName: Scalars['String']['output'];
   portionDescription?: Maybe<Scalars['String']['output']>;
@@ -1456,7 +1513,7 @@ export type FoodPortionCreateManyFoodInput = {
   amount: Scalars['Float']['input'];
   gramWeight: Scalars['Float']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfoId: Scalars['String']['input'];
+  importInfoId?: InputMaybe<Scalars['String']['input']>;
   measureUnitName: Scalars['String']['input'];
   portionDescription?: InputMaybe<Scalars['String']['input']>;
   sourceId: Scalars['String']['input'];
@@ -1487,7 +1544,7 @@ export type FoodPortionCreateManyMeasureUnitInput = {
   foodId: Scalars['String']['input'];
   gramWeight: Scalars['Float']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfoId: Scalars['String']['input'];
+  importInfoId?: InputMaybe<Scalars['String']['input']>;
   portionDescription?: InputMaybe<Scalars['String']['input']>;
   sourceId: Scalars['String']['input'];
 };
@@ -1537,7 +1594,7 @@ export type FoodPortionCreateWithoutFoodInput = {
   amount: Scalars['Float']['input'];
   gramWeight: Scalars['Float']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodPortionsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodPortionsInput>;
   measureUnit: MeasureUnitCreateNestedOneWithoutFoodPortionInput;
   portionDescription?: InputMaybe<Scalars['String']['input']>;
   sourceId: Scalars['String']['input'];
@@ -1558,7 +1615,7 @@ export type FoodPortionCreateWithoutMeasureUnitInput = {
   food: FoodCreateNestedOneWithoutPortionsInput;
   gramWeight: Scalars['Float']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutFoodPortionsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutFoodPortionsInput>;
   portionDescription?: InputMaybe<Scalars['String']['input']>;
   sourceId: Scalars['String']['input'];
 };
@@ -1577,7 +1634,7 @@ export type FoodPortionScalarWhereInput = {
   foodId?: InputMaybe<StringFilter>;
   gramWeight?: InputMaybe<FloatFilter>;
   id?: InputMaybe<StringFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   measureUnitName?: InputMaybe<StringFilter>;
   portionDescription?: InputMaybe<StringNullableFilter>;
   sourceId?: InputMaybe<StringFilter>;
@@ -1667,7 +1724,7 @@ export type FoodPortionUpdateWithoutFoodInput = {
   amount?: InputMaybe<FloatFieldUpdateOperationsInput>;
   gramWeight?: InputMaybe<FloatFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodPortionsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodPortionsNestedInput>;
   measureUnit?: InputMaybe<MeasureUnitUpdateOneRequiredWithoutFoodPortionNestedInput>;
   portionDescription?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   sourceId?: InputMaybe<StringFieldUpdateOperationsInput>;
@@ -1688,7 +1745,7 @@ export type FoodPortionUpdateWithoutMeasureUnitInput = {
   food?: InputMaybe<FoodUpdateOneRequiredWithoutPortionsNestedInput>;
   gramWeight?: InputMaybe<FloatFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodPortionsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodPortionsNestedInput>;
   portionDescription?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   sourceId?: InputMaybe<StringFieldUpdateOperationsInput>;
 };
@@ -1720,8 +1777,8 @@ export type FoodPortionWhereInput = {
   foodId?: InputMaybe<StringFilter>;
   gramWeight?: InputMaybe<FloatFilter>;
   id?: InputMaybe<StringFilter>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   measureUnit?: InputMaybe<MeasureUnitRelationFilter>;
   measureUnitName?: InputMaybe<StringFilter>;
   portionDescription?: InputMaybe<StringNullableFilter>;
@@ -1737,8 +1794,8 @@ export type FoodPortionWhereUniqueInput = {
   foodId?: InputMaybe<StringFilter>;
   gramWeight?: InputMaybe<FloatFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   measureUnit?: InputMaybe<MeasureUnitRelationFilter>;
   measureUnitName?: InputMaybe<StringFilter>;
   portionDescription?: InputMaybe<StringNullableFilter>;
@@ -1757,10 +1814,24 @@ export type FoodScalarWhereInput = {
   createdAt?: InputMaybe<DateTimeFilter>;
   description?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   scientificName?: InputMaybe<StringNullableFilter>;
   sourceId?: InputMaybe<StringFilter>;
   updatedAt?: InputMaybe<DateTimeFilter>;
+};
+
+export type FoodSearchInput = {
+  name: Scalars['String']['input'];
+  nonBrandedBoost?: InputMaybe<Scalars['Float']['input']>;
+  similarityThreshold?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type FoodSearchResult = {
+  __typename?: 'FoodSearchResult';
+  description: Scalars['String']['output'];
+  food: Food;
+  id: Scalars['ID']['output'];
+  rank: Scalars['Float']['output'];
 };
 
 export type FoodSearchVector = {
@@ -1952,7 +2023,7 @@ export type FoodUpdateWithoutBrandedFoodInput = {
   createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
   description?: InputMaybe<StringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodsNestedInput>;
   nutrients?: InputMaybe<FoodNutrientUpdateManyWithoutFoodNestedInput>;
   portions?: InputMaybe<FoodPortionUpdateManyWithoutFoodNestedInput>;
   scientificName?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
@@ -1967,7 +2038,7 @@ export type FoodUpdateWithoutCategoriesInput = {
   createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
   description?: InputMaybe<StringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodsNestedInput>;
   nutrients?: InputMaybe<FoodNutrientUpdateManyWithoutFoodNestedInput>;
   portions?: InputMaybe<FoodPortionUpdateManyWithoutFoodNestedInput>;
   scientificName?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
@@ -1998,7 +2069,7 @@ export type FoodUpdateWithoutNutrientsInput = {
   createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
   description?: InputMaybe<StringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodsNestedInput>;
   portions?: InputMaybe<FoodPortionUpdateManyWithoutFoodNestedInput>;
   scientificName?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   searchVectors?: InputMaybe<FoodSearchVectorUpdateManyWithoutFoodNestedInput>;
@@ -2013,7 +2084,7 @@ export type FoodUpdateWithoutPortionsInput = {
   createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
   description?: InputMaybe<StringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodsNestedInput>;
   nutrients?: InputMaybe<FoodNutrientUpdateManyWithoutFoodNestedInput>;
   scientificName?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   searchVectors?: InputMaybe<FoodSearchVectorUpdateManyWithoutFoodNestedInput>;
@@ -2027,7 +2098,7 @@ export type FoodUpdateWithoutRecipeIngredientInput = {
   createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
   description?: InputMaybe<StringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutFoodsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutFoodsNestedInput>;
   nutrients?: InputMaybe<FoodNutrientUpdateManyWithoutFoodNestedInput>;
   portions?: InputMaybe<FoodPortionUpdateManyWithoutFoodNestedInput>;
   scientificName?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
@@ -2082,8 +2153,8 @@ export type FoodWhereInput = {
   createdAt?: InputMaybe<DateTimeFilter>;
   description?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   nutrients?: InputMaybe<FoodNutrientListRelationFilter>;
   portions?: InputMaybe<FoodPortionListRelationFilter>;
   scientificName?: InputMaybe<StringNullableFilter>;
@@ -2102,8 +2173,8 @@ export type FoodWhereUniqueInput = {
   createdAt?: InputMaybe<DateTimeFilter>;
   description?: InputMaybe<StringFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   nutrients?: InputMaybe<FoodNutrientListRelationFilter>;
   portions?: InputMaybe<FoodPortionListRelationFilter>;
   scientificName?: InputMaybe<StringNullableFilter>;
@@ -2312,63 +2383,77 @@ export type ImportInfoDataSourceSourceVersionCompoundUniqueInput = {
   sourceVersion: Scalars['String']['input'];
 };
 
-export type ImportInfoRelationFilter = {
+export type ImportInfoNullableRelationFilter = {
   is?: InputMaybe<ImportInfoWhereInput>;
   isNot?: InputMaybe<ImportInfoWhereInput>;
 };
 
-export type ImportInfoUpdateOneRequiredWithoutBrandedFoodsNestedInput = {
+export type ImportInfoUpdateOneWithoutBrandedFoodsNestedInput = {
   connect?: InputMaybe<ImportInfoWhereUniqueInput>;
   connectOrCreate?: InputMaybe<ImportInfoCreateOrConnectWithoutBrandedFoodsInput>;
   create?: InputMaybe<ImportInfoCreateWithoutBrandedFoodsInput>;
+  delete?: InputMaybe<ImportInfoWhereInput>;
+  disconnect?: InputMaybe<ImportInfoWhereInput>;
   update?: InputMaybe<ImportInfoUpdateToOneWithWhereWithoutBrandedFoodsInput>;
   upsert?: InputMaybe<ImportInfoUpsertWithoutBrandedFoodsInput>;
 };
 
-export type ImportInfoUpdateOneRequiredWithoutFoodCategoriesNestedInput = {
+export type ImportInfoUpdateOneWithoutFoodCategoriesNestedInput = {
   connect?: InputMaybe<ImportInfoWhereUniqueInput>;
   connectOrCreate?: InputMaybe<ImportInfoCreateOrConnectWithoutFoodCategoriesInput>;
   create?: InputMaybe<ImportInfoCreateWithoutFoodCategoriesInput>;
+  delete?: InputMaybe<ImportInfoWhereInput>;
+  disconnect?: InputMaybe<ImportInfoWhereInput>;
   update?: InputMaybe<ImportInfoUpdateToOneWithWhereWithoutFoodCategoriesInput>;
   upsert?: InputMaybe<ImportInfoUpsertWithoutFoodCategoriesInput>;
 };
 
-export type ImportInfoUpdateOneRequiredWithoutFoodNutrientsNestedInput = {
+export type ImportInfoUpdateOneWithoutFoodNutrientsNestedInput = {
   connect?: InputMaybe<ImportInfoWhereUniqueInput>;
   connectOrCreate?: InputMaybe<ImportInfoCreateOrConnectWithoutFoodNutrientsInput>;
   create?: InputMaybe<ImportInfoCreateWithoutFoodNutrientsInput>;
+  delete?: InputMaybe<ImportInfoWhereInput>;
+  disconnect?: InputMaybe<ImportInfoWhereInput>;
   update?: InputMaybe<ImportInfoUpdateToOneWithWhereWithoutFoodNutrientsInput>;
   upsert?: InputMaybe<ImportInfoUpsertWithoutFoodNutrientsInput>;
 };
 
-export type ImportInfoUpdateOneRequiredWithoutFoodPortionsNestedInput = {
+export type ImportInfoUpdateOneWithoutFoodPortionsNestedInput = {
   connect?: InputMaybe<ImportInfoWhereUniqueInput>;
   connectOrCreate?: InputMaybe<ImportInfoCreateOrConnectWithoutFoodPortionsInput>;
   create?: InputMaybe<ImportInfoCreateWithoutFoodPortionsInput>;
+  delete?: InputMaybe<ImportInfoWhereInput>;
+  disconnect?: InputMaybe<ImportInfoWhereInput>;
   update?: InputMaybe<ImportInfoUpdateToOneWithWhereWithoutFoodPortionsInput>;
   upsert?: InputMaybe<ImportInfoUpsertWithoutFoodPortionsInput>;
 };
 
-export type ImportInfoUpdateOneRequiredWithoutFoodsNestedInput = {
+export type ImportInfoUpdateOneWithoutFoodsNestedInput = {
   connect?: InputMaybe<ImportInfoWhereUniqueInput>;
   connectOrCreate?: InputMaybe<ImportInfoCreateOrConnectWithoutFoodsInput>;
   create?: InputMaybe<ImportInfoCreateWithoutFoodsInput>;
+  delete?: InputMaybe<ImportInfoWhereInput>;
+  disconnect?: InputMaybe<ImportInfoWhereInput>;
   update?: InputMaybe<ImportInfoUpdateToOneWithWhereWithoutFoodsInput>;
   upsert?: InputMaybe<ImportInfoUpsertWithoutFoodsInput>;
 };
 
-export type ImportInfoUpdateOneRequiredWithoutMeasureUnitsNestedInput = {
+export type ImportInfoUpdateOneWithoutMeasureUnitsNestedInput = {
   connect?: InputMaybe<ImportInfoWhereUniqueInput>;
   connectOrCreate?: InputMaybe<ImportInfoCreateOrConnectWithoutMeasureUnitsInput>;
   create?: InputMaybe<ImportInfoCreateWithoutMeasureUnitsInput>;
+  delete?: InputMaybe<ImportInfoWhereInput>;
+  disconnect?: InputMaybe<ImportInfoWhereInput>;
   update?: InputMaybe<ImportInfoUpdateToOneWithWhereWithoutMeasureUnitsInput>;
   upsert?: InputMaybe<ImportInfoUpsertWithoutMeasureUnitsInput>;
 };
 
-export type ImportInfoUpdateOneRequiredWithoutNutrientsNestedInput = {
+export type ImportInfoUpdateOneWithoutNutrientsNestedInput = {
   connect?: InputMaybe<ImportInfoWhereUniqueInput>;
   connectOrCreate?: InputMaybe<ImportInfoCreateOrConnectWithoutNutrientsInput>;
   create?: InputMaybe<ImportInfoCreateWithoutNutrientsInput>;
+  delete?: InputMaybe<ImportInfoWhereInput>;
+  disconnect?: InputMaybe<ImportInfoWhereInput>;
   update?: InputMaybe<ImportInfoUpdateToOneWithWhereWithoutNutrientsInput>;
   upsert?: InputMaybe<ImportInfoUpsertWithoutNutrientsInput>;
 };
@@ -2686,8 +2771,8 @@ export type MeasureUnit = {
   __typename?: 'MeasureUnit';
   FoodPortion?: Maybe<Array<FoodPortion>>;
   _count: MeasureUnitCount;
-  importInfo: ImportInfo;
-  importInfoId: Scalars['String']['output'];
+  importInfo?: Maybe<ImportInfo>;
+  importInfoId?: Maybe<Scalars['String']['output']>;
   name: Scalars['ID']['output'];
 };
 
@@ -2729,7 +2814,7 @@ export type MeasureUnitCreateOrConnectWithoutImportInfoInput = {
 };
 
 export type MeasureUnitCreateWithoutFoodPortionInput = {
-  importInfo: ImportInfoCreateNestedOneWithoutMeasureUnitsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutMeasureUnitsInput>;
   name: Scalars['String']['input'];
 };
 
@@ -2753,7 +2838,7 @@ export type MeasureUnitScalarWhereInput = {
   AND?: InputMaybe<Array<MeasureUnitScalarWhereInput>>;
   NOT?: InputMaybe<Array<MeasureUnitScalarWhereInput>>;
   OR?: InputMaybe<Array<MeasureUnitScalarWhereInput>>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   name?: InputMaybe<StringFilter>;
 };
 
@@ -2799,7 +2884,7 @@ export type MeasureUnitUpdateWithWhereUniqueWithoutImportInfoInput = {
 };
 
 export type MeasureUnitUpdateWithoutFoodPortionInput = {
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutMeasureUnitsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutMeasureUnitsNestedInput>;
   name?: InputMaybe<StringFieldUpdateOperationsInput>;
 };
 
@@ -2825,8 +2910,8 @@ export type MeasureUnitWhereInput = {
   FoodPortion?: InputMaybe<FoodPortionListRelationFilter>;
   NOT?: InputMaybe<Array<MeasureUnitWhereInput>>;
   OR?: InputMaybe<Array<MeasureUnitWhereInput>>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   name?: InputMaybe<StringFilter>;
 };
 
@@ -2835,8 +2920,8 @@ export type MeasureUnitWhereUniqueInput = {
   FoodPortion?: InputMaybe<FoodPortionListRelationFilter>;
   NOT?: InputMaybe<Array<MeasureUnitWhereInput>>;
   OR?: InputMaybe<Array<MeasureUnitWhereInput>>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   name?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2850,8 +2935,11 @@ export type Mutation = {
   authRefreshToken: AuthRefreshTokenModel;
   authRegister: AuthSessionModel;
   createRecipe: Recipe;
+  createTableViewDefinition: TableViewDefinition;
   removeRecipe: Recipe;
+  removeTableViewDefinition: TableViewDefinition;
   updateRecipe: Recipe;
+  updateTableViewDefinition: TableViewDefinition;
 };
 
 
@@ -2885,7 +2973,17 @@ export type MutationCreateRecipeArgs = {
 };
 
 
+export type MutationCreateTableViewDefinitionArgs = {
+  createTableViewDefinitionInput: CreateTableViewDefinitionInput;
+};
+
+
 export type MutationRemoveRecipeArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveTableViewDefinitionArgs = {
   id: Scalars['String']['input'];
 };
 
@@ -2893,6 +2991,11 @@ export type MutationRemoveRecipeArgs = {
 export type MutationUpdateRecipeArgs = {
   data: RecipeUpdateInput;
   where: RecipeWhereUniqueInput;
+};
+
+
+export type MutationUpdateTableViewDefinitionArgs = {
+  updateTableViewDefinitionInput: UpdateTableViewDefinitionInput;
 };
 
 export type NestedBoolFilter = {
@@ -2916,6 +3019,13 @@ export type NestedEnumFoodDataSourceFilter = {
   in?: InputMaybe<Array<FoodDataSource>>;
   not?: InputMaybe<NestedEnumFoodDataSourceFilter>;
   notIn?: InputMaybe<Array<FoodDataSource>>;
+};
+
+export type NestedEnumRecipeInstructionsTypeFilter = {
+  equals?: InputMaybe<RecipeInstructionsType>;
+  in?: InputMaybe<Array<RecipeInstructionsType>>;
+  not?: InputMaybe<NestedEnumRecipeInstructionsTypeFilter>;
+  notIn?: InputMaybe<Array<RecipeInstructionsType>>;
 };
 
 export type NestedFloatFilter = {
@@ -3020,8 +3130,8 @@ export type Nutrient = {
   _count: NutrientCount;
   foodNutrients?: Maybe<Array<FoodNutrient>>;
   id: Scalars['ID']['output'];
-  importInfo: ImportInfo;
-  importInfoId: Scalars['String']['output'];
+  importInfo?: Maybe<ImportInfo>;
+  importInfoId?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   sourceId: Scalars['String']['output'];
   unitName: Scalars['String']['output'];
@@ -3069,7 +3179,7 @@ export type NutrientCreateOrConnectWithoutImportInfoInput = {
 
 export type NutrientCreateWithoutFoodNutrientsInput = {
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo: ImportInfoCreateNestedOneWithoutNutrientsInput;
+  importInfo?: InputMaybe<ImportInfoCreateNestedOneWithoutNutrientsInput>;
   name: Scalars['String']['input'];
   sourceId: Scalars['String']['input'];
   unitName: Scalars['String']['input'];
@@ -3099,7 +3209,7 @@ export type NutrientScalarWhereInput = {
   NOT?: InputMaybe<Array<NutrientScalarWhereInput>>;
   OR?: InputMaybe<Array<NutrientScalarWhereInput>>;
   id?: InputMaybe<StringFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   name?: InputMaybe<StringFilter>;
   sourceId?: InputMaybe<StringFilter>;
   unitName?: InputMaybe<StringFilter>;
@@ -3151,7 +3261,7 @@ export type NutrientUpdateWithWhereUniqueWithoutImportInfoInput = {
 
 export type NutrientUpdateWithoutFoodNutrientsInput = {
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
-  importInfo?: InputMaybe<ImportInfoUpdateOneRequiredWithoutNutrientsNestedInput>;
+  importInfo?: InputMaybe<ImportInfoUpdateOneWithoutNutrientsNestedInput>;
   name?: InputMaybe<StringFieldUpdateOperationsInput>;
   sourceId?: InputMaybe<StringFieldUpdateOperationsInput>;
   unitName?: InputMaybe<StringFieldUpdateOperationsInput>;
@@ -3183,8 +3293,8 @@ export type NutrientWhereInput = {
   OR?: InputMaybe<Array<NutrientWhereInput>>;
   foodNutrients?: InputMaybe<FoodNutrientListRelationFilter>;
   id?: InputMaybe<StringFilter>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   name?: InputMaybe<StringFilter>;
   sourceId?: InputMaybe<StringFilter>;
   unitName?: InputMaybe<StringFilter>;
@@ -3196,30 +3306,275 @@ export type NutrientWhereUniqueInput = {
   OR?: InputMaybe<Array<NutrientWhereInput>>;
   foodNutrients?: InputMaybe<FoodNutrientListRelationFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
-  importInfo?: InputMaybe<ImportInfoRelationFilter>;
-  importInfoId?: InputMaybe<StringFilter>;
+  importInfo?: InputMaybe<ImportInfoNullableRelationFilter>;
+  importInfoId?: InputMaybe<StringNullableFilter>;
   name?: InputMaybe<StringFilter>;
   sourceId?: InputMaybe<Scalars['String']['input']>;
   unitName?: InputMaybe<StringFilter>;
 };
 
+export type NutritionLabel = {
+  __typename?: 'NutritionLabel';
+  addedSugars?: Maybe<Scalars['Float']['output']>;
+  brandedFood: BrandedFood;
+  brandedFoodId: Scalars['String']['output'];
+  calcium?: Maybe<Scalars['Float']['output']>;
+  calories?: Maybe<Scalars['Float']['output']>;
+  cholesterol?: Maybe<Scalars['Float']['output']>;
+  dietaryFiber?: Maybe<Scalars['Float']['output']>;
+  householdServingFullText?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  iron?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueCalcium?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueCarbohydrate?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueCholesterol?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueFat?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueFiber?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueIron?: Maybe<Scalars['Float']['output']>;
+  percentDailyValuePotassium?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueProtein?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueSaturatedFat?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueSodium?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueVitaminA?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueVitaminC?: Maybe<Scalars['Float']['output']>;
+  percentDailyValueVitaminD?: Maybe<Scalars['Float']['output']>;
+  potassium?: Maybe<Scalars['Float']['output']>;
+  protein?: Maybe<Scalars['Float']['output']>;
+  saturatedFat?: Maybe<Scalars['Float']['output']>;
+  servingsPerContainer?: Maybe<Scalars['Float']['output']>;
+  sodium?: Maybe<Scalars['Float']['output']>;
+  totalCarbohydrate?: Maybe<Scalars['Float']['output']>;
+  totalFat?: Maybe<Scalars['Float']['output']>;
+  totalSugars?: Maybe<Scalars['Float']['output']>;
+  transFat?: Maybe<Scalars['Float']['output']>;
+  vitaminA?: Maybe<Scalars['Float']['output']>;
+  vitaminC?: Maybe<Scalars['Float']['output']>;
+  vitaminD?: Maybe<Scalars['Float']['output']>;
+};
+
+export type NutritionLabelCreateNestedOneWithoutBrandedFoodInput = {
+  connect?: InputMaybe<NutritionLabelWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<NutritionLabelCreateOrConnectWithoutBrandedFoodInput>;
+  create?: InputMaybe<NutritionLabelCreateWithoutBrandedFoodInput>;
+};
+
+export type NutritionLabelCreateOrConnectWithoutBrandedFoodInput = {
+  create: NutritionLabelCreateWithoutBrandedFoodInput;
+  where: NutritionLabelWhereUniqueInput;
+};
+
+export type NutritionLabelCreateWithoutBrandedFoodInput = {
+  addedSugars?: InputMaybe<Scalars['Float']['input']>;
+  calcium?: InputMaybe<Scalars['Float']['input']>;
+  calories?: InputMaybe<Scalars['Float']['input']>;
+  cholesterol?: InputMaybe<Scalars['Float']['input']>;
+  dietaryFiber?: InputMaybe<Scalars['Float']['input']>;
+  householdServingFullText?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  iron?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueCalcium?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueCarbohydrate?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueCholesterol?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueFat?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueFiber?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueIron?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValuePotassium?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueProtein?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueSaturatedFat?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueSodium?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueVitaminA?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueVitaminC?: InputMaybe<Scalars['Float']['input']>;
+  percentDailyValueVitaminD?: InputMaybe<Scalars['Float']['input']>;
+  potassium?: InputMaybe<Scalars['Float']['input']>;
+  protein?: InputMaybe<Scalars['Float']['input']>;
+  saturatedFat?: InputMaybe<Scalars['Float']['input']>;
+  servingsPerContainer?: InputMaybe<Scalars['Float']['input']>;
+  sodium?: InputMaybe<Scalars['Float']['input']>;
+  totalCarbohydrate?: InputMaybe<Scalars['Float']['input']>;
+  totalFat?: InputMaybe<Scalars['Float']['input']>;
+  totalSugars?: InputMaybe<Scalars['Float']['input']>;
+  transFat?: InputMaybe<Scalars['Float']['input']>;
+  vitaminA?: InputMaybe<Scalars['Float']['input']>;
+  vitaminC?: InputMaybe<Scalars['Float']['input']>;
+  vitaminD?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type NutritionLabelNullableRelationFilter = {
+  is?: InputMaybe<NutritionLabelWhereInput>;
+  isNot?: InputMaybe<NutritionLabelWhereInput>;
+};
+
+export type NutritionLabelUpdateOneWithoutBrandedFoodNestedInput = {
+  connect?: InputMaybe<NutritionLabelWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<NutritionLabelCreateOrConnectWithoutBrandedFoodInput>;
+  create?: InputMaybe<NutritionLabelCreateWithoutBrandedFoodInput>;
+  delete?: InputMaybe<NutritionLabelWhereInput>;
+  disconnect?: InputMaybe<NutritionLabelWhereInput>;
+  update?: InputMaybe<NutritionLabelUpdateToOneWithWhereWithoutBrandedFoodInput>;
+  upsert?: InputMaybe<NutritionLabelUpsertWithoutBrandedFoodInput>;
+};
+
+export type NutritionLabelUpdateToOneWithWhereWithoutBrandedFoodInput = {
+  data: NutritionLabelUpdateWithoutBrandedFoodInput;
+  where?: InputMaybe<NutritionLabelWhereInput>;
+};
+
+export type NutritionLabelUpdateWithoutBrandedFoodInput = {
+  addedSugars?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  calcium?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  calories?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  cholesterol?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  dietaryFiber?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  householdServingFullText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  iron?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueCalcium?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueCarbohydrate?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueCholesterol?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueFat?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueFiber?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueIron?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValuePotassium?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueProtein?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueSaturatedFat?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueSodium?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueVitaminA?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueVitaminC?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  percentDailyValueVitaminD?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  potassium?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  protein?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  saturatedFat?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  servingsPerContainer?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  sodium?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  totalCarbohydrate?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  totalFat?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  totalSugars?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  transFat?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  vitaminA?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  vitaminC?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  vitaminD?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+};
+
+export type NutritionLabelUpsertWithoutBrandedFoodInput = {
+  create: NutritionLabelCreateWithoutBrandedFoodInput;
+  update: NutritionLabelUpdateWithoutBrandedFoodInput;
+  where?: InputMaybe<NutritionLabelWhereInput>;
+};
+
+export type NutritionLabelWhereInput = {
+  AND?: InputMaybe<Array<NutritionLabelWhereInput>>;
+  NOT?: InputMaybe<Array<NutritionLabelWhereInput>>;
+  OR?: InputMaybe<Array<NutritionLabelWhereInput>>;
+  addedSugars?: InputMaybe<FloatNullableFilter>;
+  brandedFood?: InputMaybe<BrandedFoodRelationFilter>;
+  brandedFoodId?: InputMaybe<StringFilter>;
+  calcium?: InputMaybe<FloatNullableFilter>;
+  calories?: InputMaybe<FloatNullableFilter>;
+  cholesterol?: InputMaybe<FloatNullableFilter>;
+  dietaryFiber?: InputMaybe<FloatNullableFilter>;
+  householdServingFullText?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<StringFilter>;
+  iron?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueCalcium?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueCarbohydrate?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueCholesterol?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueFat?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueFiber?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueIron?: InputMaybe<FloatNullableFilter>;
+  percentDailyValuePotassium?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueProtein?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueSaturatedFat?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueSodium?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueVitaminA?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueVitaminC?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueVitaminD?: InputMaybe<FloatNullableFilter>;
+  potassium?: InputMaybe<FloatNullableFilter>;
+  protein?: InputMaybe<FloatNullableFilter>;
+  saturatedFat?: InputMaybe<FloatNullableFilter>;
+  servingsPerContainer?: InputMaybe<FloatNullableFilter>;
+  sodium?: InputMaybe<FloatNullableFilter>;
+  totalCarbohydrate?: InputMaybe<FloatNullableFilter>;
+  totalFat?: InputMaybe<FloatNullableFilter>;
+  totalSugars?: InputMaybe<FloatNullableFilter>;
+  transFat?: InputMaybe<FloatNullableFilter>;
+  vitaminA?: InputMaybe<FloatNullableFilter>;
+  vitaminC?: InputMaybe<FloatNullableFilter>;
+  vitaminD?: InputMaybe<FloatNullableFilter>;
+};
+
+export type NutritionLabelWhereUniqueInput = {
+  AND?: InputMaybe<Array<NutritionLabelWhereInput>>;
+  NOT?: InputMaybe<Array<NutritionLabelWhereInput>>;
+  OR?: InputMaybe<Array<NutritionLabelWhereInput>>;
+  addedSugars?: InputMaybe<FloatNullableFilter>;
+  brandedFood?: InputMaybe<BrandedFoodRelationFilter>;
+  brandedFoodId?: InputMaybe<Scalars['String']['input']>;
+  calcium?: InputMaybe<FloatNullableFilter>;
+  calories?: InputMaybe<FloatNullableFilter>;
+  cholesterol?: InputMaybe<FloatNullableFilter>;
+  dietaryFiber?: InputMaybe<FloatNullableFilter>;
+  householdServingFullText?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  iron?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueCalcium?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueCarbohydrate?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueCholesterol?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueFat?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueFiber?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueIron?: InputMaybe<FloatNullableFilter>;
+  percentDailyValuePotassium?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueProtein?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueSaturatedFat?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueSodium?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueVitaminA?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueVitaminC?: InputMaybe<FloatNullableFilter>;
+  percentDailyValueVitaminD?: InputMaybe<FloatNullableFilter>;
+  potassium?: InputMaybe<FloatNullableFilter>;
+  protein?: InputMaybe<FloatNullableFilter>;
+  saturatedFat?: InputMaybe<FloatNullableFilter>;
+  servingsPerContainer?: InputMaybe<FloatNullableFilter>;
+  sodium?: InputMaybe<FloatNullableFilter>;
+  totalCarbohydrate?: InputMaybe<FloatNullableFilter>;
+  totalFat?: InputMaybe<FloatNullableFilter>;
+  totalSugars?: InputMaybe<FloatNullableFilter>;
+  transFat?: InputMaybe<FloatNullableFilter>;
+  vitaminA?: InputMaybe<FloatNullableFilter>;
+  vitaminC?: InputMaybe<FloatNullableFilter>;
+  vitaminD?: InputMaybe<FloatNullableFilter>;
+};
+
 export type Query = {
   __typename?: 'Query';
   accountInfo: AuthAccountInfoModel;
-  category: Recipe;
+  food?: Maybe<Food>;
+  foodAutosuggest: Array<FoodSearchResult>;
   paginatedRecipes: RecipePaginatedModel;
+  recipe: Recipe;
   recipes: Array<Recipe>;
+  tableViewDefinition: TableViewDefinition;
+  tableViewDefinitions: Array<TableViewDefinition>;
 };
 
 
-export type QueryCategoryArgs = {
-  id: Scalars['String']['input'];
+export type QueryFoodArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryFoodAutosuggestArgs = {
+  input: FoodSearchInput;
+  limit?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 export type QueryPaginatedRecipesArgs = {
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryRecipeArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -3230,6 +3585,11 @@ export type QueryRecipesArgs = {
   skip?: InputMaybe<Scalars['Int']['input']>;
   take?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<RecipeWhereInput>;
+};
+
+
+export type QueryTableViewDefinitionArgs = {
+  id: Scalars['String']['input'];
 };
 
 export enum QueryMode {
@@ -3247,7 +3607,7 @@ export type Recipe = {
   id: Scalars['ID']['output'];
   images?: Maybe<Array<RecipeImage>>;
   ingredients?: Maybe<Array<RecipeIngredient>>;
-  instructions?: Maybe<Scalars['String']['output']>;
+  instructions?: Maybe<Array<RecipeInstructions>>;
   parts?: Maybe<Array<RecipePart>>;
   prepTime?: Maybe<Scalars['String']['output']>;
   seasons?: Maybe<Array<Season>>;
@@ -3370,6 +3730,7 @@ export type RecipeCount = {
   categories: Scalars['Int']['output'];
   images: Scalars['Int']['output'];
   ingredients: Scalars['Int']['output'];
+  instructions: Scalars['Int']['output'];
   parts: Scalars['Int']['output'];
   seasons: Scalars['Int']['output'];
   tags: Scalars['Int']['output'];
@@ -3383,7 +3744,7 @@ export type RecipeCreateInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   images?: InputMaybe<RecipeImageCreateNestedManyWithoutRecipeInput>;
   ingredients?: InputMaybe<RecipeIngredientCreateNestedManyWithoutRecipeInput>;
-  instructions?: InputMaybe<Scalars['String']['input']>;
+  instructions?: InputMaybe<RecipeInstructionsCreateNestedManyWithoutRecipeInput>;
   parts?: InputMaybe<RecipePartCreateNestedManyWithoutRecipeInput>;
   prepTime?: InputMaybe<Scalars['String']['input']>;
   seasons?: InputMaybe<SeasonCreateNestedManyWithoutRecipesInput>;
@@ -3426,7 +3787,7 @@ export type RecipeCreateWithoutIngredientsInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   images?: InputMaybe<RecipeImageCreateNestedManyWithoutRecipeInput>;
-  instructions?: InputMaybe<Scalars['String']['input']>;
+  instructions?: InputMaybe<RecipeInstructionsCreateNestedManyWithoutRecipeInput>;
   parts?: InputMaybe<RecipePartCreateNestedManyWithoutRecipeInput>;
   prepTime?: InputMaybe<Scalars['String']['input']>;
   seasons?: InputMaybe<SeasonCreateNestedManyWithoutRecipesInput>;
@@ -3448,7 +3809,7 @@ export type RecipeCreateWithoutPartsInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   images?: InputMaybe<RecipeImageCreateNestedManyWithoutRecipeInput>;
   ingredients?: InputMaybe<RecipeIngredientCreateNestedManyWithoutRecipeInput>;
-  instructions?: InputMaybe<Scalars['String']['input']>;
+  instructions?: InputMaybe<RecipeInstructionsCreateNestedManyWithoutRecipeInput>;
   prepTime?: InputMaybe<Scalars['String']['input']>;
   seasons?: InputMaybe<SeasonCreateNestedManyWithoutRecipesInput>;
   servingsMax?: InputMaybe<Scalars['Int']['input']>;
@@ -3601,23 +3962,35 @@ export type RecipeImageWhereUniqueInput = {
 
 export type RecipeIngredient = {
   __typename?: 'RecipeIngredient';
+  extraInfo?: Maybe<Scalars['String']['output']>;
   food: Food;
   foodId: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  ingredientText?: Maybe<Scalars['String']['output']>;
+  maxQuantity?: Maybe<Scalars['Float']['output']>;
+  minQuantity?: Maybe<Scalars['Float']['output']>;
   part?: Maybe<RecipePart>;
   partId?: Maybe<Scalars['String']['output']>;
   quantity: Scalars['Float']['output'];
+  quantityText?: Maybe<Scalars['String']['output']>;
   recipe: Recipe;
   recipeId: Scalars['String']['output'];
   unit: Scalars['String']['output'];
+  unitText?: Maybe<Scalars['String']['output']>;
 };
 
 export type RecipeIngredientCreateManyFoodInput = {
+  extraInfo?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  ingredientText?: InputMaybe<Scalars['String']['input']>;
+  maxQuantity?: InputMaybe<Scalars['Float']['input']>;
+  minQuantity?: InputMaybe<Scalars['Float']['input']>;
   partId?: InputMaybe<Scalars['String']['input']>;
   quantity: Scalars['Float']['input'];
+  quantityText?: InputMaybe<Scalars['String']['input']>;
   recipeId: Scalars['String']['input'];
   unit: Scalars['String']['input'];
+  unitText?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type RecipeIngredientCreateManyFoodInputEnvelope = {
@@ -3626,11 +3999,17 @@ export type RecipeIngredientCreateManyFoodInputEnvelope = {
 };
 
 export type RecipeIngredientCreateManyPartInput = {
+  extraInfo?: InputMaybe<Scalars['String']['input']>;
   foodId: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
+  ingredientText?: InputMaybe<Scalars['String']['input']>;
+  maxQuantity?: InputMaybe<Scalars['Float']['input']>;
+  minQuantity?: InputMaybe<Scalars['Float']['input']>;
   quantity: Scalars['Float']['input'];
+  quantityText?: InputMaybe<Scalars['String']['input']>;
   recipeId: Scalars['String']['input'];
   unit: Scalars['String']['input'];
+  unitText?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type RecipeIngredientCreateManyPartInputEnvelope = {
@@ -3639,11 +4018,17 @@ export type RecipeIngredientCreateManyPartInputEnvelope = {
 };
 
 export type RecipeIngredientCreateManyRecipeInput = {
+  extraInfo?: InputMaybe<Scalars['String']['input']>;
   foodId: Scalars['String']['input'];
   id?: InputMaybe<Scalars['String']['input']>;
+  ingredientText?: InputMaybe<Scalars['String']['input']>;
+  maxQuantity?: InputMaybe<Scalars['Float']['input']>;
+  minQuantity?: InputMaybe<Scalars['Float']['input']>;
   partId?: InputMaybe<Scalars['String']['input']>;
   quantity: Scalars['Float']['input'];
+  quantityText?: InputMaybe<Scalars['String']['input']>;
   unit: Scalars['String']['input'];
+  unitText?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type RecipeIngredientCreateManyRecipeInputEnvelope = {
@@ -3688,27 +4073,45 @@ export type RecipeIngredientCreateOrConnectWithoutRecipeInput = {
 };
 
 export type RecipeIngredientCreateWithoutFoodInput = {
+  extraInfo?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  ingredientText?: InputMaybe<Scalars['String']['input']>;
+  maxQuantity?: InputMaybe<Scalars['Float']['input']>;
+  minQuantity?: InputMaybe<Scalars['Float']['input']>;
   part?: InputMaybe<RecipePartCreateNestedOneWithoutIngredientsInput>;
   quantity: Scalars['Float']['input'];
+  quantityText?: InputMaybe<Scalars['String']['input']>;
   recipe: RecipeCreateNestedOneWithoutIngredientsInput;
   unit: Scalars['String']['input'];
+  unitText?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type RecipeIngredientCreateWithoutPartInput = {
+  extraInfo?: InputMaybe<Scalars['String']['input']>;
   food: FoodCreateNestedOneWithoutRecipeIngredientInput;
   id?: InputMaybe<Scalars['String']['input']>;
+  ingredientText?: InputMaybe<Scalars['String']['input']>;
+  maxQuantity?: InputMaybe<Scalars['Float']['input']>;
+  minQuantity?: InputMaybe<Scalars['Float']['input']>;
   quantity: Scalars['Float']['input'];
+  quantityText?: InputMaybe<Scalars['String']['input']>;
   recipe: RecipeCreateNestedOneWithoutIngredientsInput;
   unit: Scalars['String']['input'];
+  unitText?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type RecipeIngredientCreateWithoutRecipeInput = {
+  extraInfo?: InputMaybe<Scalars['String']['input']>;
   food: FoodCreateNestedOneWithoutRecipeIngredientInput;
   id?: InputMaybe<Scalars['String']['input']>;
+  ingredientText?: InputMaybe<Scalars['String']['input']>;
+  maxQuantity?: InputMaybe<Scalars['Float']['input']>;
+  minQuantity?: InputMaybe<Scalars['Float']['input']>;
   part?: InputMaybe<RecipePartCreateNestedOneWithoutIngredientsInput>;
   quantity: Scalars['Float']['input'];
+  quantityText?: InputMaybe<Scalars['String']['input']>;
   unit: Scalars['String']['input'];
+  unitText?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type RecipeIngredientListRelationFilter = {
@@ -3725,18 +4128,30 @@ export type RecipeIngredientScalarWhereInput = {
   AND?: InputMaybe<Array<RecipeIngredientScalarWhereInput>>;
   NOT?: InputMaybe<Array<RecipeIngredientScalarWhereInput>>;
   OR?: InputMaybe<Array<RecipeIngredientScalarWhereInput>>;
+  extraInfo?: InputMaybe<StringNullableFilter>;
   foodId?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
+  ingredientText?: InputMaybe<StringNullableFilter>;
+  maxQuantity?: InputMaybe<FloatNullableFilter>;
+  minQuantity?: InputMaybe<FloatNullableFilter>;
   partId?: InputMaybe<StringNullableFilter>;
   quantity?: InputMaybe<FloatFilter>;
+  quantityText?: InputMaybe<StringNullableFilter>;
   recipeId?: InputMaybe<StringFilter>;
   unit?: InputMaybe<StringFilter>;
+  unitText?: InputMaybe<StringNullableFilter>;
 };
 
 export type RecipeIngredientUpdateManyMutationInput = {
+  extraInfo?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  ingredientText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  maxQuantity?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  minQuantity?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
   quantity?: InputMaybe<FloatFieldUpdateOperationsInput>;
+  quantityText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   unit?: InputMaybe<StringFieldUpdateOperationsInput>;
+  unitText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
 };
 
 export type RecipeIngredientUpdateManyWithWhereWithoutFoodInput = {
@@ -3812,27 +4227,45 @@ export type RecipeIngredientUpdateWithWhereUniqueWithoutRecipeInput = {
 };
 
 export type RecipeIngredientUpdateWithoutFoodInput = {
+  extraInfo?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  ingredientText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  maxQuantity?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  minQuantity?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
   part?: InputMaybe<RecipePartUpdateOneWithoutIngredientsNestedInput>;
   quantity?: InputMaybe<FloatFieldUpdateOperationsInput>;
+  quantityText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   recipe?: InputMaybe<RecipeUpdateOneRequiredWithoutIngredientsNestedInput>;
   unit?: InputMaybe<StringFieldUpdateOperationsInput>;
+  unitText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
 };
 
 export type RecipeIngredientUpdateWithoutPartInput = {
+  extraInfo?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   food?: InputMaybe<FoodUpdateOneRequiredWithoutRecipeIngredientNestedInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  ingredientText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  maxQuantity?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  minQuantity?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
   quantity?: InputMaybe<FloatFieldUpdateOperationsInput>;
+  quantityText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   recipe?: InputMaybe<RecipeUpdateOneRequiredWithoutIngredientsNestedInput>;
   unit?: InputMaybe<StringFieldUpdateOperationsInput>;
+  unitText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
 };
 
 export type RecipeIngredientUpdateWithoutRecipeInput = {
+  extraInfo?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   food?: InputMaybe<FoodUpdateOneRequiredWithoutRecipeIngredientNestedInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  ingredientText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  maxQuantity?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
+  minQuantity?: InputMaybe<NullableFloatFieldUpdateOperationsInput>;
   part?: InputMaybe<RecipePartUpdateOneWithoutIngredientsNestedInput>;
   quantity?: InputMaybe<FloatFieldUpdateOperationsInput>;
+  quantityText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   unit?: InputMaybe<StringFieldUpdateOperationsInput>;
+  unitText?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
 };
 
 export type RecipeIngredientUpsertWithWhereUniqueWithoutFoodInput = {
@@ -3857,30 +4290,186 @@ export type RecipeIngredientWhereInput = {
   AND?: InputMaybe<Array<RecipeIngredientWhereInput>>;
   NOT?: InputMaybe<Array<RecipeIngredientWhereInput>>;
   OR?: InputMaybe<Array<RecipeIngredientWhereInput>>;
+  extraInfo?: InputMaybe<StringNullableFilter>;
   food?: InputMaybe<FoodRelationFilter>;
   foodId?: InputMaybe<StringFilter>;
   id?: InputMaybe<StringFilter>;
+  ingredientText?: InputMaybe<StringNullableFilter>;
+  maxQuantity?: InputMaybe<FloatNullableFilter>;
+  minQuantity?: InputMaybe<FloatNullableFilter>;
   part?: InputMaybe<RecipePartNullableRelationFilter>;
   partId?: InputMaybe<StringNullableFilter>;
   quantity?: InputMaybe<FloatFilter>;
+  quantityText?: InputMaybe<StringNullableFilter>;
   recipe?: InputMaybe<RecipeRelationFilter>;
   recipeId?: InputMaybe<StringFilter>;
   unit?: InputMaybe<StringFilter>;
+  unitText?: InputMaybe<StringNullableFilter>;
 };
 
 export type RecipeIngredientWhereUniqueInput = {
   AND?: InputMaybe<Array<RecipeIngredientWhereInput>>;
   NOT?: InputMaybe<Array<RecipeIngredientWhereInput>>;
   OR?: InputMaybe<Array<RecipeIngredientWhereInput>>;
+  extraInfo?: InputMaybe<StringNullableFilter>;
   food?: InputMaybe<FoodRelationFilter>;
   foodId?: InputMaybe<StringFilter>;
   id?: InputMaybe<Scalars['String']['input']>;
+  ingredientText?: InputMaybe<StringNullableFilter>;
+  maxQuantity?: InputMaybe<FloatNullableFilter>;
+  minQuantity?: InputMaybe<FloatNullableFilter>;
   part?: InputMaybe<RecipePartNullableRelationFilter>;
   partId?: InputMaybe<StringNullableFilter>;
   quantity?: InputMaybe<FloatFilter>;
+  quantityText?: InputMaybe<StringNullableFilter>;
   recipe?: InputMaybe<RecipeRelationFilter>;
   recipeId?: InputMaybe<StringFilter>;
   unit?: InputMaybe<StringFilter>;
+  unitText?: InputMaybe<StringNullableFilter>;
+};
+
+export type RecipeInstructions = {
+  __typename?: 'RecipeInstructions';
+  content: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  listIndex?: Maybe<Scalars['Int']['output']>;
+  order: Scalars['Int']['output'];
+  recipe: Recipe;
+  recipeId: Scalars['String']['output'];
+  type: RecipeInstructionsType;
+};
+
+export type RecipeInstructionsCreateManyRecipeInput = {
+  content: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['String']['input']>;
+  listIndex?: InputMaybe<Scalars['Int']['input']>;
+  order: Scalars['Int']['input'];
+  type: RecipeInstructionsType;
+};
+
+export type RecipeInstructionsCreateManyRecipeInputEnvelope = {
+  data: Array<RecipeInstructionsCreateManyRecipeInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type RecipeInstructionsCreateNestedManyWithoutRecipeInput = {
+  connect?: InputMaybe<Array<RecipeInstructionsWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<RecipeInstructionsCreateOrConnectWithoutRecipeInput>>;
+  create?: InputMaybe<Array<RecipeInstructionsCreateWithoutRecipeInput>>;
+  createMany?: InputMaybe<RecipeInstructionsCreateManyRecipeInputEnvelope>;
+};
+
+export type RecipeInstructionsCreateOrConnectWithoutRecipeInput = {
+  create: RecipeInstructionsCreateWithoutRecipeInput;
+  where: RecipeInstructionsWhereUniqueInput;
+};
+
+export type RecipeInstructionsCreateWithoutRecipeInput = {
+  content: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['String']['input']>;
+  listIndex?: InputMaybe<Scalars['Int']['input']>;
+  order: Scalars['Int']['input'];
+  type: RecipeInstructionsType;
+};
+
+export type RecipeInstructionsListRelationFilter = {
+  every?: InputMaybe<RecipeInstructionsWhereInput>;
+  none?: InputMaybe<RecipeInstructionsWhereInput>;
+  some?: InputMaybe<RecipeInstructionsWhereInput>;
+};
+
+export type RecipeInstructionsOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
+};
+
+export type RecipeInstructionsScalarWhereInput = {
+  AND?: InputMaybe<Array<RecipeInstructionsScalarWhereInput>>;
+  NOT?: InputMaybe<Array<RecipeInstructionsScalarWhereInput>>;
+  OR?: InputMaybe<Array<RecipeInstructionsScalarWhereInput>>;
+  content?: InputMaybe<StringFilter>;
+  id?: InputMaybe<StringFilter>;
+  listIndex?: InputMaybe<IntNullableFilter>;
+  order?: InputMaybe<IntFilter>;
+  recipeId?: InputMaybe<StringFilter>;
+  type?: InputMaybe<EnumRecipeInstructionsTypeFilter>;
+};
+
+export enum RecipeInstructionsType {
+  Image = 'IMAGE',
+  Part = 'PART',
+  Text = 'TEXT'
+}
+
+export type RecipeInstructionsUpdateManyMutationInput = {
+  content?: InputMaybe<StringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  listIndex?: InputMaybe<NullableIntFieldUpdateOperationsInput>;
+  order?: InputMaybe<IntFieldUpdateOperationsInput>;
+  type?: InputMaybe<EnumRecipeInstructionsTypeFieldUpdateOperationsInput>;
+};
+
+export type RecipeInstructionsUpdateManyWithWhereWithoutRecipeInput = {
+  data: RecipeInstructionsUpdateManyMutationInput;
+  where: RecipeInstructionsScalarWhereInput;
+};
+
+export type RecipeInstructionsUpdateManyWithoutRecipeNestedInput = {
+  connect?: InputMaybe<Array<RecipeInstructionsWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<RecipeInstructionsCreateOrConnectWithoutRecipeInput>>;
+  create?: InputMaybe<Array<RecipeInstructionsCreateWithoutRecipeInput>>;
+  createMany?: InputMaybe<RecipeInstructionsCreateManyRecipeInputEnvelope>;
+  delete?: InputMaybe<Array<RecipeInstructionsWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<RecipeInstructionsScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<RecipeInstructionsWhereUniqueInput>>;
+  set?: InputMaybe<Array<RecipeInstructionsWhereUniqueInput>>;
+  update?: InputMaybe<Array<RecipeInstructionsUpdateWithWhereUniqueWithoutRecipeInput>>;
+  updateMany?: InputMaybe<Array<RecipeInstructionsUpdateManyWithWhereWithoutRecipeInput>>;
+  upsert?: InputMaybe<Array<RecipeInstructionsUpsertWithWhereUniqueWithoutRecipeInput>>;
+};
+
+export type RecipeInstructionsUpdateWithWhereUniqueWithoutRecipeInput = {
+  data: RecipeInstructionsUpdateWithoutRecipeInput;
+  where: RecipeInstructionsWhereUniqueInput;
+};
+
+export type RecipeInstructionsUpdateWithoutRecipeInput = {
+  content?: InputMaybe<StringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  listIndex?: InputMaybe<NullableIntFieldUpdateOperationsInput>;
+  order?: InputMaybe<IntFieldUpdateOperationsInput>;
+  type?: InputMaybe<EnumRecipeInstructionsTypeFieldUpdateOperationsInput>;
+};
+
+export type RecipeInstructionsUpsertWithWhereUniqueWithoutRecipeInput = {
+  create: RecipeInstructionsCreateWithoutRecipeInput;
+  update: RecipeInstructionsUpdateWithoutRecipeInput;
+  where: RecipeInstructionsWhereUniqueInput;
+};
+
+export type RecipeInstructionsWhereInput = {
+  AND?: InputMaybe<Array<RecipeInstructionsWhereInput>>;
+  NOT?: InputMaybe<Array<RecipeInstructionsWhereInput>>;
+  OR?: InputMaybe<Array<RecipeInstructionsWhereInput>>;
+  content?: InputMaybe<StringFilter>;
+  id?: InputMaybe<StringFilter>;
+  listIndex?: InputMaybe<IntNullableFilter>;
+  order?: InputMaybe<IntFilter>;
+  recipe?: InputMaybe<RecipeRelationFilter>;
+  recipeId?: InputMaybe<StringFilter>;
+  type?: InputMaybe<EnumRecipeInstructionsTypeFilter>;
+};
+
+export type RecipeInstructionsWhereUniqueInput = {
+  AND?: InputMaybe<Array<RecipeInstructionsWhereInput>>;
+  NOT?: InputMaybe<Array<RecipeInstructionsWhereInput>>;
+  OR?: InputMaybe<Array<RecipeInstructionsWhereInput>>;
+  content?: InputMaybe<StringFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  listIndex?: InputMaybe<IntNullableFilter>;
+  order?: InputMaybe<IntFilter>;
+  recipe?: InputMaybe<RecipeRelationFilter>;
+  recipeId?: InputMaybe<StringFilter>;
+  type?: InputMaybe<EnumRecipeInstructionsTypeFilter>;
 };
 
 export type RecipeListRelationFilter = {
@@ -3907,7 +4496,7 @@ export type RecipeOrderByWithRelationInput = {
   id?: InputMaybe<SortOrder>;
   images?: InputMaybe<RecipeImageOrderByRelationAggregateInput>;
   ingredients?: InputMaybe<RecipeIngredientOrderByRelationAggregateInput>;
-  instructions?: InputMaybe<SortOrderInput>;
+  instructions?: InputMaybe<RecipeInstructionsOrderByRelationAggregateInput>;
   parts?: InputMaybe<RecipePartOrderByRelationAggregateInput>;
   prepTime?: InputMaybe<SortOrderInput>;
   seasons?: InputMaybe<SeasonOrderByRelationAggregateInput>;
@@ -4111,7 +4700,6 @@ export enum RecipeScalarFieldEnum {
   CreatedAt = 'createdAt',
   Description = 'description',
   Id = 'id',
-  Instructions = 'instructions',
   PrepTime = 'prepTime',
   ServingsMax = 'servingsMax',
   ServingsMin = 'servingsMin',
@@ -4130,7 +4718,7 @@ export type RecipeUpdateInput = {
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
   images?: InputMaybe<RecipeImageUpdateManyWithoutRecipeNestedInput>;
   ingredients?: InputMaybe<RecipeIngredientUpdateManyWithoutRecipeNestedInput>;
-  instructions?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  instructions?: InputMaybe<RecipeInstructionsUpdateManyWithoutRecipeNestedInput>;
   parts?: InputMaybe<RecipePartUpdateManyWithoutRecipeNestedInput>;
   prepTime?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   seasons?: InputMaybe<SeasonUpdateManyWithoutRecipesNestedInput>;
@@ -4177,7 +4765,7 @@ export type RecipeUpdateWithoutIngredientsInput = {
   description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
   images?: InputMaybe<RecipeImageUpdateManyWithoutRecipeNestedInput>;
-  instructions?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  instructions?: InputMaybe<RecipeInstructionsUpdateManyWithoutRecipeNestedInput>;
   parts?: InputMaybe<RecipePartUpdateManyWithoutRecipeNestedInput>;
   prepTime?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   seasons?: InputMaybe<SeasonUpdateManyWithoutRecipesNestedInput>;
@@ -4199,7 +4787,7 @@ export type RecipeUpdateWithoutPartsInput = {
   id?: InputMaybe<StringFieldUpdateOperationsInput>;
   images?: InputMaybe<RecipeImageUpdateManyWithoutRecipeNestedInput>;
   ingredients?: InputMaybe<RecipeIngredientUpdateManyWithoutRecipeNestedInput>;
-  instructions?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  instructions?: InputMaybe<RecipeInstructionsUpdateManyWithoutRecipeNestedInput>;
   prepTime?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
   seasons?: InputMaybe<SeasonUpdateManyWithoutRecipesNestedInput>;
   servingsMax?: InputMaybe<NullableIntFieldUpdateOperationsInput>;
@@ -4235,7 +4823,7 @@ export type RecipeWhereInput = {
   id?: InputMaybe<StringFilter>;
   images?: InputMaybe<RecipeImageListRelationFilter>;
   ingredients?: InputMaybe<RecipeIngredientListRelationFilter>;
-  instructions?: InputMaybe<StringNullableFilter>;
+  instructions?: InputMaybe<RecipeInstructionsListRelationFilter>;
   parts?: InputMaybe<RecipePartListRelationFilter>;
   prepTime?: InputMaybe<StringNullableFilter>;
   seasons?: InputMaybe<SeasonListRelationFilter>;
@@ -4260,7 +4848,7 @@ export type RecipeWhereUniqueInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   images?: InputMaybe<RecipeImageListRelationFilter>;
   ingredients?: InputMaybe<RecipeIngredientListRelationFilter>;
-  instructions?: InputMaybe<StringNullableFilter>;
+  instructions?: InputMaybe<RecipeInstructionsListRelationFilter>;
   parts?: InputMaybe<RecipePartListRelationFilter>;
   prepTime?: InputMaybe<StringNullableFilter>;
   seasons?: InputMaybe<SeasonListRelationFilter>;
@@ -4420,6 +5008,24 @@ export type StringNullableFilter = {
   not?: InputMaybe<NestedStringNullableFilter>;
   notIn?: InputMaybe<Array<Scalars['String']['input']>>;
   startsWith?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type TableViewDefinition = {
+  __typename?: 'TableViewDefinition';
+  columns: Array<ColumnView>;
+  createdAt: Scalars['DateTime']['output'];
+  filters?: Maybe<Scalars['String']['output']>;
+  icon?: Maybe<Scalars['String']['output']>;
+  id: Scalars['String']['output'];
+  isPreset: Scalars['Boolean']['output'];
+  isShared: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  order: Scalars['Int']['output'];
+  sorting?: Maybe<Scalars['String']['output']>;
+  tableId: Scalars['String']['output'];
+  tableType: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  userId?: Maybe<Scalars['String']['output']>;
 };
 
 export type Tag = {
@@ -4666,4 +5272,25 @@ export type TranslationWhereUniqueInput = {
   languageCode?: InputMaybe<StringFilter>;
   languageCode_entityType_entityId_field?: InputMaybe<TranslationLanguageCodeEntityTypeEntityIdFieldCompoundUniqueInput>;
   value?: InputMaybe<StringFilter>;
+};
+
+export type UpdateColumnViewInput = {
+  columnId?: InputMaybe<Scalars['Int']['input']>;
+  columnType?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  visible?: InputMaybe<Scalars['Boolean']['input']>;
+  width?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type UpdateTableViewDefinitionInput = {
+  columns?: InputMaybe<Array<UpdateColumnViewInput>>;
+  filters?: InputMaybe<Scalars['String']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  isPreset?: InputMaybe<Scalars['Boolean']['input']>;
+  isShared?: InputMaybe<Scalars['Boolean']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
+  sorting?: InputMaybe<Scalars['String']['input']>;
 };
