@@ -113,7 +113,7 @@ const RecipeCard = ({ recipe}) => {
             <img alt="recipe" src={recipe?.img} className='rounded w-full h-[150px]'/>
 
             <IconButton aria-label='Menu' icon={<EllipsisVerticalIcon className='text-white bg-[#ffffff52]' />}
-             className='absolute top-0 right-2 rounded-lg'
+             className='absolute top-0 right-2 rounded'
                         variant='ghost'
 
             />

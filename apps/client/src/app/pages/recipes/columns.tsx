@@ -1,115 +1,140 @@
 import React, { useState } from 'react';
-import { Column, HeaderContext} from '@tanstack/react-table';
-import {Filter, ArrowUpDown} from 'lucide-react';
 import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  getTHeadProps,
-  Input,
-  Skeleton,
-  THead,
-} from '@nutri/client-ui';
-import {DialogTrigger} from '@radix-ui/react-dialog';
+  ColumnDef,
+  createColumnHelper,
+  HeaderContext,
+} from '@tanstack/react-table';
+import { getTHeadProps, Input, Skeleton, THead } from '@nutri/client-ui';
+import { DialogTrigger } from '@radix-ui/react-dialog';
+import { RecipeColumnType } from '@nutri/store/tableViews/types';
+import {EditableCell, LinkCell} from "../../components/cell";
 
+type ColumnDatum = ColumnDef<ColumnDatum, any>;
 
+const columnHelper = createColumnHelper<ColumnDatum>();
 // Custom header component with sort and filter
 
-// Custom input component for better hover and focus styles
-const StyledInput = ({value, onChange, onBlur}) => {
-  return (
-    <Input
-      value={value as string}
-      onChange={onChange}
-      onBlur={onBlur}
-      className="overflow-hidden overflow-ellipsis hover:overflow-visible focus:overflow-visible border-transparent hover:border-gray-400 focus:border-blue-500 outline-none focus-visible:ring-0 focus-visible:outline-transparent"
-    />
-  );
-};
 
-export const recipeColumns = [
-  {
+export const recipeColumns = {
+  [RecipeColumnType.RECIPES_TITLE]: {
     accessorKey: 'title',
+    size: 300,
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'Title'} title={'Title'} {...getTHeadProps(props)} />
     ),
     skeleton: () => (
       <div className="flex flex-col gap-1">
-        <Skeleton className="w-[50%] h-[18px] bg-gray-300"/>
+        <Skeleton className="w-[50%] h-[18px] bg-gray-300" />
       </div>
     ),
-    cell: ({getValue, row: {index}, column: {id}, table}) => {
-      const initialValue = getValue();
-      const [value, setValue] = useState(initialValue);
-
-      const onBlur = () => {
-        table.options.meta?.updateData(index, id, value);
-      };
-
-      return (
-        <StyledInput
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onBlur={onBlur}
-        />
-      );
+    cell: ({ getValue, row }) => {
+      return <LinkCell title={getValue()} href={`${row.original.id}`}/>
     },
     enableSorting: true,
     enableColumnFilter: true,
   },
-  {
+  [RecipeColumnType.RECIPES_DESCRIPTION]: {
     accessorKey: 'description',
     canSort: true,
     canFilter: true,
     header: (props: HeaderContext<object, unknown>) => (
-      <THead id={'Description'} title={'Description'} {...getTHeadProps(props)} />
+      <THead
+        id={'Description'}
+        title={'Description'}
+        {...getTHeadProps(props)}
+      />
     ),
-    cell: StyledInput,
+    cell: ({ getValue, row }) => <EditableCell id={row.original.id} value={`${getValue()}`} />,
   },
-  {
+  [RecipeColumnType.RECIPES_COOKING_TIME]: {
     accessorKey: 'cookingTime',
-    cell: StyledInput,
+    cell: ({ getValue, row }) => <EditableCell id={row.original.id} value={`${getValue()}`} />,
+
     enableSorting: true,
     enableColumnFilter: true,
     canSort: true,
     canFilter: true,
     header: (props: HeaderContext<object, unknown>) => (
-      <THead id={'CookingTime'} title={'Cooking Time'} {...getTHeadProps(props)} />
+      <THead
+        id={'CookingTime'}
+        title={'Cooking Time'}
+        {...getTHeadProps(props)}
+      />
     ),
   },
-  {
+  [RecipeColumnType.RECIPES_PREP_TIME]: {
     accessorKey: 'prepTime',
     canSort: true,
     canFilter: true,
     header: (props: HeaderContext<object, unknown>) => (
-      <THead id={'PrepTime'} title={'Preparation Time'} {...getTHeadProps(props)} />
+      <THead
+        id={'PrepTime'}
+        title={'Preparation Time'}
+        {...getTHeadProps(props)}
+      />
     ),
-    cell: StyledInput,
+    cell: ({ getValue, row }) => <EditableCell id={row.original.id} value={`${getValue()}`} />,
+
     enableSorting: true,
     enableColumnFilter: true,
   },
-  {
+  [RecipeColumnType.RECIPES_SERVINGS_MIN]: {
     accessorKey: 'servingsMin',
     canSort: true,
     canFilter: true,
     header: (props: HeaderContext<object, unknown>) => (
-      <THead id={'MinServings'} title={'Min Servings'} {...getTHeadProps(props)} />
+      <THead
+        id={'MinServings'}
+        title={'Min Servings'}
+        {...getTHeadProps(props)}
+      />
     ),
-    cell: StyledInput,
+    cell: ({ getValue, row }) => <EditableCell id={row.original.id} value={`${getValue()}`} />,
+
     enableSorting: true,
     enableColumnFilter: true,
   },
-  {
+  [RecipeColumnType.RECIPES_SERVINGS_MAX]: {
     accessorKey: 'servingsMax',
     canSort: true,
     canFilter: true,
     header: (props: HeaderContext<object, unknown>) => (
-      <THead id={'MaxServings'} title={'Max Servings'} {...getTHeadProps(props)} />
+      <THead
+        id={'MaxServings'}
+        title={'Max Servings'}
+        {...getTHeadProps(props)}
+      />
     ),
-    cell: StyledInput,
+    cell: ({ getValue, row }) => <EditableCell id={row.original.id} value={`${getValue()}`} />,
+
     enableSorting: true,
     enableColumnFilter: true,
   },
-];
+};
+
+export function getColumnConfig<Datum>(
+  columns: Record<string, ColumnDef<Datum>>,
+  tableViewDef?: Array<any>[0],
+) {
+  if (!tableViewDef) return [];
+
+  return (tableViewDef.columns ?? []).reduce((acc, curr) => {
+    const columnTypeName = curr?.columnType;
+
+    if (!columnTypeName) return acc;
+
+    if (columns[columnTypeName] === undefined) return acc;
+    const column = {
+      ...columns[columnTypeName],
+      enableHiding: !curr.visible,
+      size: curr.visible ? columns[columnTypeName].size : 0,
+    };
+
+    if (!column) return acc;
+
+    return [...acc, column];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }, [] as ColumnDef<Datum, any>[]);
+}
+export const getColumnsConfig = (tableViewDef?: Array<any>[0]) =>
+  getColumnConfig<ColumnDatum>(recipeColumns, tableViewDef);

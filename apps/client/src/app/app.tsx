@@ -3,21 +3,27 @@ import { useEffect } from 'react';
 
 import { ProtectedRoute } from '@nutri/client-auth';
 import { Layout } from './layout/Layout';
-import { RegisterPage, ForgotPasswordPage, ResetPasswordPage, AuthenticationPage } from '@nutri/client-auth';
+import {
+  RegisterPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+  AuthenticationPage,
+} from '@nutri/client-auth';
 import { ErrorPage } from './pages/ErrorPage';
 import { MaintenancePage } from './pages/Maintenance';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { useGql } from './hooks/useGql';
 
 import React from 'react';
-import {WelcomeDashboard} from "./pages/dashboard";
-import {Patients} from "./pages/patients/Patients";
-import {Recipes} from "./pages/recipes/Recipes";
+import { WelcomeDashboard } from './pages/dashboard';
+import { Patients } from './pages/patients/Patients';
+import { Recipe } from './pages/recipe/Recipe';
+import { Recipes } from './pages/recipes/Recipes';
 
 export function App() {
   return (
     <Routes>
-      <Route path="/" element={<ProtectedRoute/>} />
+      <Route path="/" element={<ProtectedRoute />} />
       <Route path="/login" element={<AuthenticationPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -26,8 +32,9 @@ export function App() {
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<WelcomeDashboard />} />
           <Route path="/recipes" element={<Recipes />} />
+          <Route path="/recipes/:recipeId" element={<Recipe />} />
           <Route path="/patients" element={<Patients />} />
-          <Route path="/settings" element={<Recipes />} />
+          <Route path="/settings" element={<Recipe />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>

@@ -20,7 +20,7 @@ async function bootstrap() {
   app.use(express.json());
   app.use(cookieParser())
   app.enableCors({
-    origin: /^https?:\/\/localhost(:\d+)?$/,
+    origin: /^http?:\/\/localhost(:\d+)?$/,
     credentials: true
   });
   app.enableShutdownHooks();

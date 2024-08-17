@@ -17,9 +17,9 @@ interface AuthMethods {
 }
 
 export class Transport {
-  private graphqlClient: GraphQLClient;
+  graphqlClient: GraphQLClient;
   private socket: Socket | null = null;
-  private refId: string = crypto.randomUUID();
+  refId: string = crypto.randomUUID();
   private channels: Map<string, Channel> = new Map();
   private channelMeta: Record<string, unknown> = {};
   private stream: ReturnType<typeof createStreamClient>;
@@ -70,7 +70,7 @@ export class Transport {
     );
   }
 
-  getGqlClient() {
+  get client() {
     const customFetcher: SdkFunctionWrapper = (action, _operationName, _operationType, variables) => {
       return this.authenticatedFetcher(async (token) => {
         if (token) {
