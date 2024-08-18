@@ -1,6 +1,13 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts';
+import './nutrition-info.scss';
 const nutritionData = {
   "servingSize": "1 cup (250ml)",
   "servingsPerRecipe": 6,
@@ -43,148 +50,79 @@ const dailyRecommended = {
   "protein": 50
 };
 
-const macronutrientData = [
-  { name: 'Calories', amount: nutritionData.nutritionPerServing.calories, daily: dailyRecommended.calories },
-  { name: 'Protein', amount: nutritionData.nutritionPerServing.protein, daily: dailyRecommended.protein },
-  { name: 'Carbs', amount: nutritionData.nutritionPerServing.totalCarbohydrates, daily: dailyRecommended.totalCarbohydrates },
-  { name: 'Fat', amount: nutritionData.nutritionPerServing.totalFat, daily: dailyRecommended.totalFat },
-].map(item => ({
-  ...item,
-  percentOfDaily: (item.amount / item.daily) * 100
-}));
 
-const fatData = [
-  { name: 'Total Fat', amount: nutritionData.nutritionPerServing.totalFat, daily: dailyRecommended.totalFat },
-  { name: 'Saturated Fat', amount: nutritionData.nutritionPerServing.saturatedFat, daily: dailyRecommended.saturatedFat },
-].map(item => ({
-  ...item,
-  percentOfDaily: (item.amount / item.daily) * 100
-}));
-
-const carbData = [
-  { name: 'Total Carbs', amount: nutritionData.nutritionPerServing.totalCarbohydrates, daily: dailyRecommended.totalCarbohydrates },
-  { name: 'Dietary Fiber', amount: nutritionData.nutritionPerServing.dietaryFiber, daily: dailyRecommended.dietaryFiber },
-].map(item => ({
-  ...item,
-  percentOfDaily: (item.amount / item.daily) * 100
-}));
-
-const vitaminsMineralsData = Object.entries(nutritionData.percentDailyValues)
-  .filter(([name]) => ['vitaminA', 'vitaminC', 'calcium', 'iron', 'potassium'].includes(name))
-  .map(([name, value]) => ({
-    name: name.charAt(0).toUpperCase() + name.slice(1),
-    percentOfDaily: value
-  }));
+const COLORS = ['#6977BC', '#21D19F', '#008CF0', '#368F7B', '#FF8042', '#FFBB28'];
 
 const NutritionProfileCharts = () => {
-  return (
-    <div className="relative flex flex-col justify-between h-full max-w-6xl px-10 mx-auto xl:px-0 mt-5">
-      <div className="w-full">
-        <div className="flex flex-col w-full mb-10 sm:flex-row">
-          <div className="w-full mb-10 sm:mb-0 sm:w-1/2">
-            <div className="relative h-full ml-0 mr-0 sm:mr-10">
-              <span className="absolute top-0 left-0 w-full h-full mt-1 ml-1 bg-airForceBlue-200 rounded-lg"></span>
-              <div className="relative h-full p-5 bg-white border-2 border-airForceBlue-200 rounded-lg">
-                <div className="flex items-center -mt-1">
-                  <h3 className="my-2 ml-3 text-lg font-bold text-gray-800">Macronutrients (% of Daily Needs)</h3>
-                </div>
-                <p className="mt-3 mb-1 text-xs font-medium text-airForceBlue-200 uppercase">------------</p>
-                <div className="">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart layout="vertical" data={macronutrientData}>
-                      <CartesianGrid strokeDasharray="3 3"/>
-                      <XAxis type="number" domain={[0, 100]}/>
-                      <YAxis dataKey="name" type="category" width={100}/>
-                      <Tooltip
-                        formatter={(value, name, props) => [`${value.toFixed(1)}%`, `${props.payload.amount.toFixed(1)}g / ${props.payload.daily}g`]}
-                      />
-                      <Legend/>
-                      <Bar dataKey="percentOfDaily" fill="#47616B" name="% of Daily Needs" width={10}/>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
+  const macronutrientData = [
+    { name: 'Protein', value: nutritionData.nutritionPerServing.protein },
+    { name: 'Carbs', value: nutritionData.nutritionPerServing.totalCarbohydrates },
+    { name: 'Fat', value: nutritionData.nutritionPerServing.totalFat },
+  ];
+
+  const fatData = [
+    { name: 'Saturated Fat', value: nutritionData.nutritionPerServing.saturatedFat },
+    { name: 'Other Fat', value: nutritionData.nutritionPerServing.totalFat - nutritionData.nutritionPerServing.saturatedFat },
+  ];
+
+  const carbData = [
+    { name: 'Dietary Fiber', value: nutritionData.nutritionPerServing.dietaryFiber },
+    { name: 'Other Carbs', value: nutritionData.nutritionPerServing.totalCarbohydrates - nutritionData.nutritionPerServing.dietaryFiber },
+  ];
+
+  const vitaminsMineralsData = [
+    { name: 'Vitamin A', value: nutritionData.percentDailyValues.vitaminA },
+    { name: 'Vitamin C', value: nutritionData.percentDailyValues.vitaminC },
+    { name: 'Calcium', value: nutritionData.percentDailyValues.calcium },
+    { name: 'Iron', value: nutritionData.percentDailyValues.iron },
+    { name: 'Potassium', value: nutritionData.percentDailyValues.potassium },
+  ];
+
+  const calorieData = [
+    { name: 'Calories', value: nutritionData.nutritionPerServing.calories },
+    { name: 'Remaining', value: dailyRecommended.calories - nutritionData.nutritionPerServing.calories },
+  ];
+
+  const renderPieChart = (data, title) => (
+    <article className="donut-chart-container">
+      <h3>{title}</h3>
+      <ResponsiveContainer width="100%" height={100}>
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            outerRadius={40}
+            innerRadius={30}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
+            ))}
+          </Pie>
+          <Tooltip/>
+        </PieChart>
+      </ResponsiveContainer>
+      <div className="donut-legend">
+        {data.map((entry, index) => (
+          <div key={`legend-${index}`} className="legend-item">
+            <span className="color-box" style={{backgroundColor: COLORS[index % COLORS.length]}}></span>
+            <span>{entry.name}</span>
           </div>
-          <div className="w-full sm:w-1/2">
-            <div className="relative h-full ml-0 md:mr-10">
-              <span className="absolute top-0 left-0 w-full h-full mt-1 ml-1 bg-lavender-200 rounded-lg"></span>
-              <div className="relative h-full p-5 bg-white border-2 border-lavender-200 rounded-lg">
-                <div className="flex items-center -mt-1">
-                  <h3 className="my-2 ml-3 text-lg font-bold text-gray-800">Fat Breakdown (% of Daily Needs)</h3>
-                </div>
-                <p className="mt-3 mb-1 text-xs font-medium text-lavender-200 uppercase">------------</p>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart layout="vertical" data={fatData}>
-                      <CartesianGrid strokeDasharray="3 3"/>
-                      <XAxis type="number" domain={[0, 100]}/>
-                      <YAxis dataKey="name" type="category" width={100}/>
-                      <Tooltip
-                        formatter={(value, name, props) => [`${value.toFixed(1)}%`, `${props.payload.amount.toFixed(1)}g / ${props.payload.daily}g`]}
-                      />
-                      <Legend/>
-                      <Bar dataKey="percentOfDaily" fill="#6977BC" name="% of Daily Needs"/>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col w-full mb-5 sm:flex-row">
-          <div className="w-full mb-10 sm:mb-0 sm:w-1/2">
-            <div className="relative h-full ml-0 mr-0 sm:mr-10">
-              <span className="absolute top-0 left-0 w-full h-full mt-1 ml-1 bg-blue-200 rounded-lg"></span>
-              <div className="relative h-full p-5 bg-white border-2 border-blue-200 rounded-lg">
-                <div className="flex items-center -mt-1">
-                  <h3 className="my-2 ml-3 text-lg font-bold text-gray-800">Carbohydrate Breakdown (% of Daily
-                    Needs)</h3>
-                </div>
-                <p className="mt-3 mb-1 text-xs font-medium text-blue-200 uppercase">------------</p>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart layout="vertical" data={carbData}>
-                      <CartesianGrid strokeDasharray="3 3"/>
-                      <XAxis type="number" domain={[0, 100]}/>
-                      <YAxis dataKey="name" type="category" width={100}/>
-                      <Tooltip
-                        formatter={(value, name, props) => [`${value.toFixed(1)}%`, `${props.payload.amount.toFixed(1)}g / ${props.payload.daily}g`]}
-                      />
-                      <Legend/>
-                      <Bar dataKey="percentOfDaily" fill="#FFBB28" name="% of Daily Needs"/>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="w-full sm:w-1/2">
-            <div className="relative h-full ml-0 md:mr-10">
-              <span className="absolute top-0 left-0 w-full h-full mt-1 ml-1 bg-keppel-200 rounded-lg"></span>
-              <div className="relative h-full p-5 bg-white border-2 border-keppel-200 rounded-lg">
-                <div className="flex items-center -mt-1">
-                  <h3 className="my-2 ml-3 text-lg font-bold text-gray-800">Vitamins and Minerals (% of Daily
-                    Needs)</h3>
-                </div>
-                <p className="mt-3 mb-1 text-xs font-medium text-keppel-200 uppercase">------------</p>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart layout="vertical" data={vitaminsMineralsData}>
-                      <CartesianGrid strokeDasharray="3 3"/>
-                      <XAxis type="number" domain={[0, 'dataMax']}/>
-                      <YAxis dataKey="name" type="category" width={100}/>
-                      <Tooltip/>
-                      <Legend/>
-                      <Bar dataKey="percentOfDaily" fill="#FF8042" name="% of Daily Needs"/>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
+    </article>
+  );
+
+  return (
+    <div className='nutrition-grid'>
+      {renderPieChart(calorieData, 'Calories')}
+      {renderPieChart(macronutrientData, 'Macronutrients')}
+      {renderPieChart(fatData, 'Fat Breakdown')}
+      {renderPieChart(carbData, 'Carbohydrate Breakdown')}
+      {renderPieChart(vitaminsMineralsData, 'Vitamins & Minerals')}
     </div>
   );
 };

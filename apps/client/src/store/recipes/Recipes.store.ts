@@ -2,10 +2,9 @@ import { Channel } from 'phoenix';
 import { gql } from 'graphql-request';
 import { runInAction, makeAutoObservable } from 'mobx';
 
-import { getDefaultValue, TableViewStore } from './TableView.store';
+import { getDefaultValue, RecipeStore } from './Recipe.store';
 import { Transport } from '../main/transport';
 import { RootStore } from '../root';
-import { TableViewDef } from '@nutri/store/tableViews/types';
 import {
   GroupStore,
   makeAutoSyncableGroup,
@@ -13,8 +12,10 @@ import {
 } from '@nutri/store/main/group';
 import { GroupOperation } from '@nutri/store/main/types';
 import { mock } from './mock';
-export class TableViewsStore implements GroupStore<TableViewDef> {
-  value: Map<string, Store<TableViewDef>> = new Map();
+import {Recipe, RecipeWhereInput} from "@nutri/client-gql";
+
+export class RecipesStore implements GroupStore<Recipe> {
+  value: Map<string, Store<Recipe>> = new Map();
   isLoading = false;
   channel?: Channel;
   version: number = 0;
@@ -22,40 +23,54 @@ export class TableViewsStore implements GroupStore<TableViewDef> {
   error: string | null = null;
   sync = makeAutoSyncableGroup.sync;
   subscribe = makeAutoSyncableGroup.subscribe;
-  load = makeAutoSyncableGroup.load<TableViewDef>();
+  load = makeAutoSyncableGroup.load<Recipe>();
   history: GroupOperation[] = [];
+  totalElements: number = 0;
+  lastPage: number = 0;
+  currentPage: number = 0;
 
   constructor(public root: RootStore, public transport: Transport) {
     makeAutoSyncableGroup(this, {
-      channelName: 'TableViewDefs',
-      ItemStore: TableViewStore,
+      channelName: 'Recipes',
+      ItemStore: RecipeStore,
       getItemId: (item) => item.id,
     });
     makeAutoObservable(this);
   }
 
   async bootstrap() {
-    if(this.isBootstrapped) return
-    // @ts-expect-error temporarily ignore
+    // if(this.isBootstrapped) return
+    // this.load(mock.data.Recipes);
     // this.isBootstrapped = true;
     //
     // return;
 
+
     try {
       this.isLoading = true;
 
-      // const res =
-      //   await this.transport.client.TableViewDefinitions()
-      // console.log(res)
-      this.load(mock.data.tableViewDefs);
+      const res =
+        await this.transport.client.PaginatedRecipes(
+          {
+            page: 1,
+            perPage: 100
+          }
+        );
 
-      // this.load(res?.tableViewDefinitions);
+      console.log('res',res)
+
+
+      this.load(res?.paginatedRecipes?.data);
       runInAction(() => {
         this.isBootstrapped = true;
+        this.totalElements = res.paginatedRecipes.meta.total
+        this.currentPage = res.paginatedRecipes.meta.currentPage
+
       });
     } catch (e) {
       runInAction(() => {
         this.error = (e as Error)?.message;
+        console.log(e)
       });
     } finally {
       runInAction(() => {
@@ -83,3 +98,9 @@ export class TableViewsStore implements GroupStore<TableViewDef> {
 
   archive = async (id: string, options?: { onSuccess?: () => void }) => {};
 }
+
+type TABLE_VIEW_DEFS_QUERY_RESULT = { tableViews: RecipeWhereInput };
+const RECIPES_QUERY = gql`
+
+
+`;

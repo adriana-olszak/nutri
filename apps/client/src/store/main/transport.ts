@@ -4,6 +4,7 @@ import { GraphQLClient } from 'graphql-request';
 import { getSdk, SdkFunctionWrapper } from '@nutri/client-gql';
 
 import { LatestDiff } from './types';
+import {ClientAuthService} from "../../app/services/ClientAuthService";
 
 export interface TransportOptions {
   email: string;
@@ -27,7 +28,8 @@ export class Transport {
 
   constructor(auth: AuthMethods) {
     this.stream = createStreamClient({});
-    this.graphqlClient = new GraphQLClient('/graphql', { credentials: 'include' });
+
+    this.graphqlClient = new GraphQLClient('http://localhost:3000/graphql', { credentials: 'include' });
     this.auth = auth;
 
     this.socket = new Socket(
@@ -81,7 +83,7 @@ export class Transport {
         return action();
       });
     };
-
+    console.log(this.graphqlClient)
     return getSdk(this.graphqlClient, customFetcher);
   }
 

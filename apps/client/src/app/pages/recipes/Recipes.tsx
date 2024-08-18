@@ -1,37 +1,51 @@
 import React, { useRef, useState } from 'react';
-import { TableComponent } from '../../components/Table';
-import { Button, Input, ToggleGroup, ToggleGroupItem } from '@nutri/client-ui';
-import { Plus, Search, BookOpen, Apple } from 'lucide-react';
-import data from './mockData';
-import { getColumnsConfig, recipeColumns } from './columns';
-import { Table } from '@nutri/client-ui/Table';
-import { GraphQLClient } from 'graphql-request';
+import {
+  Button,
+  Drawer,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+} from '@nutri/client-ui';
+import {Plus, Table2Icon, Grid2X2Icon, X} from 'lucide-react';
+import { getColumnsConfig, recipeColumns } from './components/columns';
 import { useStores } from '../../hooks/useStore';
 import { TableViewStore } from '@nutri/store/tableViews/TableView.store';
-import RecipeCard from "../../components/card/RecipeCard";
-import './components/grid-view.scss'
+import './components/grid-view.scss';
+import { observer } from 'mobx-react-lite';
+import { TableView } from './components/TableView';
+import { IconButton } from '@nutri/client-ui/icon-button';
+import { useLocalstorageState } from 'rooks';
+import { cn } from '@nutri/client-utils';
+import { GridView } from './components/GridView';
+import {Recipe as RecipeType} from "@nutri/client-gql";
+import {Recipe } from '../../components/RecipeEdit';
 
-type Recipe = {
-  id: string;
-  title: string;
-  description: string;
-  cookingTime: number;
-  prepTime: number;
-  servingsMin: number;
-  servingsMax: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export function Recipes() {
-  const [activeTab, setActiveTab] = useState<'recipes' | 'ingredients'>(
-    'recipes',
+export const Recipes = observer(() => {
+  const [activeTab, setActiveTab] = useLocalstorageState<'table' | 'grid'>(
+    'bite:recipes-prev-view',
+    'table',
   );
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState<RecipeType| null>(null);
   const tableRef = useRef<HTMLDivElement | null>(null);
   const store = useStores();
   const tableView = store.tableViews.getById('1') as TableViewStore;
-
   const col = getColumnsConfig(tableView.value);
+  const data = store.recipes.toArray();
+
+  const openDrawer = (recipe: Recipe) => {
+    setSelectedRecipe(recipe);
+    setIsDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+    setSelectedRecipe(null);
+  };
+
+  const toggleSlideOver = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
 
   return (
     <div className="mx-auto px-4 py-1 stretch w-[fill-available]">
@@ -48,29 +62,66 @@ export function Recipes() {
             list of favorite recipes.
           </p>
         </div>
-        <Button variant="outline" colorScheme="lavender" size={'xs'}>
-          <Plus size={18} />
-          {activeTab === 'recipes' ? 'Add New Recipe' : 'Add New Ingredient'}
-        </Button>
+
+        <div className="flex gap-2">
+          <div className="border rounded overflow-hidden flex items-center">
+            <IconButton
+              aria-label="table view"
+              icon={<Table2Icon className="text-inherit size-4"/>}
+              variant="ghost"
+              className={cn('rounded-none text-gray-700 hover:bg-gray-100', {
+                'text-gray-500': activeTab !== 'table',
+              })}
+              size="xs"
+              onClick={() => setActiveTab('table')}
+            />
+            <IconButton
+              aria-label="grid view"
+              icon={<Grid2X2Icon className="text-inherit size-4"/>}
+              variant="ghost"
+              className={cn('rounded-none text-gray-700 hover:bg-gray-100', {
+                'text-gray-500': activeTab !== 'grid',
+              })}
+              size="xs"
+              onClick={() => setActiveTab('grid')}
+            />
+          </div>
+
+          <Button variant="outline" colorScheme="lavender" size={'xs'}>
+            <Plus size={18}/>
+            Add New Recipe
+          </Button>
+        </div>
       </header>
 
-      <div className='recipe-grid'>
+      {/*{activeTab === 'table' && <TableView onRecipeClick={openDrawer}/>}*/}
 
-        {data.map(e => (
-          <RecipeCard key={`${e.id}-${e.title}`} recipe={e} />
-        ))}
+      {activeTab === 'grid' && <GridView onRecipeClick={openDrawer}/>}
 
+      <div className="w-screen h-screen flex items-center justify-center">
+
+        <div className={`w-full h-full fixed inset-0 ${isDrawerOpen ? '' : 'invisible'}`}>
+          <div
+            onClick={toggleSlideOver}
+            className={`w-full h-full duration-500 ease-out transition-all inset-0 absolute bg-gray-900 ${
+              isDrawerOpen ? 'opacity-50' : 'opacity-0'
+            }`}
+          />
+          <div
+            className={`max-w-[50%] min-w-[750px] bg-white h-full absolute right-0 duration-300 ease-out transition-all ${
+              isDrawerOpen ? '' : 'translate-x-full'
+            }`}
+          >
+
+
+            <Recipe id={selectedRecipe?.id || ''} />
+
+
+
+            {/* Add your slide-over content here */}
+          </div>
+        </div>
       </div>
-
-
-      <Table<any>
-        columns={col}
-        data={data}
-        tableRef={tableRef}
-        enableRowSelection
-        enableColumnResizing
-
-      />
     </div>
   );
-}
+});

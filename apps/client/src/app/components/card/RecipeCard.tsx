@@ -1,184 +1,248 @@
-import React, { useState } from 'react';
-import {Clock, Utensils, Users, Badge, EllipsisVerticalIcon} from 'lucide-react';
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@nutri/client-ui/card';
-import {Tabs, TabsContent, TabsList, TabsTrigger, Tooltip} from "@nutri/client-ui";
-import {Image} from "@radix-ui/react-avatar";
-import {IconButton} from "@nutri/client-ui/icon-button";
+import React, {useMemo, useRef, useState} from 'react';
+import {
+  Clock,
+  Utensils,
+  Users,
+  Badge,
+  EllipsisVerticalIcon,
+  EllipsisVertical,
+  CircleHelp,
+  Flame,
+  Tag, ExternalLinkIcon,
+} from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@nutri/client-ui/card';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  Tooltip,
+} from '@nutri/client-ui';
+import { Image } from '@radix-ui/react-avatar';
+import { IconButton } from '@nutri/client-ui/icon-button';
+import { Recipe } from '@nutri/client-gql';
+import {useNavigate} from "react-router-dom";
 
 export const nutrition = {
-  "servingSize": "1 cup (250ml)",
-  "servingsPerRecipe": 6,
-  "nutritionPerServing": {
-    "calories": 180,
-    "totalFat": 12,
-    "saturatedFat": 5,
-    "transFat": 0,
-    "cholesterol": 25,
-    "sodium": 400,
-    "totalCarbohydrates": 18,
-    "dietaryFiber": 3,
-    "sugars": 6,
-    "protein": 3
+  servingSize: '1 cup (250ml)',
+  servingsPerRecipe: 6,
+  nutritionPerServing: {
+    calories: 180,
+    totalFat: 12,
+    saturatedFat: 5,
+    transFat: 0,
+    cholesterol: 25,
+    sodium: 400,
+    totalCarbohydrates: 18,
+    dietaryFiber: 3,
+    sugars: 6,
+    protein: 3,
   },
-  "nutritionPerRecipe": {
-    "calories": 1080,
-    "totalFat": 72,
-    "saturatedFat": 30,
-    "transFat": 0,
-    "cholesterol": 150,
-    "sodium": 2400,
-    "totalCarbohydrates": 108,
-    "dietaryFiber": 18,
-    "sugars": 36,
-    "protein": 18
+  nutritionPerRecipe: {
+    calories: 1080,
+    totalFat: 72,
+    saturatedFat: 30,
+    transFat: 0,
+    cholesterol: 150,
+    sodium: 2400,
+    totalCarbohydrates: 108,
+    dietaryFiber: 18,
+    sugars: 36,
+    protein: 18,
   },
-  "percentDailyValues": {
-    "totalFat": "15%",
-    "saturatedFat": "25%",
-    "cholesterol": "8%",
-    "sodium": "17%",
-    "totalCarbohydrates": "6%",
-    "dietaryFiber": "11%",
-    "protein": "6%"
+  percentDailyValues: {
+    totalFat: '15%',
+    saturatedFat: '25%',
+    cholesterol: '8%',
+    sodium: '17%',
+    totalCarbohydrates: '6%',
+    dietaryFiber: '11%',
+    protein: '6%',
   },
-  "vitaminsMinerals": {
-    "vitaminA": "200%",
-    "vitaminC": "10%",
-    "calcium": "4%",
-    "iron": "6%",
-    "potassium": "8%"
+  vitaminsMinerals: {
+    vitaminA: '200%',
+    vitaminC: '10%',
+    calcium: '4%',
+    iron: '6%',
+    potassium: '8%',
   },
-  "ingredients": [
+  ingredients: [
     {
-      "name": "Pumpkin",
-      "amount": 1000,
-      "unit": "g"
+      name: 'Pumpkin',
+      amount: 1000,
+      unit: 'g',
     },
     {
-      "name": "Onion",
-      "amount": 150,
-      "unit": "g"
+      name: 'Onion',
+      amount: 150,
+      unit: 'g',
     },
     {
-      "name": "Garlic",
-      "amount": 6,
-      "unit": "g"
+      name: 'Garlic',
+      amount: 6,
+      unit: 'g',
     },
     {
-      "name": "Vegetable broth",
-      "amount": 1000,
-      "unit": "ml"
+      name: 'Vegetable broth',
+      amount: 1000,
+      unit: 'ml',
     },
     {
-      "name": "Heavy cream",
-      "amount": 200,
-      "unit": "ml"
+      name: 'Heavy cream',
+      amount: 200,
+      unit: 'ml',
     },
     {
-      "name": "Olive oil",
-      "amount": 30,
-      "unit": "ml"
+      name: 'Olive oil',
+      amount: 30,
+      unit: 'ml',
     },
     {
-      "name": "Salt",
-      "amount": 5,
-      "unit": "g"
+      name: 'Salt',
+      amount: 5,
+      unit: 'g',
     },
     {
-      "name": "Black pepper",
-      "amount": 1,
-      "unit": "g"
+      name: 'Black pepper',
+      amount: 1,
+      unit: 'g',
     },
     {
-      "name": "Nutmeg",
-      "amount": 0.5,
-      "unit": "g"
-    }
-  ]
+      name: 'Nutmeg',
+      amount: 0.5,
+      unit: 'g',
+    },
+  ],
 };
 const formatTime = (minutes) => {
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
+  if (!minutes) {
+    return '?';
+  }
+  const minutesNumber = parseInt(minutes);
+  const hours = Math.floor(minutesNumber / 60);
+  const remainingMinutes = minutesNumber % 60;
   return hours > 0 ? `${hours}h ${remainingMinutes}m` : `${remainingMinutes}m`;
 };
-const RecipeCard = ({ recipe}) => {
-  const [activeTab, setActiveTab] = useState('overview');
-  console.log(recipe.img)
+const RecipeCard = ({ recipe, onRecipeClick }: { recipe: Recipe, onRecipeClick: () => void }) => {
+  const navigate = useNavigate();
+  const linkRef = useRef<HTMLParagraphElement>(null);
+
+  const handleNavigate = () => {
+    navigate(``);
+  };
+
+
+  const dedupedTags = useMemo(() => {
+    const allTags = [
+      ...(recipe.tags || []),
+      ...(recipe.categories || []),
+      ...(recipe.seasons || []),
+    ];
+
+    // Use a Set to remove duplicates based on id
+    const uniqueTagsSet = new Set(
+      allTags.map((tag) => JSON.stringify({ id: tag.id, name: tag.name })),
+    );
+
+    // Convert back to an array of objects
+    return Array.from(uniqueTagsSet).map((tag) => JSON.parse(tag));
+  }, [recipe.tags, recipe.categories, recipe.seasons]);
+
   return (
-    <Card className="">
-      <CardHeader className='p-0'>
+    <Card className="group relative" onClick={onRecipeClick} >
+      <CardHeader className="p-0">
+        {recipe?.images && (
+          <div className="relative w-full h-[150px]">
+            <div className="absolute inset-0 overflow-hidden rounded">
+              <img
+                alt="recipe"
+                src={recipe.images[0].url}
+                className="w-full h-full object-cover"
+              />
+            </div>
 
-        {recipe?.img && (
-          <div className='relative w-full'>
-            <img alt="recipe" src={recipe?.img} className='rounded w-full h-[150px]'/>
-
-            <IconButton aria-label='Menu' icon={<EllipsisVerticalIcon className='text-white bg-[#ffffff52]' />}
-             className='absolute top-0 right-2 rounded'
-                        variant='ghost'
-
+            <IconButton
+              aria-label="Menu"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate(`${recipe.id}`)
+              }}
+              icon={<ExternalLinkIcon className="text-white " />}
+              size="xs"
+              className="absolute opacity-0 group-hover:opacity-100 top-2 right-2 rounded border-none bg-[#000000a3] hover:bg-[#4f4f4fc2] focused:bg-[#4f4f4fc2]"
+              variant="outline"
             />
-
           </div>
-
         )}
-        <CardTitle className="text-lg font-bold px-3">{recipe.title}</CardTitle>
+        <Tooltip label={recipe.title}>
+          <CardTitle className="text-base font-bold px-3 line-clamp-1">
+            {recipe.title}
+          </CardTitle>
+        </Tooltip>
         {/*<CardDescription className='px-3'>{recipe.description}</CardDescription>*/}
       </CardHeader>
-      <CardContent className='px-3'>
+      <CardContent className="px-3 flex flex-col flex-1">
         <div className="flex gap-3 mb-4 text-sm">
-          <Tooltip label={`Passive: ${formatTime(recipe.prepTime)} Hands on: ${formatTime(recipe.cookingTime)} `}>
+          <Tooltip
+            label={`Passive: ${formatTime(
+              recipe.prepTime,
+            )} + Hands on: ${formatTime(recipe.cookingTime)} `}
+          >
             <div className="flex items-center">
-              <Clock className="mr-1 size-3"/>
-              <span className='whitespace-nowrap'>Cook: {formatTime(recipe.prepTime + recipe.cookingTime)}</span>
+              <Clock className="mr-1 size-3" />
+              <span className="whitespace-nowrap">
+                Cook: {formatTime(parseInt(recipe.prepTime || 0) + parseInt(recipe.cookingTime || 0))}
+              </span>
             </div>
           </Tooltip>
 
-
           <div className="flex items-center">
-            <Users className="mr-1 size-3"/>
-            <span className='whitespace-nowrap'>Serves: {recipe.servingsMin}-{recipe.servingsMax}</span>
+            <Users className="mr-1 size-3" />
+            <span className="whitespace-nowrap">
+              Serves: {recipe.servingsMin !== recipe.servingsMax ? `${recipe.servingsMin}-${recipe.servingsMax}` : recipe.servingsMin}
+            </span>
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
-          </TabsList>
-          <TabsContent value="overview" className="mt-4">
-            <p>{recipe.description}</p>
-          </TabsContent>
-          <TabsContent value="nutrition" className="mt-4">
-            {nutrition ? (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h4 className="font-semibold">Per Serving ({nutrition.servingSize})</h4>
-                  <ul className="list-disc pl-5">
-                    <li>Calories: {nutrition.nutritionPerServing.calories}</li>
-                    <li>Total Fat: {nutrition.nutritionPerServing.totalFat}g</li>
-                    <li>Carbs: {nutrition.nutritionPerServing.totalCarbohydrates}g</li>
-                    <li>Protein: {nutrition.nutritionPerServing.protein}g</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-semibold">% Daily Value</h4>
-                  <ul className="list-disc pl-5">
-                    <li>Total Fat: {nutrition.percentDailyValues.totalFat}</li>
-                    <li>Sodium: {nutrition.percentDailyValues.sodium}</li>
-                    <li>Vitamin A: {nutrition.vitaminsMinerals.vitaminA}</li>
-                    <li>Calcium: {nutrition.vitaminsMinerals.calcium}</li>
-                  </ul>
-                </div>
-              </div>
-            ) : (
-              <p>Nutrition information not available.</p>
-            )}
-          </TabsContent>
-        </Tabs>
+        <div className="text-sm text-gray-500 flex flex-wrap gap-1  line-clamp-3 overflow-hidden">
+          {dedupedTags.map((tag) => (
+            <p key={tag.id} className="border rounded-full px-2">
+              {tag.name}
+            </p>
+          ))}
+        </div>
       </CardContent>
-      <CardFooter className="text-sm text-gray-500">
-        <p>Created: {new Date(recipe.createdAt).toLocaleDateString()}</p>
-        <p className="ml-4">Last updated: {new Date(recipe.updatedAt).toLocaleDateString()}</p>
+      <CardFooter className="px-3 pb-3 pt-4 absolute bottom-0 bg-white w-full">
+        <div className="flex flex-1 flex-col">
+          <div className="text-sm text-gray-700 flex justify-between ">
+            <div className="flex items-center">
+              <Flame className="size-3" />
+              {nutrition.nutritionPerServing.calories} kcal
+            </div>
+
+            <div className="flex">
+              <div className="flex gap-1 text-xs font-medium">
+                <span className="border border-red-100 text-red-700 px-2 py-0 rounded-full">
+                  F {nutrition.nutritionPerServing.totalFat}g
+                </span>
+                <span className="border border-yellow-100 text-yellow-700 px-2 py-0 rounded-full">
+                  C {nutrition.nutritionPerServing.totalCarbohydrates}g
+                </span>
+                <span className="border border-green-100 text-green-700 px-2 py-0 rounded-full">
+                  P {nutrition.nutritionPerServing.protein}g
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </CardFooter>
     </Card>
   );

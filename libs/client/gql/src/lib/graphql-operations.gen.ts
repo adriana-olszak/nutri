@@ -16,6 +16,199 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   DateTime: { input: any; output: any; }
+  JSON: { input: any; output: any; }
+};
+
+export type Answer = {
+  __typename?: 'Answer';
+  id: Scalars['ID']['output'];
+  question: Question;
+  questionId: Scalars['String']['output'];
+  submission: Submission;
+  submissionId: Scalars['String']['output'];
+  value: Scalars['JSON']['output'];
+};
+
+export type AnswerCreateManyInput = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  questionId: Scalars['String']['input'];
+  submissionId: Scalars['String']['input'];
+  value: Scalars['JSON']['input'];
+};
+
+export type AnswerCreateManyQuestionInput = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  submissionId: Scalars['String']['input'];
+  value: Scalars['JSON']['input'];
+};
+
+export type AnswerCreateManyQuestionInputEnvelope = {
+  data: Array<AnswerCreateManyQuestionInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type AnswerCreateManySubmissionInput = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  questionId: Scalars['String']['input'];
+  value: Scalars['JSON']['input'];
+};
+
+export type AnswerCreateManySubmissionInputEnvelope = {
+  data: Array<AnswerCreateManySubmissionInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type AnswerCreateNestedManyWithoutQuestionInput = {
+  connect?: InputMaybe<Array<AnswerWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<AnswerCreateOrConnectWithoutQuestionInput>>;
+  create?: InputMaybe<Array<AnswerCreateWithoutQuestionInput>>;
+  createMany?: InputMaybe<AnswerCreateManyQuestionInputEnvelope>;
+};
+
+export type AnswerCreateNestedManyWithoutSubmissionInput = {
+  connect?: InputMaybe<Array<AnswerWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<AnswerCreateOrConnectWithoutSubmissionInput>>;
+  create?: InputMaybe<Array<AnswerCreateWithoutSubmissionInput>>;
+  createMany?: InputMaybe<AnswerCreateManySubmissionInputEnvelope>;
+};
+
+export type AnswerCreateOrConnectWithoutQuestionInput = {
+  create: AnswerCreateWithoutQuestionInput;
+  where: AnswerWhereUniqueInput;
+};
+
+export type AnswerCreateOrConnectWithoutSubmissionInput = {
+  create: AnswerCreateWithoutSubmissionInput;
+  where: AnswerWhereUniqueInput;
+};
+
+export type AnswerCreateWithoutQuestionInput = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  submission: SubmissionCreateNestedOneWithoutAnswersInput;
+  value: Scalars['JSON']['input'];
+};
+
+export type AnswerCreateWithoutSubmissionInput = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  question: QuestionCreateNestedOneWithoutAnswersInput;
+  value: Scalars['JSON']['input'];
+};
+
+export type AnswerListRelationFilter = {
+  every?: InputMaybe<AnswerWhereInput>;
+  none?: InputMaybe<AnswerWhereInput>;
+  some?: InputMaybe<AnswerWhereInput>;
+};
+
+export type AnswerScalarWhereInput = {
+  AND?: InputMaybe<Array<AnswerScalarWhereInput>>;
+  NOT?: InputMaybe<Array<AnswerScalarWhereInput>>;
+  OR?: InputMaybe<Array<AnswerScalarWhereInput>>;
+  id?: InputMaybe<StringFilter>;
+  questionId?: InputMaybe<StringFilter>;
+  submissionId?: InputMaybe<StringFilter>;
+  value?: InputMaybe<JsonFilter>;
+};
+
+export type AnswerUpdateManyMutationInput = {
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  value?: InputMaybe<Scalars['JSON']['input']>;
+};
+
+export type AnswerUpdateManyWithWhereWithoutQuestionInput = {
+  data: AnswerUpdateManyMutationInput;
+  where: AnswerScalarWhereInput;
+};
+
+export type AnswerUpdateManyWithWhereWithoutSubmissionInput = {
+  data: AnswerUpdateManyMutationInput;
+  where: AnswerScalarWhereInput;
+};
+
+export type AnswerUpdateManyWithoutQuestionNestedInput = {
+  connect?: InputMaybe<Array<AnswerWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<AnswerCreateOrConnectWithoutQuestionInput>>;
+  create?: InputMaybe<Array<AnswerCreateWithoutQuestionInput>>;
+  createMany?: InputMaybe<AnswerCreateManyQuestionInputEnvelope>;
+  delete?: InputMaybe<Array<AnswerWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<AnswerScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<AnswerWhereUniqueInput>>;
+  set?: InputMaybe<Array<AnswerWhereUniqueInput>>;
+  update?: InputMaybe<Array<AnswerUpdateWithWhereUniqueWithoutQuestionInput>>;
+  updateMany?: InputMaybe<Array<AnswerUpdateManyWithWhereWithoutQuestionInput>>;
+  upsert?: InputMaybe<Array<AnswerUpsertWithWhereUniqueWithoutQuestionInput>>;
+};
+
+export type AnswerUpdateManyWithoutSubmissionNestedInput = {
+  connect?: InputMaybe<Array<AnswerWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<AnswerCreateOrConnectWithoutSubmissionInput>>;
+  create?: InputMaybe<Array<AnswerCreateWithoutSubmissionInput>>;
+  createMany?: InputMaybe<AnswerCreateManySubmissionInputEnvelope>;
+  delete?: InputMaybe<Array<AnswerWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<AnswerScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<AnswerWhereUniqueInput>>;
+  set?: InputMaybe<Array<AnswerWhereUniqueInput>>;
+  update?: InputMaybe<Array<AnswerUpdateWithWhereUniqueWithoutSubmissionInput>>;
+  updateMany?: InputMaybe<Array<AnswerUpdateManyWithWhereWithoutSubmissionInput>>;
+  upsert?: InputMaybe<Array<AnswerUpsertWithWhereUniqueWithoutSubmissionInput>>;
+};
+
+export type AnswerUpdateWithWhereUniqueWithoutQuestionInput = {
+  data: AnswerUpdateWithoutQuestionInput;
+  where: AnswerWhereUniqueInput;
+};
+
+export type AnswerUpdateWithWhereUniqueWithoutSubmissionInput = {
+  data: AnswerUpdateWithoutSubmissionInput;
+  where: AnswerWhereUniqueInput;
+};
+
+export type AnswerUpdateWithoutQuestionInput = {
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  submission?: InputMaybe<SubmissionUpdateOneRequiredWithoutAnswersNestedInput>;
+  value?: InputMaybe<Scalars['JSON']['input']>;
+};
+
+export type AnswerUpdateWithoutSubmissionInput = {
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  question?: InputMaybe<QuestionUpdateOneRequiredWithoutAnswersNestedInput>;
+  value?: InputMaybe<Scalars['JSON']['input']>;
+};
+
+export type AnswerUpsertWithWhereUniqueWithoutQuestionInput = {
+  create: AnswerCreateWithoutQuestionInput;
+  update: AnswerUpdateWithoutQuestionInput;
+  where: AnswerWhereUniqueInput;
+};
+
+export type AnswerUpsertWithWhereUniqueWithoutSubmissionInput = {
+  create: AnswerCreateWithoutSubmissionInput;
+  update: AnswerUpdateWithoutSubmissionInput;
+  where: AnswerWhereUniqueInput;
+};
+
+export type AnswerWhereInput = {
+  AND?: InputMaybe<Array<AnswerWhereInput>>;
+  NOT?: InputMaybe<Array<AnswerWhereInput>>;
+  OR?: InputMaybe<Array<AnswerWhereInput>>;
+  id?: InputMaybe<StringFilter>;
+  question?: InputMaybe<QuestionRelationFilter>;
+  questionId?: InputMaybe<StringFilter>;
+  submission?: InputMaybe<SubmissionRelationFilter>;
+  submissionId?: InputMaybe<StringFilter>;
+  value?: InputMaybe<JsonFilter>;
+};
+
+export type AnswerWhereUniqueInput = {
+  AND?: InputMaybe<Array<AnswerWhereInput>>;
+  NOT?: InputMaybe<Array<AnswerWhereInput>>;
+  OR?: InputMaybe<Array<AnswerWhereInput>>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  question?: InputMaybe<QuestionRelationFilter>;
+  questionId?: InputMaybe<StringFilter>;
+  submission?: InputMaybe<SubmissionRelationFilter>;
+  submissionId?: InputMaybe<StringFilter>;
+  value?: InputMaybe<JsonFilter>;
 };
 
 export type AuthAccountInfoModel = {
@@ -172,6 +365,25 @@ export type BrandedFoodNullableRelationFilter = {
   isNot?: InputMaybe<BrandedFoodWhereInput>;
 };
 
+export type BrandedFoodOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
+};
+
+export type BrandedFoodOrderByWithRelationInput = {
+  brandOwner?: InputMaybe<SortOrder>;
+  food?: InputMaybe<FoodOrderByWithRelationInput>;
+  foodId?: InputMaybe<SortOrder>;
+  gtinUpc?: InputMaybe<SortOrderInput>;
+  id?: InputMaybe<SortOrder>;
+  importInfo?: InputMaybe<ImportInfoOrderByWithRelationInput>;
+  importInfoId?: InputMaybe<SortOrderInput>;
+  ingredients?: InputMaybe<SortOrderInput>;
+  nutritionLabel?: InputMaybe<NutritionLabelOrderByWithRelationInput>;
+  servingSize?: InputMaybe<SortOrderInput>;
+  servingUnit?: InputMaybe<SortOrderInput>;
+  sourceId?: InputMaybe<SortOrder>;
+};
+
 export type BrandedFoodRelationFilter = {
   is?: InputMaybe<BrandedFoodWhereInput>;
   isNot?: InputMaybe<BrandedFoodWhereInput>;
@@ -313,40 +525,6 @@ export type BrandedFoodWhereUniqueInput = {
   sourceId?: InputMaybe<StringFilter>;
 };
 
-export type ColumnView = {
-  __typename?: 'ColumnView';
-  columnId: Scalars['Int']['output'];
-  columnType: Scalars['String']['output'];
-  filter?: Maybe<Scalars['String']['output']>;
-  id: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  tableViewDefinitionId: Scalars['String']['output'];
-  visible: Scalars['Boolean']['output'];
-  width: Scalars['Int']['output'];
-};
-
-export type CreateColumnViewInput = {
-  columnId: Scalars['Int']['input'];
-  columnType: Scalars['String']['input'];
-  filter?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  visible: Scalars['Boolean']['input'];
-  width: Scalars['Int']['input'];
-};
-
-export type CreateTableViewDefinitionInput = {
-  columns: Array<CreateColumnViewInput>;
-  filters?: InputMaybe<Scalars['String']['input']>;
-  icon?: InputMaybe<Scalars['String']['input']>;
-  isPreset: Scalars['Boolean']['input'];
-  isShared: Scalars['Boolean']['input'];
-  name: Scalars['String']['input'];
-  order: Scalars['Int']['input'];
-  sorting?: InputMaybe<Scalars['String']['input']>;
-  tableId: Scalars['String']['input'];
-  tableType: Scalars['String']['input'];
-};
-
 export type DateTimeFieldUpdateOperationsInput = {
   set?: InputMaybe<Scalars['DateTime']['input']>;
 };
@@ -359,6 +537,17 @@ export type DateTimeFilter = {
   lt?: InputMaybe<Scalars['DateTime']['input']>;
   lte?: InputMaybe<Scalars['DateTime']['input']>;
   not?: InputMaybe<NestedDateTimeFilter>;
+  notIn?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+};
+
+export type DateTimeNullableFilter = {
+  equals?: InputMaybe<Scalars['DateTime']['input']>;
+  gt?: InputMaybe<Scalars['DateTime']['input']>;
+  gte?: InputMaybe<Scalars['DateTime']['input']>;
+  in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  lt?: InputMaybe<Scalars['DateTime']['input']>;
+  lte?: InputMaybe<Scalars['DateTime']['input']>;
+  not?: InputMaybe<NestedDateTimeNullableFilter>;
   notIn?: InputMaybe<Array<Scalars['DateTime']['input']>>;
 };
 
@@ -382,6 +571,14 @@ export type EnumRecipeInstructionsTypeFilter = {
   in?: InputMaybe<Array<RecipeInstructionsType>>;
   not?: InputMaybe<NestedEnumRecipeInstructionsTypeFilter>;
   notIn?: InputMaybe<Array<RecipeInstructionsType>>;
+};
+
+export type EnumRolesNullableListFilter = {
+  equals?: InputMaybe<Array<Roles>>;
+  has?: InputMaybe<Roles>;
+  hasEvery?: InputMaybe<Array<Roles>>;
+  hasSome?: InputMaybe<Array<Roles>>;
+  isEmpty?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type FloatFieldUpdateOperationsInput = {
@@ -658,6 +855,10 @@ export type FoodCategoryOnFoodListRelationFilter = {
   some?: InputMaybe<FoodCategoryOnFoodWhereInput>;
 };
 
+export type FoodCategoryOnFoodOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
+};
+
 export type FoodCategoryOnFoodScalarWhereInput = {
   AND?: InputMaybe<Array<FoodCategoryOnFoodScalarWhereInput>>;
   NOT?: InputMaybe<Array<FoodCategoryOnFoodScalarWhereInput>>;
@@ -762,6 +963,10 @@ export type FoodCategoryOnFoodWhereUniqueInput = {
   foodId?: InputMaybe<StringFilter>;
   foodId_categoryId?: InputMaybe<FoodCategoryOnFoodFoodIdCategoryIdCompoundUniqueInput>;
   isPrimaryCategory?: InputMaybe<BoolFilter>;
+};
+
+export type FoodCategoryOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
 };
 
 export type FoodCategoryRelationFilter = {
@@ -1161,6 +1366,16 @@ export type FoodListRelationFilter = {
   some?: InputMaybe<FoodWhereInput>;
 };
 
+export type FoodMeta = {
+  __typename?: 'FoodMeta';
+  currentPage: Scalars['Int']['output'];
+  lastPage: Scalars['Int']['output'];
+  next?: Maybe<Scalars['Int']['output']>;
+  perPage: Scalars['Int']['output'];
+  prev?: Maybe<Scalars['Int']['output']>;
+  total: Scalars['Int']['output'];
+};
+
 export type FoodNutrient = {
   __typename?: 'FoodNutrient';
   amount: Scalars['Float']['output'];
@@ -1305,6 +1520,10 @@ export type FoodNutrientListRelationFilter = {
   every?: InputMaybe<FoodNutrientWhereInput>;
   none?: InputMaybe<FoodNutrientWhereInput>;
   some?: InputMaybe<FoodNutrientWhereInput>;
+};
+
+export type FoodNutrientOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
 };
 
 export type FoodNutrientScalarWhereInput = {
@@ -1497,6 +1716,33 @@ export type FoodNutrientWhereUniqueInput = {
   sourceId?: InputMaybe<StringFilter>;
 };
 
+export type FoodOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
+};
+
+export type FoodOrderByWithRelationInput = {
+  RecipeIngredient?: InputMaybe<RecipeIngredientOrderByRelationAggregateInput>;
+  brandedFood?: InputMaybe<BrandedFoodOrderByWithRelationInput>;
+  categories?: InputMaybe<FoodCategoryOnFoodOrderByRelationAggregateInput>;
+  createdAt?: InputMaybe<SortOrder>;
+  description?: InputMaybe<SortOrder>;
+  id?: InputMaybe<SortOrder>;
+  importInfo?: InputMaybe<ImportInfoOrderByWithRelationInput>;
+  importInfoId?: InputMaybe<SortOrderInput>;
+  nutrients?: InputMaybe<FoodNutrientOrderByRelationAggregateInput>;
+  portions?: InputMaybe<FoodPortionOrderByRelationAggregateInput>;
+  scientificName?: InputMaybe<SortOrderInput>;
+  searchVectors?: InputMaybe<FoodSearchVectorOrderByRelationAggregateInput>;
+  sourceId?: InputMaybe<SortOrder>;
+  updatedAt?: InputMaybe<SortOrder>;
+};
+
+export type FoodPaginatedModel = {
+  __typename?: 'FoodPaginatedModel';
+  data: Array<Food>;
+  meta: FoodMeta;
+};
+
 export type FoodPortion = {
   __typename?: 'FoodPortion';
   amount: Scalars['Float']['output'];
@@ -1627,6 +1873,10 @@ export type FoodPortionListRelationFilter = {
   every?: InputMaybe<FoodPortionWhereInput>;
   none?: InputMaybe<FoodPortionWhereInput>;
   some?: InputMaybe<FoodPortionWhereInput>;
+};
+
+export type FoodPortionOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
 };
 
 export type FoodPortionScalarWhereInput = {
@@ -1859,6 +2109,10 @@ export type FoodSearchVectorListRelationFilter = {
   every?: InputMaybe<FoodSearchVectorWhereInput>;
   none?: InputMaybe<FoodSearchVectorWhereInput>;
   some?: InputMaybe<FoodSearchVectorWhereInput>;
+};
+
+export type FoodSearchVectorOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
 };
 
 export type FoodSearchVectorScalarWhereInput = {
@@ -2391,6 +2645,20 @@ export type ImportInfoNullableRelationFilter = {
   isNot?: InputMaybe<ImportInfoWhereInput>;
 };
 
+export type ImportInfoOrderByWithRelationInput = {
+  brandedFoods?: InputMaybe<BrandedFoodOrderByRelationAggregateInput>;
+  dataSource?: InputMaybe<SortOrder>;
+  foodCategories?: InputMaybe<FoodCategoryOrderByRelationAggregateInput>;
+  foodNutrients?: InputMaybe<FoodNutrientOrderByRelationAggregateInput>;
+  foodPortions?: InputMaybe<FoodPortionOrderByRelationAggregateInput>;
+  foods?: InputMaybe<FoodOrderByRelationAggregateInput>;
+  id?: InputMaybe<SortOrder>;
+  importDate?: InputMaybe<SortOrder>;
+  measureUnits?: InputMaybe<MeasureUnitOrderByRelationAggregateInput>;
+  nutrients?: InputMaybe<NutrientOrderByRelationAggregateInput>;
+  sourceVersion?: InputMaybe<SortOrder>;
+};
+
 export type ImportInfoUpdateOneWithoutBrandedFoodsNestedInput = {
   connect?: InputMaybe<ImportInfoWhereUniqueInput>;
   connectOrCreate?: InputMaybe<ImportInfoCreateOrConnectWithoutBrandedFoodsInput>;
@@ -2694,6 +2962,38 @@ export type IntNullableFilter = {
   notIn?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
+export type JsonFilter = {
+  array_contains?: InputMaybe<Scalars['JSON']['input']>;
+  array_ends_with?: InputMaybe<Scalars['JSON']['input']>;
+  array_starts_with?: InputMaybe<Scalars['JSON']['input']>;
+  equals?: InputMaybe<Scalars['JSON']['input']>;
+  gt?: InputMaybe<Scalars['JSON']['input']>;
+  gte?: InputMaybe<Scalars['JSON']['input']>;
+  lt?: InputMaybe<Scalars['JSON']['input']>;
+  lte?: InputMaybe<Scalars['JSON']['input']>;
+  not?: InputMaybe<Scalars['JSON']['input']>;
+  path?: InputMaybe<Array<Scalars['String']['input']>>;
+  string_contains?: InputMaybe<Scalars['String']['input']>;
+  string_ends_with?: InputMaybe<Scalars['String']['input']>;
+  string_starts_with?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type JsonNullableFilter = {
+  array_contains?: InputMaybe<Scalars['JSON']['input']>;
+  array_ends_with?: InputMaybe<Scalars['JSON']['input']>;
+  array_starts_with?: InputMaybe<Scalars['JSON']['input']>;
+  equals?: InputMaybe<Scalars['JSON']['input']>;
+  gt?: InputMaybe<Scalars['JSON']['input']>;
+  gte?: InputMaybe<Scalars['JSON']['input']>;
+  lt?: InputMaybe<Scalars['JSON']['input']>;
+  lte?: InputMaybe<Scalars['JSON']['input']>;
+  not?: InputMaybe<Scalars['JSON']['input']>;
+  path?: InputMaybe<Array<Scalars['String']['input']>>;
+  string_contains?: InputMaybe<Scalars['String']['input']>;
+  string_ends_with?: InputMaybe<Scalars['String']['input']>;
+  string_starts_with?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Language = {
   __typename?: 'Language';
   _count: LanguageCount;
@@ -2770,6 +3070,148 @@ export type LanguageWhereUniqueInput = {
   translations?: InputMaybe<TranslationListRelationFilter>;
 };
 
+export type LoginLog = {
+  __typename?: 'LoginLog';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  ipAddress?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  user?: Maybe<User>;
+  userAgent?: Maybe<Scalars['String']['output']>;
+  userId?: Maybe<Scalars['String']['output']>;
+};
+
+export type LoginLogCreateManyUserInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  ipAddress?: InputMaybe<Scalars['String']['input']>;
+  success: Scalars['Boolean']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  userAgent?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type LoginLogCreateManyUserInputEnvelope = {
+  data: Array<LoginLogCreateManyUserInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type LoginLogCreateNestedManyWithoutUserInput = {
+  connect?: InputMaybe<Array<LoginLogWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<LoginLogCreateOrConnectWithoutUserInput>>;
+  create?: InputMaybe<Array<LoginLogCreateWithoutUserInput>>;
+  createMany?: InputMaybe<LoginLogCreateManyUserInputEnvelope>;
+};
+
+export type LoginLogCreateOrConnectWithoutUserInput = {
+  create: LoginLogCreateWithoutUserInput;
+  where: LoginLogWhereUniqueInput;
+};
+
+export type LoginLogCreateWithoutUserInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  ipAddress?: InputMaybe<Scalars['String']['input']>;
+  success: Scalars['Boolean']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  userAgent?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type LoginLogListRelationFilter = {
+  every?: InputMaybe<LoginLogWhereInput>;
+  none?: InputMaybe<LoginLogWhereInput>;
+  some?: InputMaybe<LoginLogWhereInput>;
+};
+
+export type LoginLogScalarWhereInput = {
+  AND?: InputMaybe<Array<LoginLogScalarWhereInput>>;
+  NOT?: InputMaybe<Array<LoginLogScalarWhereInput>>;
+  OR?: InputMaybe<Array<LoginLogScalarWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<StringFilter>;
+  ipAddress?: InputMaybe<StringNullableFilter>;
+  success?: InputMaybe<BoolFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  userAgent?: InputMaybe<StringNullableFilter>;
+  userId?: InputMaybe<StringNullableFilter>;
+};
+
+export type LoginLogUpdateManyMutationInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  ipAddress?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  success?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  userAgent?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type LoginLogUpdateManyWithWhereWithoutUserInput = {
+  data: LoginLogUpdateManyMutationInput;
+  where: LoginLogScalarWhereInput;
+};
+
+export type LoginLogUpdateManyWithoutUserNestedInput = {
+  connect?: InputMaybe<Array<LoginLogWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<LoginLogCreateOrConnectWithoutUserInput>>;
+  create?: InputMaybe<Array<LoginLogCreateWithoutUserInput>>;
+  createMany?: InputMaybe<LoginLogCreateManyUserInputEnvelope>;
+  delete?: InputMaybe<Array<LoginLogWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<LoginLogScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<LoginLogWhereUniqueInput>>;
+  set?: InputMaybe<Array<LoginLogWhereUniqueInput>>;
+  update?: InputMaybe<Array<LoginLogUpdateWithWhereUniqueWithoutUserInput>>;
+  updateMany?: InputMaybe<Array<LoginLogUpdateManyWithWhereWithoutUserInput>>;
+  upsert?: InputMaybe<Array<LoginLogUpsertWithWhereUniqueWithoutUserInput>>;
+};
+
+export type LoginLogUpdateWithWhereUniqueWithoutUserInput = {
+  data: LoginLogUpdateWithoutUserInput;
+  where: LoginLogWhereUniqueInput;
+};
+
+export type LoginLogUpdateWithoutUserInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  ipAddress?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  success?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  userAgent?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+};
+
+export type LoginLogUpsertWithWhereUniqueWithoutUserInput = {
+  create: LoginLogCreateWithoutUserInput;
+  update: LoginLogUpdateWithoutUserInput;
+  where: LoginLogWhereUniqueInput;
+};
+
+export type LoginLogWhereInput = {
+  AND?: InputMaybe<Array<LoginLogWhereInput>>;
+  NOT?: InputMaybe<Array<LoginLogWhereInput>>;
+  OR?: InputMaybe<Array<LoginLogWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<StringFilter>;
+  ipAddress?: InputMaybe<StringNullableFilter>;
+  success?: InputMaybe<BoolFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  user?: InputMaybe<UserNullableRelationFilter>;
+  userAgent?: InputMaybe<StringNullableFilter>;
+  userId?: InputMaybe<StringNullableFilter>;
+};
+
+export type LoginLogWhereUniqueInput = {
+  AND?: InputMaybe<Array<LoginLogWhereInput>>;
+  NOT?: InputMaybe<Array<LoginLogWhereInput>>;
+  OR?: InputMaybe<Array<LoginLogWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  ipAddress?: InputMaybe<StringNullableFilter>;
+  success?: InputMaybe<BoolFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  user?: InputMaybe<UserNullableRelationFilter>;
+  userAgent?: InputMaybe<StringNullableFilter>;
+  userId?: InputMaybe<StringNullableFilter>;
+};
+
 export type MeasureUnit = {
   __typename?: 'MeasureUnit';
   FoodPortion?: Maybe<Array<FoodPortion>>;
@@ -2830,6 +3272,10 @@ export type MeasureUnitListRelationFilter = {
   every?: InputMaybe<MeasureUnitWhereInput>;
   none?: InputMaybe<MeasureUnitWhereInput>;
   some?: InputMaybe<MeasureUnitWhereInput>;
+};
+
+export type MeasureUnitOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
 };
 
 export type MeasureUnitRelationFilter = {
@@ -2937,12 +3383,22 @@ export type Mutation = {
   authPasswordResetRequest: Scalars['Boolean']['output'];
   authRefreshToken: AuthRefreshTokenModel;
   authRegister: AuthSessionModel;
+  createQuestion: Question;
+  createQuestionnaire: Questionnaire;
   createRecipe: Recipe;
-  createTableViewDefinition: TableViewDefinition;
+  createSection: Section;
+  createSubmission: Submission;
+  deleteQuestion: Question;
+  deleteSection: Section;
   removeRecipe: Recipe;
-  removeTableViewDefinition: TableViewDefinition;
+  softDeleteQuestionnaire: Questionnaire;
+  submitAllAnswers: Submission;
+  submitAnswer: Answer;
+  updateQuestion: Question;
+  updateQuestionnaire: Questionnaire;
   updateRecipe: Recipe;
-  updateTableViewDefinition: TableViewDefinition;
+  updateSection: Section;
+  updateSubmission: Submission;
 };
 
 
@@ -2971,23 +3427,71 @@ export type MutationAuthRegisterArgs = {
 };
 
 
+export type MutationCreateQuestionArgs = {
+  input: QuestionCreateInput;
+};
+
+
+export type MutationCreateQuestionnaireArgs = {
+  data: QuestionnaireCreateInput;
+};
+
+
 export type MutationCreateRecipeArgs = {
   data: RecipeCreateInput;
 };
 
 
-export type MutationCreateTableViewDefinitionArgs = {
-  createTableViewDefinitionInput: CreateTableViewDefinitionInput;
+export type MutationCreateSectionArgs = {
+  input: SectionCreateInput;
+};
+
+
+export type MutationCreateSubmissionArgs = {
+  input: SubmissionCreateInput;
+};
+
+
+export type MutationDeleteQuestionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteSectionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveRecipeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationSoftDeleteQuestionnaireArgs = {
   id: Scalars['String']['input'];
 };
 
 
-export type MutationRemoveTableViewDefinitionArgs = {
-  id: Scalars['String']['input'];
+export type MutationSubmitAllAnswersArgs = {
+  answers: Array<AnswerCreateManyInput>;
+  submissionId: Scalars['String']['input'];
+};
+
+
+export type MutationSubmitAnswerArgs = {
+  input: AnswerCreateManyInput;
+};
+
+
+export type MutationUpdateQuestionArgs = {
+  id: Scalars['ID']['input'];
+  input: QuestionUpdateInput;
+};
+
+
+export type MutationUpdateQuestionnaireArgs = {
+  id: Scalars['ID']['input'];
+  input: QuestionnaireUpdateInput;
 };
 
 
@@ -2997,8 +3501,15 @@ export type MutationUpdateRecipeArgs = {
 };
 
 
-export type MutationUpdateTableViewDefinitionArgs = {
-  updateTableViewDefinitionInput: UpdateTableViewDefinitionInput;
+export type MutationUpdateSectionArgs = {
+  id: Scalars['ID']['input'];
+  input: SectionUpdateInput;
+};
+
+
+export type MutationUpdateSubmissionArgs = {
+  id: Scalars['String']['input'];
+  input: SubmissionUpdateInput;
 };
 
 export type NestedBoolFilter = {
@@ -3014,6 +3525,17 @@ export type NestedDateTimeFilter = {
   lt?: InputMaybe<Scalars['DateTime']['input']>;
   lte?: InputMaybe<Scalars['DateTime']['input']>;
   not?: InputMaybe<NestedDateTimeFilter>;
+  notIn?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+};
+
+export type NestedDateTimeNullableFilter = {
+  equals?: InputMaybe<Scalars['DateTime']['input']>;
+  gt?: InputMaybe<Scalars['DateTime']['input']>;
+  gte?: InputMaybe<Scalars['DateTime']['input']>;
+  in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  lt?: InputMaybe<Scalars['DateTime']['input']>;
+  lte?: InputMaybe<Scalars['DateTime']['input']>;
+  not?: InputMaybe<NestedDateTimeNullableFilter>;
   notIn?: InputMaybe<Array<Scalars['DateTime']['input']>>;
 };
 
@@ -3101,6 +3623,10 @@ export type NestedStringNullableFilter = {
   not?: InputMaybe<NestedStringNullableFilter>;
   notIn?: InputMaybe<Array<Scalars['String']['input']>>;
   startsWith?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type NullableFloatFieldUpdateOperationsInput = {
@@ -3200,6 +3726,10 @@ export type NutrientListRelationFilter = {
   every?: InputMaybe<NutrientWhereInput>;
   none?: InputMaybe<NutrientWhereInput>;
   some?: InputMaybe<NutrientWhereInput>;
+};
+
+export type NutrientOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
 };
 
 export type NutrientRelationFilter = {
@@ -3407,6 +3937,44 @@ export type NutritionLabelNullableRelationFilter = {
   isNot?: InputMaybe<NutritionLabelWhereInput>;
 };
 
+export type NutritionLabelOrderByWithRelationInput = {
+  addedSugars?: InputMaybe<SortOrderInput>;
+  brandedFood?: InputMaybe<BrandedFoodOrderByWithRelationInput>;
+  brandedFoodId?: InputMaybe<SortOrder>;
+  calcium?: InputMaybe<SortOrderInput>;
+  calories?: InputMaybe<SortOrderInput>;
+  cholesterol?: InputMaybe<SortOrderInput>;
+  dietaryFiber?: InputMaybe<SortOrderInput>;
+  householdServingFullText?: InputMaybe<SortOrderInput>;
+  id?: InputMaybe<SortOrder>;
+  iron?: InputMaybe<SortOrderInput>;
+  percentDailyValueCalcium?: InputMaybe<SortOrderInput>;
+  percentDailyValueCarbohydrate?: InputMaybe<SortOrderInput>;
+  percentDailyValueCholesterol?: InputMaybe<SortOrderInput>;
+  percentDailyValueFat?: InputMaybe<SortOrderInput>;
+  percentDailyValueFiber?: InputMaybe<SortOrderInput>;
+  percentDailyValueIron?: InputMaybe<SortOrderInput>;
+  percentDailyValuePotassium?: InputMaybe<SortOrderInput>;
+  percentDailyValueProtein?: InputMaybe<SortOrderInput>;
+  percentDailyValueSaturatedFat?: InputMaybe<SortOrderInput>;
+  percentDailyValueSodium?: InputMaybe<SortOrderInput>;
+  percentDailyValueVitaminA?: InputMaybe<SortOrderInput>;
+  percentDailyValueVitaminC?: InputMaybe<SortOrderInput>;
+  percentDailyValueVitaminD?: InputMaybe<SortOrderInput>;
+  potassium?: InputMaybe<SortOrderInput>;
+  protein?: InputMaybe<SortOrderInput>;
+  saturatedFat?: InputMaybe<SortOrderInput>;
+  servingsPerContainer?: InputMaybe<SortOrderInput>;
+  sodium?: InputMaybe<SortOrderInput>;
+  totalCarbohydrate?: InputMaybe<SortOrderInput>;
+  totalFat?: InputMaybe<SortOrderInput>;
+  totalSugars?: InputMaybe<SortOrderInput>;
+  transFat?: InputMaybe<SortOrderInput>;
+  vitaminA?: InputMaybe<SortOrderInput>;
+  vitaminC?: InputMaybe<SortOrderInput>;
+  vitaminD?: InputMaybe<SortOrderInput>;
+};
+
 export type NutritionLabelUpdateOneWithoutBrandedFoodNestedInput = {
   connect?: InputMaybe<NutritionLabelWhereUniqueInput>;
   connectOrCreate?: InputMaybe<NutritionLabelCreateOrConnectWithoutBrandedFoodInput>;
@@ -3546,16 +4114,153 @@ export type NutritionLabelWhereUniqueInput = {
   vitaminD?: InputMaybe<FloatNullableFilter>;
 };
 
+export type PasswordResetToken = {
+  __typename?: 'PasswordResetToken';
+  createdAt: Scalars['DateTime']['output'];
+  expiresAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  token: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  user: User;
+  userId: Scalars['String']['output'];
+};
+
+export type PasswordResetTokenCreateManyUserInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  expiresAt: Scalars['DateTime']['input'];
+  id?: InputMaybe<Scalars['String']['input']>;
+  token: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type PasswordResetTokenCreateManyUserInputEnvelope = {
+  data: Array<PasswordResetTokenCreateManyUserInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type PasswordResetTokenCreateNestedManyWithoutUserInput = {
+  connect?: InputMaybe<Array<PasswordResetTokenWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<PasswordResetTokenCreateOrConnectWithoutUserInput>>;
+  create?: InputMaybe<Array<PasswordResetTokenCreateWithoutUserInput>>;
+  createMany?: InputMaybe<PasswordResetTokenCreateManyUserInputEnvelope>;
+};
+
+export type PasswordResetTokenCreateOrConnectWithoutUserInput = {
+  create: PasswordResetTokenCreateWithoutUserInput;
+  where: PasswordResetTokenWhereUniqueInput;
+};
+
+export type PasswordResetTokenCreateWithoutUserInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  expiresAt: Scalars['DateTime']['input'];
+  id?: InputMaybe<Scalars['String']['input']>;
+  token: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type PasswordResetTokenListRelationFilter = {
+  every?: InputMaybe<PasswordResetTokenWhereInput>;
+  none?: InputMaybe<PasswordResetTokenWhereInput>;
+  some?: InputMaybe<PasswordResetTokenWhereInput>;
+};
+
+export type PasswordResetTokenScalarWhereInput = {
+  AND?: InputMaybe<Array<PasswordResetTokenScalarWhereInput>>;
+  NOT?: InputMaybe<Array<PasswordResetTokenScalarWhereInput>>;
+  OR?: InputMaybe<Array<PasswordResetTokenScalarWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  expiresAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<StringFilter>;
+  token?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
+export type PasswordResetTokenUpdateManyMutationInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  expiresAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  token?: InputMaybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type PasswordResetTokenUpdateManyWithWhereWithoutUserInput = {
+  data: PasswordResetTokenUpdateManyMutationInput;
+  where: PasswordResetTokenScalarWhereInput;
+};
+
+export type PasswordResetTokenUpdateManyWithoutUserNestedInput = {
+  connect?: InputMaybe<Array<PasswordResetTokenWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<PasswordResetTokenCreateOrConnectWithoutUserInput>>;
+  create?: InputMaybe<Array<PasswordResetTokenCreateWithoutUserInput>>;
+  createMany?: InputMaybe<PasswordResetTokenCreateManyUserInputEnvelope>;
+  delete?: InputMaybe<Array<PasswordResetTokenWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<PasswordResetTokenScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<PasswordResetTokenWhereUniqueInput>>;
+  set?: InputMaybe<Array<PasswordResetTokenWhereUniqueInput>>;
+  update?: InputMaybe<Array<PasswordResetTokenUpdateWithWhereUniqueWithoutUserInput>>;
+  updateMany?: InputMaybe<Array<PasswordResetTokenUpdateManyWithWhereWithoutUserInput>>;
+  upsert?: InputMaybe<Array<PasswordResetTokenUpsertWithWhereUniqueWithoutUserInput>>;
+};
+
+export type PasswordResetTokenUpdateWithWhereUniqueWithoutUserInput = {
+  data: PasswordResetTokenUpdateWithoutUserInput;
+  where: PasswordResetTokenWhereUniqueInput;
+};
+
+export type PasswordResetTokenUpdateWithoutUserInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  expiresAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  token?: InputMaybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type PasswordResetTokenUpsertWithWhereUniqueWithoutUserInput = {
+  create: PasswordResetTokenCreateWithoutUserInput;
+  update: PasswordResetTokenUpdateWithoutUserInput;
+  where: PasswordResetTokenWhereUniqueInput;
+};
+
+export type PasswordResetTokenWhereInput = {
+  AND?: InputMaybe<Array<PasswordResetTokenWhereInput>>;
+  NOT?: InputMaybe<Array<PasswordResetTokenWhereInput>>;
+  OR?: InputMaybe<Array<PasswordResetTokenWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  expiresAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<StringFilter>;
+  token?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  user?: InputMaybe<UserRelationFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
+export type PasswordResetTokenWhereUniqueInput = {
+  AND?: InputMaybe<Array<PasswordResetTokenWhereInput>>;
+  NOT?: InputMaybe<Array<PasswordResetTokenWhereInput>>;
+  OR?: InputMaybe<Array<PasswordResetTokenWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  expiresAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  token?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  user?: InputMaybe<UserRelationFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
 export type Query = {
   __typename?: 'Query';
   accountInfo: AuthAccountInfoModel;
   food?: Maybe<Food>;
   foodAutosuggest: Array<FoodSearchResult>;
+  paginatedFoods: FoodPaginatedModel;
+  paginatedQuestionnaires: QuestionnairePaginatedModel;
   paginatedRecipes: RecipePaginatedModel;
+  question: Question;
+  questionnaire: Questionnaire;
   recipe: Recipe;
-  recipes: Array<Recipe>;
-  tableViewDefinition: TableViewDefinition;
-  tableViewDefinitions: Array<TableViewDefinition>;
+  section: Section;
+  submission: Submission;
 };
 
 
@@ -3570,28 +4275,51 @@ export type QueryFoodAutosuggestArgs = {
 };
 
 
-export type QueryPaginatedRecipesArgs = {
+export type QueryPaginatedFoodsArgs = {
+  filterInput?: InputMaybe<FoodWhereInput>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
+  sortInput?: InputMaybe<FoodOrderByWithRelationInput>;
 };
 
 
-export type QueryRecipeArgs = {
+export type QueryPaginatedQuestionnairesArgs = {
+  filterInput?: InputMaybe<QuestionnaireWhereInput>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+  sortInput?: InputMaybe<QuestionnaireOrderByWithRelationInput>;
+};
+
+
+export type QueryPaginatedRecipesArgs = {
+  filterInput?: InputMaybe<RecipeWhereInput>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+  sortInput?: InputMaybe<RecipeOrderByWithRelationInput>;
+};
+
+
+export type QueryQuestionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryQuestionnaireArgs = {
   id: Scalars['String']['input'];
 };
 
 
-export type QueryRecipesArgs = {
-  cursor?: InputMaybe<RecipeWhereUniqueInput>;
-  distinct?: InputMaybe<Array<RecipeScalarFieldEnum>>;
-  orderBy?: InputMaybe<Array<RecipeOrderByWithRelationInput>>;
-  skip?: InputMaybe<Scalars['Int']['input']>;
-  take?: InputMaybe<Scalars['Int']['input']>;
-  where?: InputMaybe<RecipeWhereInput>;
+export type QueryRecipeArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
-export type QueryTableViewDefinitionArgs = {
+export type QuerySectionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QuerySubmissionArgs = {
   id: Scalars['String']['input'];
 };
 
@@ -3599,6 +4327,740 @@ export enum QueryMode {
   Default = 'default',
   Insensitive = 'insensitive'
 }
+
+export type Question = {
+  __typename?: 'Question';
+  _count: QuestionCount;
+  answers?: Maybe<Array<Answer>>;
+  config: Scalars['JSON']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  isRequired: Scalars['Boolean']['output'];
+  order: Scalars['Int']['output'];
+  section: Section;
+  sectionId: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+};
+
+export type QuestionCount = {
+  __typename?: 'QuestionCount';
+  answers: Scalars['Int']['output'];
+};
+
+export type QuestionCreateInput = {
+  answers?: InputMaybe<AnswerCreateNestedManyWithoutQuestionInput>;
+  config: Scalars['JSON']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isRequired?: InputMaybe<Scalars['Boolean']['input']>;
+  order: Scalars['Int']['input'];
+  section: SectionCreateNestedOneWithoutQuestionsInput;
+  title: Scalars['String']['input'];
+  type: Scalars['String']['input'];
+};
+
+export type QuestionCreateManySectionInput = {
+  config: Scalars['JSON']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isRequired?: InputMaybe<Scalars['Boolean']['input']>;
+  order: Scalars['Int']['input'];
+  title: Scalars['String']['input'];
+  type: Scalars['String']['input'];
+};
+
+export type QuestionCreateManySectionInputEnvelope = {
+  data: Array<QuestionCreateManySectionInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type QuestionCreateNestedManyWithoutSectionInput = {
+  connect?: InputMaybe<Array<QuestionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<QuestionCreateOrConnectWithoutSectionInput>>;
+  create?: InputMaybe<Array<QuestionCreateWithoutSectionInput>>;
+  createMany?: InputMaybe<QuestionCreateManySectionInputEnvelope>;
+};
+
+export type QuestionCreateNestedOneWithoutAnswersInput = {
+  connect?: InputMaybe<QuestionWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<QuestionCreateOrConnectWithoutAnswersInput>;
+  create?: InputMaybe<QuestionCreateWithoutAnswersInput>;
+};
+
+export type QuestionCreateOrConnectWithoutAnswersInput = {
+  create: QuestionCreateWithoutAnswersInput;
+  where: QuestionWhereUniqueInput;
+};
+
+export type QuestionCreateOrConnectWithoutSectionInput = {
+  create: QuestionCreateWithoutSectionInput;
+  where: QuestionWhereUniqueInput;
+};
+
+export type QuestionCreateWithoutAnswersInput = {
+  config: Scalars['JSON']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isRequired?: InputMaybe<Scalars['Boolean']['input']>;
+  order: Scalars['Int']['input'];
+  section: SectionCreateNestedOneWithoutQuestionsInput;
+  title: Scalars['String']['input'];
+  type: Scalars['String']['input'];
+};
+
+export type QuestionCreateWithoutSectionInput = {
+  answers?: InputMaybe<AnswerCreateNestedManyWithoutQuestionInput>;
+  config: Scalars['JSON']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isRequired?: InputMaybe<Scalars['Boolean']['input']>;
+  order: Scalars['Int']['input'];
+  title: Scalars['String']['input'];
+  type: Scalars['String']['input'];
+};
+
+export type QuestionListRelationFilter = {
+  every?: InputMaybe<QuestionWhereInput>;
+  none?: InputMaybe<QuestionWhereInput>;
+  some?: InputMaybe<QuestionWhereInput>;
+};
+
+export type QuestionRelationFilter = {
+  is?: InputMaybe<QuestionWhereInput>;
+  isNot?: InputMaybe<QuestionWhereInput>;
+};
+
+export type QuestionScalarWhereInput = {
+  AND?: InputMaybe<Array<QuestionScalarWhereInput>>;
+  NOT?: InputMaybe<Array<QuestionScalarWhereInput>>;
+  OR?: InputMaybe<Array<QuestionScalarWhereInput>>;
+  config?: InputMaybe<JsonFilter>;
+  description?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<StringFilter>;
+  isRequired?: InputMaybe<BoolFilter>;
+  order?: InputMaybe<IntFilter>;
+  sectionId?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  type?: InputMaybe<StringFilter>;
+};
+
+export type QuestionUpdateInput = {
+  answers?: InputMaybe<AnswerUpdateManyWithoutQuestionNestedInput>;
+  config?: InputMaybe<Scalars['JSON']['input']>;
+  description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isRequired?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  order?: InputMaybe<IntFieldUpdateOperationsInput>;
+  section?: InputMaybe<SectionUpdateOneRequiredWithoutQuestionsNestedInput>;
+  title?: InputMaybe<StringFieldUpdateOperationsInput>;
+  type?: InputMaybe<StringFieldUpdateOperationsInput>;
+};
+
+export type QuestionUpdateManyMutationInput = {
+  config?: InputMaybe<Scalars['JSON']['input']>;
+  description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isRequired?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  order?: InputMaybe<IntFieldUpdateOperationsInput>;
+  title?: InputMaybe<StringFieldUpdateOperationsInput>;
+  type?: InputMaybe<StringFieldUpdateOperationsInput>;
+};
+
+export type QuestionUpdateManyWithWhereWithoutSectionInput = {
+  data: QuestionUpdateManyMutationInput;
+  where: QuestionScalarWhereInput;
+};
+
+export type QuestionUpdateManyWithoutSectionNestedInput = {
+  connect?: InputMaybe<Array<QuestionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<QuestionCreateOrConnectWithoutSectionInput>>;
+  create?: InputMaybe<Array<QuestionCreateWithoutSectionInput>>;
+  createMany?: InputMaybe<QuestionCreateManySectionInputEnvelope>;
+  delete?: InputMaybe<Array<QuestionWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<QuestionScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<QuestionWhereUniqueInput>>;
+  set?: InputMaybe<Array<QuestionWhereUniqueInput>>;
+  update?: InputMaybe<Array<QuestionUpdateWithWhereUniqueWithoutSectionInput>>;
+  updateMany?: InputMaybe<Array<QuestionUpdateManyWithWhereWithoutSectionInput>>;
+  upsert?: InputMaybe<Array<QuestionUpsertWithWhereUniqueWithoutSectionInput>>;
+};
+
+export type QuestionUpdateOneRequiredWithoutAnswersNestedInput = {
+  connect?: InputMaybe<QuestionWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<QuestionCreateOrConnectWithoutAnswersInput>;
+  create?: InputMaybe<QuestionCreateWithoutAnswersInput>;
+  update?: InputMaybe<QuestionUpdateToOneWithWhereWithoutAnswersInput>;
+  upsert?: InputMaybe<QuestionUpsertWithoutAnswersInput>;
+};
+
+export type QuestionUpdateToOneWithWhereWithoutAnswersInput = {
+  data: QuestionUpdateWithoutAnswersInput;
+  where?: InputMaybe<QuestionWhereInput>;
+};
+
+export type QuestionUpdateWithWhereUniqueWithoutSectionInput = {
+  data: QuestionUpdateWithoutSectionInput;
+  where: QuestionWhereUniqueInput;
+};
+
+export type QuestionUpdateWithoutAnswersInput = {
+  config?: InputMaybe<Scalars['JSON']['input']>;
+  description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isRequired?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  order?: InputMaybe<IntFieldUpdateOperationsInput>;
+  section?: InputMaybe<SectionUpdateOneRequiredWithoutQuestionsNestedInput>;
+  title?: InputMaybe<StringFieldUpdateOperationsInput>;
+  type?: InputMaybe<StringFieldUpdateOperationsInput>;
+};
+
+export type QuestionUpdateWithoutSectionInput = {
+  answers?: InputMaybe<AnswerUpdateManyWithoutQuestionNestedInput>;
+  config?: InputMaybe<Scalars['JSON']['input']>;
+  description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isRequired?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  order?: InputMaybe<IntFieldUpdateOperationsInput>;
+  title?: InputMaybe<StringFieldUpdateOperationsInput>;
+  type?: InputMaybe<StringFieldUpdateOperationsInput>;
+};
+
+export type QuestionUpsertWithWhereUniqueWithoutSectionInput = {
+  create: QuestionCreateWithoutSectionInput;
+  update: QuestionUpdateWithoutSectionInput;
+  where: QuestionWhereUniqueInput;
+};
+
+export type QuestionUpsertWithoutAnswersInput = {
+  create: QuestionCreateWithoutAnswersInput;
+  update: QuestionUpdateWithoutAnswersInput;
+  where?: InputMaybe<QuestionWhereInput>;
+};
+
+export type QuestionWhereInput = {
+  AND?: InputMaybe<Array<QuestionWhereInput>>;
+  NOT?: InputMaybe<Array<QuestionWhereInput>>;
+  OR?: InputMaybe<Array<QuestionWhereInput>>;
+  answers?: InputMaybe<AnswerListRelationFilter>;
+  config?: InputMaybe<JsonFilter>;
+  description?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<StringFilter>;
+  isRequired?: InputMaybe<BoolFilter>;
+  order?: InputMaybe<IntFilter>;
+  section?: InputMaybe<SectionRelationFilter>;
+  sectionId?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  type?: InputMaybe<StringFilter>;
+};
+
+export type QuestionWhereUniqueInput = {
+  AND?: InputMaybe<Array<QuestionWhereInput>>;
+  NOT?: InputMaybe<Array<QuestionWhereInput>>;
+  OR?: InputMaybe<Array<QuestionWhereInput>>;
+  answers?: InputMaybe<AnswerListRelationFilter>;
+  config?: InputMaybe<JsonFilter>;
+  description?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isRequired?: InputMaybe<BoolFilter>;
+  order?: InputMaybe<IntFilter>;
+  section?: InputMaybe<SectionRelationFilter>;
+  sectionId?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+  type?: InputMaybe<StringFilter>;
+};
+
+export type Questionnaire = {
+  __typename?: 'Questionnaire';
+  _count: QuestionnaireCount;
+  createdAt: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  isPublic: Scalars['Boolean']['output'];
+  latestVersion: QuestionnaireVersion;
+  submissions?: Maybe<Array<Submission>>;
+  tenant?: Maybe<Tenant>;
+  tenantId?: Maybe<Scalars['String']['output']>;
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  versions?: Maybe<Array<QuestionnaireVersion>>;
+};
+
+export type QuestionnaireCount = {
+  __typename?: 'QuestionnaireCount';
+  submissions: Scalars['Int']['output'];
+  versions: Scalars['Int']['output'];
+};
+
+export type QuestionnaireCreateInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isPublic?: InputMaybe<Scalars['Boolean']['input']>;
+  submissions?: InputMaybe<SubmissionCreateNestedManyWithoutQuestionnaireInput>;
+  tenant?: InputMaybe<TenantCreateNestedOneWithoutQuestionnairesInput>;
+  title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  versions?: InputMaybe<QuestionnaireVersionCreateNestedManyWithoutQuestionnaireInput>;
+};
+
+export type QuestionnaireCreateNestedOneWithoutSubmissionsInput = {
+  connect?: InputMaybe<QuestionnaireWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<QuestionnaireCreateOrConnectWithoutSubmissionsInput>;
+  create?: InputMaybe<QuestionnaireCreateWithoutSubmissionsInput>;
+};
+
+export type QuestionnaireCreateNestedOneWithoutVersionsInput = {
+  connect?: InputMaybe<QuestionnaireWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<QuestionnaireCreateOrConnectWithoutVersionsInput>;
+  create?: InputMaybe<QuestionnaireCreateWithoutVersionsInput>;
+};
+
+export type QuestionnaireCreateOrConnectWithoutSubmissionsInput = {
+  create: QuestionnaireCreateWithoutSubmissionsInput;
+  where: QuestionnaireWhereUniqueInput;
+};
+
+export type QuestionnaireCreateOrConnectWithoutVersionsInput = {
+  create: QuestionnaireCreateWithoutVersionsInput;
+  where: QuestionnaireWhereUniqueInput;
+};
+
+export type QuestionnaireCreateWithoutSubmissionsInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isPublic?: InputMaybe<Scalars['Boolean']['input']>;
+  tenant?: InputMaybe<TenantCreateNestedOneWithoutQuestionnairesInput>;
+  title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  versions?: InputMaybe<QuestionnaireVersionCreateNestedManyWithoutQuestionnaireInput>;
+};
+
+export type QuestionnaireCreateWithoutVersionsInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isPublic?: InputMaybe<Scalars['Boolean']['input']>;
+  submissions?: InputMaybe<SubmissionCreateNestedManyWithoutQuestionnaireInput>;
+  tenant?: InputMaybe<TenantCreateNestedOneWithoutQuestionnairesInput>;
+  title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type QuestionnaireListRelationFilter = {
+  every?: InputMaybe<QuestionnaireWhereInput>;
+  none?: InputMaybe<QuestionnaireWhereInput>;
+  some?: InputMaybe<QuestionnaireWhereInput>;
+};
+
+export type QuestionnaireMeta = {
+  __typename?: 'QuestionnaireMeta';
+  currentPage: Scalars['Int']['output'];
+  lastPage: Scalars['Int']['output'];
+  next?: Maybe<Scalars['Int']['output']>;
+  perPage: Scalars['Int']['output'];
+  prev?: Maybe<Scalars['Int']['output']>;
+  total: Scalars['Int']['output'];
+};
+
+export type QuestionnaireOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
+};
+
+export type QuestionnaireOrderByWithRelationInput = {
+  createdAt?: InputMaybe<SortOrder>;
+  description?: InputMaybe<SortOrderInput>;
+  id?: InputMaybe<SortOrder>;
+  isPublic?: InputMaybe<SortOrder>;
+  submissions?: InputMaybe<SubmissionOrderByRelationAggregateInput>;
+  tenant?: InputMaybe<TenantOrderByWithRelationInput>;
+  tenantId?: InputMaybe<SortOrderInput>;
+  title?: InputMaybe<SortOrder>;
+  updatedAt?: InputMaybe<SortOrder>;
+  versions?: InputMaybe<QuestionnaireVersionOrderByRelationAggregateInput>;
+};
+
+export type QuestionnairePaginatedModel = {
+  __typename?: 'QuestionnairePaginatedModel';
+  data: Array<Questionnaire>;
+  meta: QuestionnaireMeta;
+};
+
+export type QuestionnaireRelationFilter = {
+  is?: InputMaybe<QuestionnaireWhereInput>;
+  isNot?: InputMaybe<QuestionnaireWhereInput>;
+};
+
+export type QuestionnaireUpdateInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isPublic?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  submissions?: InputMaybe<SubmissionUpdateManyWithoutQuestionnaireNestedInput>;
+  tenant?: InputMaybe<TenantUpdateOneWithoutQuestionnairesNestedInput>;
+  title?: InputMaybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  versions?: InputMaybe<QuestionnaireVersionUpdateManyWithoutQuestionnaireNestedInput>;
+};
+
+export type QuestionnaireUpdateOneRequiredWithoutSubmissionsNestedInput = {
+  connect?: InputMaybe<QuestionnaireWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<QuestionnaireCreateOrConnectWithoutSubmissionsInput>;
+  create?: InputMaybe<QuestionnaireCreateWithoutSubmissionsInput>;
+  update?: InputMaybe<QuestionnaireUpdateToOneWithWhereWithoutSubmissionsInput>;
+  upsert?: InputMaybe<QuestionnaireUpsertWithoutSubmissionsInput>;
+};
+
+export type QuestionnaireUpdateOneRequiredWithoutVersionsNestedInput = {
+  connect?: InputMaybe<QuestionnaireWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<QuestionnaireCreateOrConnectWithoutVersionsInput>;
+  create?: InputMaybe<QuestionnaireCreateWithoutVersionsInput>;
+  update?: InputMaybe<QuestionnaireUpdateToOneWithWhereWithoutVersionsInput>;
+  upsert?: InputMaybe<QuestionnaireUpsertWithoutVersionsInput>;
+};
+
+export type QuestionnaireUpdateToOneWithWhereWithoutSubmissionsInput = {
+  data: QuestionnaireUpdateWithoutSubmissionsInput;
+  where?: InputMaybe<QuestionnaireWhereInput>;
+};
+
+export type QuestionnaireUpdateToOneWithWhereWithoutVersionsInput = {
+  data: QuestionnaireUpdateWithoutVersionsInput;
+  where?: InputMaybe<QuestionnaireWhereInput>;
+};
+
+export type QuestionnaireUpdateWithoutSubmissionsInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isPublic?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  tenant?: InputMaybe<TenantUpdateOneWithoutQuestionnairesNestedInput>;
+  title?: InputMaybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  versions?: InputMaybe<QuestionnaireVersionUpdateManyWithoutQuestionnaireNestedInput>;
+};
+
+export type QuestionnaireUpdateWithoutVersionsInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isPublic?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  submissions?: InputMaybe<SubmissionUpdateManyWithoutQuestionnaireNestedInput>;
+  tenant?: InputMaybe<TenantUpdateOneWithoutQuestionnairesNestedInput>;
+  title?: InputMaybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type QuestionnaireUpsertWithoutSubmissionsInput = {
+  create: QuestionnaireCreateWithoutSubmissionsInput;
+  update: QuestionnaireUpdateWithoutSubmissionsInput;
+  where?: InputMaybe<QuestionnaireWhereInput>;
+};
+
+export type QuestionnaireUpsertWithoutVersionsInput = {
+  create: QuestionnaireCreateWithoutVersionsInput;
+  update: QuestionnaireUpdateWithoutVersionsInput;
+  where?: InputMaybe<QuestionnaireWhereInput>;
+};
+
+export type QuestionnaireVersion = {
+  __typename?: 'QuestionnaireVersion';
+  _count: QuestionnaireVersionCount;
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  isActive: Scalars['Boolean']['output'];
+  questionnaire: Questionnaire;
+  questionnaireId: Scalars['String']['output'];
+  sections?: Maybe<Array<Section>>;
+  submissions?: Maybe<Array<Submission>>;
+  updatedAt: Scalars['DateTime']['output'];
+  versionNumber: Scalars['Int']['output'];
+};
+
+export type QuestionnaireVersionCount = {
+  __typename?: 'QuestionnaireVersionCount';
+  sections: Scalars['Int']['output'];
+  submissions: Scalars['Int']['output'];
+};
+
+export type QuestionnaireVersionCreateManyQuestionnaireInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  versionNumber: Scalars['Int']['input'];
+};
+
+export type QuestionnaireVersionCreateManyQuestionnaireInputEnvelope = {
+  data: Array<QuestionnaireVersionCreateManyQuestionnaireInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type QuestionnaireVersionCreateNestedManyWithoutQuestionnaireInput = {
+  connect?: InputMaybe<Array<QuestionnaireVersionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<QuestionnaireVersionCreateOrConnectWithoutQuestionnaireInput>>;
+  create?: InputMaybe<Array<QuestionnaireVersionCreateWithoutQuestionnaireInput>>;
+  createMany?: InputMaybe<QuestionnaireVersionCreateManyQuestionnaireInputEnvelope>;
+};
+
+export type QuestionnaireVersionCreateNestedOneWithoutSectionsInput = {
+  connect?: InputMaybe<QuestionnaireVersionWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<QuestionnaireVersionCreateOrConnectWithoutSectionsInput>;
+  create?: InputMaybe<QuestionnaireVersionCreateWithoutSectionsInput>;
+};
+
+export type QuestionnaireVersionCreateNestedOneWithoutSubmissionsInput = {
+  connect?: InputMaybe<QuestionnaireVersionWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<QuestionnaireVersionCreateOrConnectWithoutSubmissionsInput>;
+  create?: InputMaybe<QuestionnaireVersionCreateWithoutSubmissionsInput>;
+};
+
+export type QuestionnaireVersionCreateOrConnectWithoutQuestionnaireInput = {
+  create: QuestionnaireVersionCreateWithoutQuestionnaireInput;
+  where: QuestionnaireVersionWhereUniqueInput;
+};
+
+export type QuestionnaireVersionCreateOrConnectWithoutSectionsInput = {
+  create: QuestionnaireVersionCreateWithoutSectionsInput;
+  where: QuestionnaireVersionWhereUniqueInput;
+};
+
+export type QuestionnaireVersionCreateOrConnectWithoutSubmissionsInput = {
+  create: QuestionnaireVersionCreateWithoutSubmissionsInput;
+  where: QuestionnaireVersionWhereUniqueInput;
+};
+
+export type QuestionnaireVersionCreateWithoutQuestionnaireInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  sections?: InputMaybe<SectionCreateNestedManyWithoutQuestionnaireVersionInput>;
+  submissions?: InputMaybe<SubmissionCreateNestedManyWithoutQuestionnaireVersionInput>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  versionNumber: Scalars['Int']['input'];
+};
+
+export type QuestionnaireVersionCreateWithoutSectionsInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  questionnaire: QuestionnaireCreateNestedOneWithoutVersionsInput;
+  submissions?: InputMaybe<SubmissionCreateNestedManyWithoutQuestionnaireVersionInput>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  versionNumber: Scalars['Int']['input'];
+};
+
+export type QuestionnaireVersionCreateWithoutSubmissionsInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  questionnaire: QuestionnaireCreateNestedOneWithoutVersionsInput;
+  sections?: InputMaybe<SectionCreateNestedManyWithoutQuestionnaireVersionInput>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  versionNumber: Scalars['Int']['input'];
+};
+
+export type QuestionnaireVersionListRelationFilter = {
+  every?: InputMaybe<QuestionnaireVersionWhereInput>;
+  none?: InputMaybe<QuestionnaireVersionWhereInput>;
+  some?: InputMaybe<QuestionnaireVersionWhereInput>;
+};
+
+export type QuestionnaireVersionOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
+};
+
+export type QuestionnaireVersionQuestionnaireIdVersionNumberCompoundUniqueInput = {
+  questionnaireId: Scalars['String']['input'];
+  versionNumber: Scalars['Int']['input'];
+};
+
+export type QuestionnaireVersionRelationFilter = {
+  is?: InputMaybe<QuestionnaireVersionWhereInput>;
+  isNot?: InputMaybe<QuestionnaireVersionWhereInput>;
+};
+
+export type QuestionnaireVersionScalarWhereInput = {
+  AND?: InputMaybe<Array<QuestionnaireVersionScalarWhereInput>>;
+  NOT?: InputMaybe<Array<QuestionnaireVersionScalarWhereInput>>;
+  OR?: InputMaybe<Array<QuestionnaireVersionScalarWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<StringFilter>;
+  isActive?: InputMaybe<BoolFilter>;
+  questionnaireId?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  versionNumber?: InputMaybe<IntFilter>;
+};
+
+export type QuestionnaireVersionUpdateManyMutationInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isActive?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  versionNumber?: InputMaybe<IntFieldUpdateOperationsInput>;
+};
+
+export type QuestionnaireVersionUpdateManyWithWhereWithoutQuestionnaireInput = {
+  data: QuestionnaireVersionUpdateManyMutationInput;
+  where: QuestionnaireVersionScalarWhereInput;
+};
+
+export type QuestionnaireVersionUpdateManyWithoutQuestionnaireNestedInput = {
+  connect?: InputMaybe<Array<QuestionnaireVersionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<QuestionnaireVersionCreateOrConnectWithoutQuestionnaireInput>>;
+  create?: InputMaybe<Array<QuestionnaireVersionCreateWithoutQuestionnaireInput>>;
+  createMany?: InputMaybe<QuestionnaireVersionCreateManyQuestionnaireInputEnvelope>;
+  delete?: InputMaybe<Array<QuestionnaireVersionWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<QuestionnaireVersionScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<QuestionnaireVersionWhereUniqueInput>>;
+  set?: InputMaybe<Array<QuestionnaireVersionWhereUniqueInput>>;
+  update?: InputMaybe<Array<QuestionnaireVersionUpdateWithWhereUniqueWithoutQuestionnaireInput>>;
+  updateMany?: InputMaybe<Array<QuestionnaireVersionUpdateManyWithWhereWithoutQuestionnaireInput>>;
+  upsert?: InputMaybe<Array<QuestionnaireVersionUpsertWithWhereUniqueWithoutQuestionnaireInput>>;
+};
+
+export type QuestionnaireVersionUpdateOneRequiredWithoutSectionsNestedInput = {
+  connect?: InputMaybe<QuestionnaireVersionWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<QuestionnaireVersionCreateOrConnectWithoutSectionsInput>;
+  create?: InputMaybe<QuestionnaireVersionCreateWithoutSectionsInput>;
+  update?: InputMaybe<QuestionnaireVersionUpdateToOneWithWhereWithoutSectionsInput>;
+  upsert?: InputMaybe<QuestionnaireVersionUpsertWithoutSectionsInput>;
+};
+
+export type QuestionnaireVersionUpdateOneRequiredWithoutSubmissionsNestedInput = {
+  connect?: InputMaybe<QuestionnaireVersionWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<QuestionnaireVersionCreateOrConnectWithoutSubmissionsInput>;
+  create?: InputMaybe<QuestionnaireVersionCreateWithoutSubmissionsInput>;
+  update?: InputMaybe<QuestionnaireVersionUpdateToOneWithWhereWithoutSubmissionsInput>;
+  upsert?: InputMaybe<QuestionnaireVersionUpsertWithoutSubmissionsInput>;
+};
+
+export type QuestionnaireVersionUpdateToOneWithWhereWithoutSectionsInput = {
+  data: QuestionnaireVersionUpdateWithoutSectionsInput;
+  where?: InputMaybe<QuestionnaireVersionWhereInput>;
+};
+
+export type QuestionnaireVersionUpdateToOneWithWhereWithoutSubmissionsInput = {
+  data: QuestionnaireVersionUpdateWithoutSubmissionsInput;
+  where?: InputMaybe<QuestionnaireVersionWhereInput>;
+};
+
+export type QuestionnaireVersionUpdateWithWhereUniqueWithoutQuestionnaireInput = {
+  data: QuestionnaireVersionUpdateWithoutQuestionnaireInput;
+  where: QuestionnaireVersionWhereUniqueInput;
+};
+
+export type QuestionnaireVersionUpdateWithoutQuestionnaireInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isActive?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  sections?: InputMaybe<SectionUpdateManyWithoutQuestionnaireVersionNestedInput>;
+  submissions?: InputMaybe<SubmissionUpdateManyWithoutQuestionnaireVersionNestedInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  versionNumber?: InputMaybe<IntFieldUpdateOperationsInput>;
+};
+
+export type QuestionnaireVersionUpdateWithoutSectionsInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isActive?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  questionnaire?: InputMaybe<QuestionnaireUpdateOneRequiredWithoutVersionsNestedInput>;
+  submissions?: InputMaybe<SubmissionUpdateManyWithoutQuestionnaireVersionNestedInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  versionNumber?: InputMaybe<IntFieldUpdateOperationsInput>;
+};
+
+export type QuestionnaireVersionUpdateWithoutSubmissionsInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isActive?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  questionnaire?: InputMaybe<QuestionnaireUpdateOneRequiredWithoutVersionsNestedInput>;
+  sections?: InputMaybe<SectionUpdateManyWithoutQuestionnaireVersionNestedInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  versionNumber?: InputMaybe<IntFieldUpdateOperationsInput>;
+};
+
+export type QuestionnaireVersionUpsertWithWhereUniqueWithoutQuestionnaireInput = {
+  create: QuestionnaireVersionCreateWithoutQuestionnaireInput;
+  update: QuestionnaireVersionUpdateWithoutQuestionnaireInput;
+  where: QuestionnaireVersionWhereUniqueInput;
+};
+
+export type QuestionnaireVersionUpsertWithoutSectionsInput = {
+  create: QuestionnaireVersionCreateWithoutSectionsInput;
+  update: QuestionnaireVersionUpdateWithoutSectionsInput;
+  where?: InputMaybe<QuestionnaireVersionWhereInput>;
+};
+
+export type QuestionnaireVersionUpsertWithoutSubmissionsInput = {
+  create: QuestionnaireVersionCreateWithoutSubmissionsInput;
+  update: QuestionnaireVersionUpdateWithoutSubmissionsInput;
+  where?: InputMaybe<QuestionnaireVersionWhereInput>;
+};
+
+export type QuestionnaireVersionWhereInput = {
+  AND?: InputMaybe<Array<QuestionnaireVersionWhereInput>>;
+  NOT?: InputMaybe<Array<QuestionnaireVersionWhereInput>>;
+  OR?: InputMaybe<Array<QuestionnaireVersionWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<StringFilter>;
+  isActive?: InputMaybe<BoolFilter>;
+  questionnaire?: InputMaybe<QuestionnaireRelationFilter>;
+  questionnaireId?: InputMaybe<StringFilter>;
+  sections?: InputMaybe<SectionListRelationFilter>;
+  submissions?: InputMaybe<SubmissionListRelationFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  versionNumber?: InputMaybe<IntFilter>;
+};
+
+export type QuestionnaireVersionWhereUniqueInput = {
+  AND?: InputMaybe<Array<QuestionnaireVersionWhereInput>>;
+  NOT?: InputMaybe<Array<QuestionnaireVersionWhereInput>>;
+  OR?: InputMaybe<Array<QuestionnaireVersionWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isActive?: InputMaybe<BoolFilter>;
+  questionnaire?: InputMaybe<QuestionnaireRelationFilter>;
+  questionnaireId?: InputMaybe<StringFilter>;
+  questionnaireId_versionNumber?: InputMaybe<QuestionnaireVersionQuestionnaireIdVersionNumberCompoundUniqueInput>;
+  sections?: InputMaybe<SectionListRelationFilter>;
+  submissions?: InputMaybe<SubmissionListRelationFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  versionNumber?: InputMaybe<IntFilter>;
+};
+
+export type QuestionnaireWhereInput = {
+  AND?: InputMaybe<Array<QuestionnaireWhereInput>>;
+  NOT?: InputMaybe<Array<QuestionnaireWhereInput>>;
+  OR?: InputMaybe<Array<QuestionnaireWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  description?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<StringFilter>;
+  isPublic?: InputMaybe<BoolFilter>;
+  submissions?: InputMaybe<SubmissionListRelationFilter>;
+  tenant?: InputMaybe<TenantNullableRelationFilter>;
+  tenantId?: InputMaybe<StringNullableFilter>;
+  title?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  versions?: InputMaybe<QuestionnaireVersionListRelationFilter>;
+};
+
+export type QuestionnaireWhereUniqueInput = {
+  AND?: InputMaybe<Array<QuestionnaireWhereInput>>;
+  NOT?: InputMaybe<Array<QuestionnaireWhereInput>>;
+  OR?: InputMaybe<Array<QuestionnaireWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  description?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isPublic?: InputMaybe<BoolFilter>;
+  submissions?: InputMaybe<SubmissionListRelationFilter>;
+  tenant?: InputMaybe<TenantNullableRelationFilter>;
+  tenantId?: InputMaybe<StringNullableFilter>;
+  title?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  versions?: InputMaybe<QuestionnaireVersionListRelationFilter>;
+};
 
 export type Recipe = {
   __typename?: 'Recipe';
@@ -4698,21 +6160,6 @@ export type RecipeRelationFilter = {
   isNot?: InputMaybe<RecipeWhereInput>;
 };
 
-export enum RecipeScalarFieldEnum {
-  CookingTime = 'cookingTime',
-  CreatedAt = 'createdAt',
-  Description = 'description',
-  Id = 'id',
-  PrepTime = 'prepTime',
-  ServingsMax = 'servingsMax',
-  ServingsMin = 'servingsMin',
-  ServingsText = 'servingsText',
-  SourceId = 'sourceId',
-  SourceUrl = 'sourceUrl',
-  Title = 'title',
-  UpdatedAt = 'updatedAt'
-}
-
 export type RecipeUpdateInput = {
   categories?: InputMaybe<RecipeCategoryUpdateManyWithoutRecipesNestedInput>;
   cookingTime?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
@@ -4865,6 +6312,169 @@ export type RecipeWhereUniqueInput = {
   updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
+export type RefreshToken = {
+  __typename?: 'RefreshToken';
+  createdAt: Scalars['DateTime']['output'];
+  expiresAt: Scalars['DateTime']['output'];
+  familyId: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  sessionId: Scalars['String']['output'];
+  token: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  used: Scalars['Boolean']['output'];
+  user: User;
+  userId: Scalars['String']['output'];
+};
+
+export type RefreshTokenCreateManyUserInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  expiresAt: Scalars['DateTime']['input'];
+  familyId: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['String']['input']>;
+  sessionId: Scalars['String']['input'];
+  token: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  used?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type RefreshTokenCreateManyUserInputEnvelope = {
+  data: Array<RefreshTokenCreateManyUserInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type RefreshTokenCreateNestedManyWithoutUserInput = {
+  connect?: InputMaybe<Array<RefreshTokenWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<RefreshTokenCreateOrConnectWithoutUserInput>>;
+  create?: InputMaybe<Array<RefreshTokenCreateWithoutUserInput>>;
+  createMany?: InputMaybe<RefreshTokenCreateManyUserInputEnvelope>;
+};
+
+export type RefreshTokenCreateOrConnectWithoutUserInput = {
+  create: RefreshTokenCreateWithoutUserInput;
+  where: RefreshTokenWhereUniqueInput;
+};
+
+export type RefreshTokenCreateWithoutUserInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  expiresAt: Scalars['DateTime']['input'];
+  familyId: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['String']['input']>;
+  sessionId: Scalars['String']['input'];
+  token: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  used?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type RefreshTokenListRelationFilter = {
+  every?: InputMaybe<RefreshTokenWhereInput>;
+  none?: InputMaybe<RefreshTokenWhereInput>;
+  some?: InputMaybe<RefreshTokenWhereInput>;
+};
+
+export type RefreshTokenScalarWhereInput = {
+  AND?: InputMaybe<Array<RefreshTokenScalarWhereInput>>;
+  NOT?: InputMaybe<Array<RefreshTokenScalarWhereInput>>;
+  OR?: InputMaybe<Array<RefreshTokenScalarWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  expiresAt?: InputMaybe<DateTimeFilter>;
+  familyId?: InputMaybe<StringFilter>;
+  id?: InputMaybe<StringFilter>;
+  sessionId?: InputMaybe<StringFilter>;
+  token?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  used?: InputMaybe<BoolFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
+export type RefreshTokenUpdateManyMutationInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  expiresAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  familyId?: InputMaybe<StringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  sessionId?: InputMaybe<StringFieldUpdateOperationsInput>;
+  token?: InputMaybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  used?: InputMaybe<BoolFieldUpdateOperationsInput>;
+};
+
+export type RefreshTokenUpdateManyWithWhereWithoutUserInput = {
+  data: RefreshTokenUpdateManyMutationInput;
+  where: RefreshTokenScalarWhereInput;
+};
+
+export type RefreshTokenUpdateManyWithoutUserNestedInput = {
+  connect?: InputMaybe<Array<RefreshTokenWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<RefreshTokenCreateOrConnectWithoutUserInput>>;
+  create?: InputMaybe<Array<RefreshTokenCreateWithoutUserInput>>;
+  createMany?: InputMaybe<RefreshTokenCreateManyUserInputEnvelope>;
+  delete?: InputMaybe<Array<RefreshTokenWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<RefreshTokenScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<RefreshTokenWhereUniqueInput>>;
+  set?: InputMaybe<Array<RefreshTokenWhereUniqueInput>>;
+  update?: InputMaybe<Array<RefreshTokenUpdateWithWhereUniqueWithoutUserInput>>;
+  updateMany?: InputMaybe<Array<RefreshTokenUpdateManyWithWhereWithoutUserInput>>;
+  upsert?: InputMaybe<Array<RefreshTokenUpsertWithWhereUniqueWithoutUserInput>>;
+};
+
+export type RefreshTokenUpdateWithWhereUniqueWithoutUserInput = {
+  data: RefreshTokenUpdateWithoutUserInput;
+  where: RefreshTokenWhereUniqueInput;
+};
+
+export type RefreshTokenUpdateWithoutUserInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  expiresAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  familyId?: InputMaybe<StringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  sessionId?: InputMaybe<StringFieldUpdateOperationsInput>;
+  token?: InputMaybe<StringFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  used?: InputMaybe<BoolFieldUpdateOperationsInput>;
+};
+
+export type RefreshTokenUpsertWithWhereUniqueWithoutUserInput = {
+  create: RefreshTokenCreateWithoutUserInput;
+  update: RefreshTokenUpdateWithoutUserInput;
+  where: RefreshTokenWhereUniqueInput;
+};
+
+export type RefreshTokenWhereInput = {
+  AND?: InputMaybe<Array<RefreshTokenWhereInput>>;
+  NOT?: InputMaybe<Array<RefreshTokenWhereInput>>;
+  OR?: InputMaybe<Array<RefreshTokenWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  expiresAt?: InputMaybe<DateTimeFilter>;
+  familyId?: InputMaybe<StringFilter>;
+  id?: InputMaybe<StringFilter>;
+  sessionId?: InputMaybe<StringFilter>;
+  token?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  used?: InputMaybe<BoolFilter>;
+  user?: InputMaybe<UserRelationFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
+export type RefreshTokenWhereUniqueInput = {
+  AND?: InputMaybe<Array<RefreshTokenWhereInput>>;
+  NOT?: InputMaybe<Array<RefreshTokenWhereInput>>;
+  OR?: InputMaybe<Array<RefreshTokenWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  expiresAt?: InputMaybe<DateTimeFilter>;
+  familyId?: InputMaybe<StringFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  sessionId?: InputMaybe<StringFilter>;
+  token?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  used?: InputMaybe<BoolFilter>;
+  user?: InputMaybe<UserRelationFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
+export enum Roles {
+  Superadmin = 'SUPERADMIN',
+  User = 'USER'
+}
+
 export type Season = {
   __typename?: 'Season';
   _count: SeasonCount;
@@ -4969,6 +6579,354 @@ export type SeasonWhereUniqueInput = {
   recipes?: InputMaybe<RecipeListRelationFilter>;
 };
 
+export type Section = {
+  __typename?: 'Section';
+  _count: SectionCount;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  order: Scalars['Int']['output'];
+  questionnaireVersion: QuestionnaireVersion;
+  questionnaireVersionId: Scalars['String']['output'];
+  questions?: Maybe<Array<Question>>;
+  title: Scalars['String']['output'];
+};
+
+export type SectionCount = {
+  __typename?: 'SectionCount';
+  questions: Scalars['Int']['output'];
+};
+
+export type SectionCreateInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  order: Scalars['Int']['input'];
+  questionnaireVersion: QuestionnaireVersionCreateNestedOneWithoutSectionsInput;
+  questions?: InputMaybe<QuestionCreateNestedManyWithoutSectionInput>;
+  title: Scalars['String']['input'];
+};
+
+export type SectionCreateManyQuestionnaireVersionInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  order: Scalars['Int']['input'];
+  title: Scalars['String']['input'];
+};
+
+export type SectionCreateManyQuestionnaireVersionInputEnvelope = {
+  data: Array<SectionCreateManyQuestionnaireVersionInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type SectionCreateNestedManyWithoutQuestionnaireVersionInput = {
+  connect?: InputMaybe<Array<SectionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<SectionCreateOrConnectWithoutQuestionnaireVersionInput>>;
+  create?: InputMaybe<Array<SectionCreateWithoutQuestionnaireVersionInput>>;
+  createMany?: InputMaybe<SectionCreateManyQuestionnaireVersionInputEnvelope>;
+};
+
+export type SectionCreateNestedOneWithoutQuestionsInput = {
+  connect?: InputMaybe<SectionWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<SectionCreateOrConnectWithoutQuestionsInput>;
+  create?: InputMaybe<SectionCreateWithoutQuestionsInput>;
+};
+
+export type SectionCreateOrConnectWithoutQuestionnaireVersionInput = {
+  create: SectionCreateWithoutQuestionnaireVersionInput;
+  where: SectionWhereUniqueInput;
+};
+
+export type SectionCreateOrConnectWithoutQuestionsInput = {
+  create: SectionCreateWithoutQuestionsInput;
+  where: SectionWhereUniqueInput;
+};
+
+export type SectionCreateWithoutQuestionnaireVersionInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  order: Scalars['Int']['input'];
+  questions?: InputMaybe<QuestionCreateNestedManyWithoutSectionInput>;
+  title: Scalars['String']['input'];
+};
+
+export type SectionCreateWithoutQuestionsInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  order: Scalars['Int']['input'];
+  questionnaireVersion: QuestionnaireVersionCreateNestedOneWithoutSectionsInput;
+  title: Scalars['String']['input'];
+};
+
+export type SectionListRelationFilter = {
+  every?: InputMaybe<SectionWhereInput>;
+  none?: InputMaybe<SectionWhereInput>;
+  some?: InputMaybe<SectionWhereInput>;
+};
+
+export type SectionRelationFilter = {
+  is?: InputMaybe<SectionWhereInput>;
+  isNot?: InputMaybe<SectionWhereInput>;
+};
+
+export type SectionScalarWhereInput = {
+  AND?: InputMaybe<Array<SectionScalarWhereInput>>;
+  NOT?: InputMaybe<Array<SectionScalarWhereInput>>;
+  OR?: InputMaybe<Array<SectionScalarWhereInput>>;
+  description?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<StringFilter>;
+  order?: InputMaybe<IntFilter>;
+  questionnaireVersionId?: InputMaybe<StringFilter>;
+  title?: InputMaybe<StringFilter>;
+};
+
+export type SectionUpdateInput = {
+  description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  order?: InputMaybe<IntFieldUpdateOperationsInput>;
+  questionnaireVersion?: InputMaybe<QuestionnaireVersionUpdateOneRequiredWithoutSectionsNestedInput>;
+  questions?: InputMaybe<QuestionUpdateManyWithoutSectionNestedInput>;
+  title?: InputMaybe<StringFieldUpdateOperationsInput>;
+};
+
+export type SectionUpdateManyMutationInput = {
+  description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  order?: InputMaybe<IntFieldUpdateOperationsInput>;
+  title?: InputMaybe<StringFieldUpdateOperationsInput>;
+};
+
+export type SectionUpdateManyWithWhereWithoutQuestionnaireVersionInput = {
+  data: SectionUpdateManyMutationInput;
+  where: SectionScalarWhereInput;
+};
+
+export type SectionUpdateManyWithoutQuestionnaireVersionNestedInput = {
+  connect?: InputMaybe<Array<SectionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<SectionCreateOrConnectWithoutQuestionnaireVersionInput>>;
+  create?: InputMaybe<Array<SectionCreateWithoutQuestionnaireVersionInput>>;
+  createMany?: InputMaybe<SectionCreateManyQuestionnaireVersionInputEnvelope>;
+  delete?: InputMaybe<Array<SectionWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<SectionScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<SectionWhereUniqueInput>>;
+  set?: InputMaybe<Array<SectionWhereUniqueInput>>;
+  update?: InputMaybe<Array<SectionUpdateWithWhereUniqueWithoutQuestionnaireVersionInput>>;
+  updateMany?: InputMaybe<Array<SectionUpdateManyWithWhereWithoutQuestionnaireVersionInput>>;
+  upsert?: InputMaybe<Array<SectionUpsertWithWhereUniqueWithoutQuestionnaireVersionInput>>;
+};
+
+export type SectionUpdateOneRequiredWithoutQuestionsNestedInput = {
+  connect?: InputMaybe<SectionWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<SectionCreateOrConnectWithoutQuestionsInput>;
+  create?: InputMaybe<SectionCreateWithoutQuestionsInput>;
+  update?: InputMaybe<SectionUpdateToOneWithWhereWithoutQuestionsInput>;
+  upsert?: InputMaybe<SectionUpsertWithoutQuestionsInput>;
+};
+
+export type SectionUpdateToOneWithWhereWithoutQuestionsInput = {
+  data: SectionUpdateWithoutQuestionsInput;
+  where?: InputMaybe<SectionWhereInput>;
+};
+
+export type SectionUpdateWithWhereUniqueWithoutQuestionnaireVersionInput = {
+  data: SectionUpdateWithoutQuestionnaireVersionInput;
+  where: SectionWhereUniqueInput;
+};
+
+export type SectionUpdateWithoutQuestionnaireVersionInput = {
+  description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  order?: InputMaybe<IntFieldUpdateOperationsInput>;
+  questions?: InputMaybe<QuestionUpdateManyWithoutSectionNestedInput>;
+  title?: InputMaybe<StringFieldUpdateOperationsInput>;
+};
+
+export type SectionUpdateWithoutQuestionsInput = {
+  description?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  order?: InputMaybe<IntFieldUpdateOperationsInput>;
+  questionnaireVersion?: InputMaybe<QuestionnaireVersionUpdateOneRequiredWithoutSectionsNestedInput>;
+  title?: InputMaybe<StringFieldUpdateOperationsInput>;
+};
+
+export type SectionUpsertWithWhereUniqueWithoutQuestionnaireVersionInput = {
+  create: SectionCreateWithoutQuestionnaireVersionInput;
+  update: SectionUpdateWithoutQuestionnaireVersionInput;
+  where: SectionWhereUniqueInput;
+};
+
+export type SectionUpsertWithoutQuestionsInput = {
+  create: SectionCreateWithoutQuestionsInput;
+  update: SectionUpdateWithoutQuestionsInput;
+  where?: InputMaybe<SectionWhereInput>;
+};
+
+export type SectionWhereInput = {
+  AND?: InputMaybe<Array<SectionWhereInput>>;
+  NOT?: InputMaybe<Array<SectionWhereInput>>;
+  OR?: InputMaybe<Array<SectionWhereInput>>;
+  description?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<StringFilter>;
+  order?: InputMaybe<IntFilter>;
+  questionnaireVersion?: InputMaybe<QuestionnaireVersionRelationFilter>;
+  questionnaireVersionId?: InputMaybe<StringFilter>;
+  questions?: InputMaybe<QuestionListRelationFilter>;
+  title?: InputMaybe<StringFilter>;
+};
+
+export type SectionWhereUniqueInput = {
+  AND?: InputMaybe<Array<SectionWhereInput>>;
+  NOT?: InputMaybe<Array<SectionWhereInput>>;
+  OR?: InputMaybe<Array<SectionWhereInput>>;
+  description?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  order?: InputMaybe<IntFilter>;
+  questionnaireVersion?: InputMaybe<QuestionnaireVersionRelationFilter>;
+  questionnaireVersionId?: InputMaybe<StringFilter>;
+  questions?: InputMaybe<QuestionListRelationFilter>;
+  title?: InputMaybe<StringFilter>;
+};
+
+export type Session = {
+  __typename?: 'Session';
+  createdAt: Scalars['DateTime']['output'];
+  deviceInfo?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  ipAddress?: Maybe<Scalars['String']['output']>;
+  lastActiveAt: Scalars['DateTime']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  user: User;
+  userId: Scalars['String']['output'];
+};
+
+export type SessionCreateManyUserInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deviceInfo?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  ipAddress?: InputMaybe<Scalars['String']['input']>;
+  lastActiveAt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type SessionCreateManyUserInputEnvelope = {
+  data: Array<SessionCreateManyUserInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type SessionCreateNestedManyWithoutUserInput = {
+  connect?: InputMaybe<Array<SessionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<SessionCreateOrConnectWithoutUserInput>>;
+  create?: InputMaybe<Array<SessionCreateWithoutUserInput>>;
+  createMany?: InputMaybe<SessionCreateManyUserInputEnvelope>;
+};
+
+export type SessionCreateOrConnectWithoutUserInput = {
+  create: SessionCreateWithoutUserInput;
+  where: SessionWhereUniqueInput;
+};
+
+export type SessionCreateWithoutUserInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  deviceInfo?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  ipAddress?: InputMaybe<Scalars['String']['input']>;
+  lastActiveAt?: InputMaybe<Scalars['DateTime']['input']>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type SessionListRelationFilter = {
+  every?: InputMaybe<SessionWhereInput>;
+  none?: InputMaybe<SessionWhereInput>;
+  some?: InputMaybe<SessionWhereInput>;
+};
+
+export type SessionScalarWhereInput = {
+  AND?: InputMaybe<Array<SessionScalarWhereInput>>;
+  NOT?: InputMaybe<Array<SessionScalarWhereInput>>;
+  OR?: InputMaybe<Array<SessionScalarWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deviceInfo?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<StringFilter>;
+  ipAddress?: InputMaybe<StringNullableFilter>;
+  lastActiveAt?: InputMaybe<DateTimeFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
+export type SessionUpdateManyMutationInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  deviceInfo?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  ipAddress?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  lastActiveAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type SessionUpdateManyWithWhereWithoutUserInput = {
+  data: SessionUpdateManyMutationInput;
+  where: SessionScalarWhereInput;
+};
+
+export type SessionUpdateManyWithoutUserNestedInput = {
+  connect?: InputMaybe<Array<SessionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<SessionCreateOrConnectWithoutUserInput>>;
+  create?: InputMaybe<Array<SessionCreateWithoutUserInput>>;
+  createMany?: InputMaybe<SessionCreateManyUserInputEnvelope>;
+  delete?: InputMaybe<Array<SessionWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<SessionScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<SessionWhereUniqueInput>>;
+  set?: InputMaybe<Array<SessionWhereUniqueInput>>;
+  update?: InputMaybe<Array<SessionUpdateWithWhereUniqueWithoutUserInput>>;
+  updateMany?: InputMaybe<Array<SessionUpdateManyWithWhereWithoutUserInput>>;
+  upsert?: InputMaybe<Array<SessionUpsertWithWhereUniqueWithoutUserInput>>;
+};
+
+export type SessionUpdateWithWhereUniqueWithoutUserInput = {
+  data: SessionUpdateWithoutUserInput;
+  where: SessionWhereUniqueInput;
+};
+
+export type SessionUpdateWithoutUserInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  deviceInfo?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  ipAddress?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  lastActiveAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type SessionUpsertWithWhereUniqueWithoutUserInput = {
+  create: SessionCreateWithoutUserInput;
+  update: SessionUpdateWithoutUserInput;
+  where: SessionWhereUniqueInput;
+};
+
+export type SessionWhereInput = {
+  AND?: InputMaybe<Array<SessionWhereInput>>;
+  NOT?: InputMaybe<Array<SessionWhereInput>>;
+  OR?: InputMaybe<Array<SessionWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deviceInfo?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<StringFilter>;
+  ipAddress?: InputMaybe<StringNullableFilter>;
+  lastActiveAt?: InputMaybe<DateTimeFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  user?: InputMaybe<UserRelationFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
+export type SessionWhereUniqueInput = {
+  AND?: InputMaybe<Array<SessionWhereInput>>;
+  NOT?: InputMaybe<Array<SessionWhereInput>>;
+  OR?: InputMaybe<Array<SessionWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  deviceInfo?: InputMaybe<StringNullableFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  ipAddress?: InputMaybe<StringNullableFilter>;
+  lastActiveAt?: InputMaybe<DateTimeFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+  user?: InputMaybe<UserRelationFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
 export enum SortOrder {
   Asc = 'asc',
   Desc = 'desc'
@@ -5013,22 +6971,318 @@ export type StringNullableFilter = {
   startsWith?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type TableViewDefinition = {
-  __typename?: 'TableViewDefinition';
-  columns: Array<ColumnView>;
-  createdAt: Scalars['DateTime']['output'];
-  filters?: Maybe<Scalars['String']['output']>;
-  icon?: Maybe<Scalars['String']['output']>;
-  id: Scalars['String']['output'];
-  isPreset: Scalars['Boolean']['output'];
-  isShared: Scalars['Boolean']['output'];
-  name: Scalars['String']['output'];
-  order: Scalars['Int']['output'];
-  sorting?: Maybe<Scalars['String']['output']>;
-  tableId: Scalars['String']['output'];
-  tableType: Scalars['String']['output'];
-  updatedAt: Scalars['DateTime']['output'];
-  userId?: Maybe<Scalars['String']['output']>;
+export type Submission = {
+  __typename?: 'Submission';
+  _count: SubmissionCount;
+  answers?: Maybe<Array<Answer>>;
+  completedAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  isComplete: Scalars['Boolean']['output'];
+  questionnaire: Questionnaire;
+  questionnaireId: Scalars['String']['output'];
+  questionnaireVersion: QuestionnaireVersion;
+  questionnaireVersionId: Scalars['String']['output'];
+  startedAt: Scalars['DateTime']['output'];
+  user: User;
+  userId: Scalars['String']['output'];
+};
+
+export type SubmissionCount = {
+  __typename?: 'SubmissionCount';
+  answers: Scalars['Int']['output'];
+};
+
+export type SubmissionCreateInput = {
+  answers?: InputMaybe<AnswerCreateNestedManyWithoutSubmissionInput>;
+  completedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isComplete?: InputMaybe<Scalars['Boolean']['input']>;
+  questionnaire: QuestionnaireCreateNestedOneWithoutSubmissionsInput;
+  questionnaireVersion: QuestionnaireVersionCreateNestedOneWithoutSubmissionsInput;
+  startedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  user: UserCreateNestedOneWithoutSubmissionsInput;
+};
+
+export type SubmissionCreateManyQuestionnaireInput = {
+  completedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isComplete?: InputMaybe<Scalars['Boolean']['input']>;
+  questionnaireVersionId: Scalars['String']['input'];
+  startedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  userId: Scalars['String']['input'];
+};
+
+export type SubmissionCreateManyQuestionnaireInputEnvelope = {
+  data: Array<SubmissionCreateManyQuestionnaireInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type SubmissionCreateManyQuestionnaireVersionInput = {
+  completedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isComplete?: InputMaybe<Scalars['Boolean']['input']>;
+  questionnaireId: Scalars['String']['input'];
+  startedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  userId: Scalars['String']['input'];
+};
+
+export type SubmissionCreateManyQuestionnaireVersionInputEnvelope = {
+  data: Array<SubmissionCreateManyQuestionnaireVersionInput>;
+  skipDuplicates?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type SubmissionCreateNestedManyWithoutQuestionnaireInput = {
+  connect?: InputMaybe<Array<SubmissionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<SubmissionCreateOrConnectWithoutQuestionnaireInput>>;
+  create?: InputMaybe<Array<SubmissionCreateWithoutQuestionnaireInput>>;
+  createMany?: InputMaybe<SubmissionCreateManyQuestionnaireInputEnvelope>;
+};
+
+export type SubmissionCreateNestedManyWithoutQuestionnaireVersionInput = {
+  connect?: InputMaybe<Array<SubmissionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<SubmissionCreateOrConnectWithoutQuestionnaireVersionInput>>;
+  create?: InputMaybe<Array<SubmissionCreateWithoutQuestionnaireVersionInput>>;
+  createMany?: InputMaybe<SubmissionCreateManyQuestionnaireVersionInputEnvelope>;
+};
+
+export type SubmissionCreateNestedOneWithoutAnswersInput = {
+  connect?: InputMaybe<SubmissionWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<SubmissionCreateOrConnectWithoutAnswersInput>;
+  create?: InputMaybe<SubmissionCreateWithoutAnswersInput>;
+};
+
+export type SubmissionCreateOrConnectWithoutAnswersInput = {
+  create: SubmissionCreateWithoutAnswersInput;
+  where: SubmissionWhereUniqueInput;
+};
+
+export type SubmissionCreateOrConnectWithoutQuestionnaireInput = {
+  create: SubmissionCreateWithoutQuestionnaireInput;
+  where: SubmissionWhereUniqueInput;
+};
+
+export type SubmissionCreateOrConnectWithoutQuestionnaireVersionInput = {
+  create: SubmissionCreateWithoutQuestionnaireVersionInput;
+  where: SubmissionWhereUniqueInput;
+};
+
+export type SubmissionCreateWithoutAnswersInput = {
+  completedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isComplete?: InputMaybe<Scalars['Boolean']['input']>;
+  questionnaire: QuestionnaireCreateNestedOneWithoutSubmissionsInput;
+  questionnaireVersion: QuestionnaireVersionCreateNestedOneWithoutSubmissionsInput;
+  startedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  user: UserCreateNestedOneWithoutSubmissionsInput;
+};
+
+export type SubmissionCreateWithoutQuestionnaireInput = {
+  answers?: InputMaybe<AnswerCreateNestedManyWithoutSubmissionInput>;
+  completedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isComplete?: InputMaybe<Scalars['Boolean']['input']>;
+  questionnaireVersion: QuestionnaireVersionCreateNestedOneWithoutSubmissionsInput;
+  startedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  user: UserCreateNestedOneWithoutSubmissionsInput;
+};
+
+export type SubmissionCreateWithoutQuestionnaireVersionInput = {
+  answers?: InputMaybe<AnswerCreateNestedManyWithoutSubmissionInput>;
+  completedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isComplete?: InputMaybe<Scalars['Boolean']['input']>;
+  questionnaire: QuestionnaireCreateNestedOneWithoutSubmissionsInput;
+  startedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  user: UserCreateNestedOneWithoutSubmissionsInput;
+};
+
+export type SubmissionListRelationFilter = {
+  every?: InputMaybe<SubmissionWhereInput>;
+  none?: InputMaybe<SubmissionWhereInput>;
+  some?: InputMaybe<SubmissionWhereInput>;
+};
+
+export type SubmissionOrderByRelationAggregateInput = {
+  _count?: InputMaybe<SortOrder>;
+};
+
+export type SubmissionRelationFilter = {
+  is?: InputMaybe<SubmissionWhereInput>;
+  isNot?: InputMaybe<SubmissionWhereInput>;
+};
+
+export type SubmissionScalarWhereInput = {
+  AND?: InputMaybe<Array<SubmissionScalarWhereInput>>;
+  NOT?: InputMaybe<Array<SubmissionScalarWhereInput>>;
+  OR?: InputMaybe<Array<SubmissionScalarWhereInput>>;
+  completedAt?: InputMaybe<DateTimeNullableFilter>;
+  id?: InputMaybe<StringFilter>;
+  isComplete?: InputMaybe<BoolFilter>;
+  questionnaireId?: InputMaybe<StringFilter>;
+  questionnaireVersionId?: InputMaybe<StringFilter>;
+  startedAt?: InputMaybe<DateTimeFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
+export type SubmissionUpdateInput = {
+  answers?: InputMaybe<AnswerUpdateManyWithoutSubmissionNestedInput>;
+  completedAt?: InputMaybe<NullableDateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isComplete?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  questionnaire?: InputMaybe<QuestionnaireUpdateOneRequiredWithoutSubmissionsNestedInput>;
+  questionnaireVersion?: InputMaybe<QuestionnaireVersionUpdateOneRequiredWithoutSubmissionsNestedInput>;
+  startedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  user?: InputMaybe<UserUpdateOneRequiredWithoutSubmissionsNestedInput>;
+};
+
+export type SubmissionUpdateManyMutationInput = {
+  completedAt?: InputMaybe<NullableDateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isComplete?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  startedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type SubmissionUpdateManyWithWhereWithoutQuestionnaireInput = {
+  data: SubmissionUpdateManyMutationInput;
+  where: SubmissionScalarWhereInput;
+};
+
+export type SubmissionUpdateManyWithWhereWithoutQuestionnaireVersionInput = {
+  data: SubmissionUpdateManyMutationInput;
+  where: SubmissionScalarWhereInput;
+};
+
+export type SubmissionUpdateManyWithoutQuestionnaireNestedInput = {
+  connect?: InputMaybe<Array<SubmissionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<SubmissionCreateOrConnectWithoutQuestionnaireInput>>;
+  create?: InputMaybe<Array<SubmissionCreateWithoutQuestionnaireInput>>;
+  createMany?: InputMaybe<SubmissionCreateManyQuestionnaireInputEnvelope>;
+  delete?: InputMaybe<Array<SubmissionWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<SubmissionScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<SubmissionWhereUniqueInput>>;
+  set?: InputMaybe<Array<SubmissionWhereUniqueInput>>;
+  update?: InputMaybe<Array<SubmissionUpdateWithWhereUniqueWithoutQuestionnaireInput>>;
+  updateMany?: InputMaybe<Array<SubmissionUpdateManyWithWhereWithoutQuestionnaireInput>>;
+  upsert?: InputMaybe<Array<SubmissionUpsertWithWhereUniqueWithoutQuestionnaireInput>>;
+};
+
+export type SubmissionUpdateManyWithoutQuestionnaireVersionNestedInput = {
+  connect?: InputMaybe<Array<SubmissionWhereUniqueInput>>;
+  connectOrCreate?: InputMaybe<Array<SubmissionCreateOrConnectWithoutQuestionnaireVersionInput>>;
+  create?: InputMaybe<Array<SubmissionCreateWithoutQuestionnaireVersionInput>>;
+  createMany?: InputMaybe<SubmissionCreateManyQuestionnaireVersionInputEnvelope>;
+  delete?: InputMaybe<Array<SubmissionWhereUniqueInput>>;
+  deleteMany?: InputMaybe<Array<SubmissionScalarWhereInput>>;
+  disconnect?: InputMaybe<Array<SubmissionWhereUniqueInput>>;
+  set?: InputMaybe<Array<SubmissionWhereUniqueInput>>;
+  update?: InputMaybe<Array<SubmissionUpdateWithWhereUniqueWithoutQuestionnaireVersionInput>>;
+  updateMany?: InputMaybe<Array<SubmissionUpdateManyWithWhereWithoutQuestionnaireVersionInput>>;
+  upsert?: InputMaybe<Array<SubmissionUpsertWithWhereUniqueWithoutQuestionnaireVersionInput>>;
+};
+
+export type SubmissionUpdateOneRequiredWithoutAnswersNestedInput = {
+  connect?: InputMaybe<SubmissionWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<SubmissionCreateOrConnectWithoutAnswersInput>;
+  create?: InputMaybe<SubmissionCreateWithoutAnswersInput>;
+  update?: InputMaybe<SubmissionUpdateToOneWithWhereWithoutAnswersInput>;
+  upsert?: InputMaybe<SubmissionUpsertWithoutAnswersInput>;
+};
+
+export type SubmissionUpdateToOneWithWhereWithoutAnswersInput = {
+  data: SubmissionUpdateWithoutAnswersInput;
+  where?: InputMaybe<SubmissionWhereInput>;
+};
+
+export type SubmissionUpdateWithWhereUniqueWithoutQuestionnaireInput = {
+  data: SubmissionUpdateWithoutQuestionnaireInput;
+  where: SubmissionWhereUniqueInput;
+};
+
+export type SubmissionUpdateWithWhereUniqueWithoutQuestionnaireVersionInput = {
+  data: SubmissionUpdateWithoutQuestionnaireVersionInput;
+  where: SubmissionWhereUniqueInput;
+};
+
+export type SubmissionUpdateWithoutAnswersInput = {
+  completedAt?: InputMaybe<NullableDateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isComplete?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  questionnaire?: InputMaybe<QuestionnaireUpdateOneRequiredWithoutSubmissionsNestedInput>;
+  questionnaireVersion?: InputMaybe<QuestionnaireVersionUpdateOneRequiredWithoutSubmissionsNestedInput>;
+  startedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  user?: InputMaybe<UserUpdateOneRequiredWithoutSubmissionsNestedInput>;
+};
+
+export type SubmissionUpdateWithoutQuestionnaireInput = {
+  answers?: InputMaybe<AnswerUpdateManyWithoutSubmissionNestedInput>;
+  completedAt?: InputMaybe<NullableDateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isComplete?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  questionnaireVersion?: InputMaybe<QuestionnaireVersionUpdateOneRequiredWithoutSubmissionsNestedInput>;
+  startedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  user?: InputMaybe<UserUpdateOneRequiredWithoutSubmissionsNestedInput>;
+};
+
+export type SubmissionUpdateWithoutQuestionnaireVersionInput = {
+  answers?: InputMaybe<AnswerUpdateManyWithoutSubmissionNestedInput>;
+  completedAt?: InputMaybe<NullableDateTimeFieldUpdateOperationsInput>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  isComplete?: InputMaybe<BoolFieldUpdateOperationsInput>;
+  questionnaire?: InputMaybe<QuestionnaireUpdateOneRequiredWithoutSubmissionsNestedInput>;
+  startedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  user?: InputMaybe<UserUpdateOneRequiredWithoutSubmissionsNestedInput>;
+};
+
+export type SubmissionUpsertWithWhereUniqueWithoutQuestionnaireInput = {
+  create: SubmissionCreateWithoutQuestionnaireInput;
+  update: SubmissionUpdateWithoutQuestionnaireInput;
+  where: SubmissionWhereUniqueInput;
+};
+
+export type SubmissionUpsertWithWhereUniqueWithoutQuestionnaireVersionInput = {
+  create: SubmissionCreateWithoutQuestionnaireVersionInput;
+  update: SubmissionUpdateWithoutQuestionnaireVersionInput;
+  where: SubmissionWhereUniqueInput;
+};
+
+export type SubmissionUpsertWithoutAnswersInput = {
+  create: SubmissionCreateWithoutAnswersInput;
+  update: SubmissionUpdateWithoutAnswersInput;
+  where?: InputMaybe<SubmissionWhereInput>;
+};
+
+export type SubmissionWhereInput = {
+  AND?: InputMaybe<Array<SubmissionWhereInput>>;
+  NOT?: InputMaybe<Array<SubmissionWhereInput>>;
+  OR?: InputMaybe<Array<SubmissionWhereInput>>;
+  answers?: InputMaybe<AnswerListRelationFilter>;
+  completedAt?: InputMaybe<DateTimeNullableFilter>;
+  id?: InputMaybe<StringFilter>;
+  isComplete?: InputMaybe<BoolFilter>;
+  questionnaire?: InputMaybe<QuestionnaireRelationFilter>;
+  questionnaireId?: InputMaybe<StringFilter>;
+  questionnaireVersion?: InputMaybe<QuestionnaireVersionRelationFilter>;
+  questionnaireVersionId?: InputMaybe<StringFilter>;
+  startedAt?: InputMaybe<DateTimeFilter>;
+  user?: InputMaybe<UserRelationFilter>;
+  userId?: InputMaybe<StringFilter>;
+};
+
+export type SubmissionWhereUniqueInput = {
+  AND?: InputMaybe<Array<SubmissionWhereInput>>;
+  NOT?: InputMaybe<Array<SubmissionWhereInput>>;
+  OR?: InputMaybe<Array<SubmissionWhereInput>>;
+  answers?: InputMaybe<AnswerListRelationFilter>;
+  completedAt?: InputMaybe<DateTimeNullableFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  isComplete?: InputMaybe<BoolFilter>;
+  questionnaire?: InputMaybe<QuestionnaireRelationFilter>;
+  questionnaireId?: InputMaybe<StringFilter>;
+  questionnaireVersion?: InputMaybe<QuestionnaireVersionRelationFilter>;
+  questionnaireVersionId?: InputMaybe<StringFilter>;
+  startedAt?: InputMaybe<DateTimeFilter>;
+  user?: InputMaybe<UserRelationFilter>;
+  userId?: InputMaybe<StringFilter>;
 };
 
 export type Tag = {
@@ -5133,6 +7387,90 @@ export type TagWhereUniqueInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   recipes?: InputMaybe<RecipeListRelationFilter>;
+};
+
+export type Tenant = {
+  __typename?: 'Tenant';
+  _count: TenantCount;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  questionnaires?: Maybe<Array<Questionnaire>>;
+};
+
+export type TenantCount = {
+  __typename?: 'TenantCount';
+  questionnaires: Scalars['Int']['output'];
+};
+
+export type TenantCreateNestedOneWithoutQuestionnairesInput = {
+  connect?: InputMaybe<TenantWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<TenantCreateOrConnectWithoutQuestionnairesInput>;
+  create?: InputMaybe<TenantCreateWithoutQuestionnairesInput>;
+};
+
+export type TenantCreateOrConnectWithoutQuestionnairesInput = {
+  create: TenantCreateWithoutQuestionnairesInput;
+  where: TenantWhereUniqueInput;
+};
+
+export type TenantCreateWithoutQuestionnairesInput = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
+export type TenantNullableRelationFilter = {
+  is?: InputMaybe<TenantWhereInput>;
+  isNot?: InputMaybe<TenantWhereInput>;
+};
+
+export type TenantOrderByWithRelationInput = {
+  id?: InputMaybe<SortOrder>;
+  name?: InputMaybe<SortOrder>;
+  questionnaires?: InputMaybe<QuestionnaireOrderByRelationAggregateInput>;
+};
+
+export type TenantUpdateOneWithoutQuestionnairesNestedInput = {
+  connect?: InputMaybe<TenantWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<TenantCreateOrConnectWithoutQuestionnairesInput>;
+  create?: InputMaybe<TenantCreateWithoutQuestionnairesInput>;
+  delete?: InputMaybe<TenantWhereInput>;
+  disconnect?: InputMaybe<TenantWhereInput>;
+  update?: InputMaybe<TenantUpdateToOneWithWhereWithoutQuestionnairesInput>;
+  upsert?: InputMaybe<TenantUpsertWithoutQuestionnairesInput>;
+};
+
+export type TenantUpdateToOneWithWhereWithoutQuestionnairesInput = {
+  data: TenantUpdateWithoutQuestionnairesInput;
+  where?: InputMaybe<TenantWhereInput>;
+};
+
+export type TenantUpdateWithoutQuestionnairesInput = {
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  name?: InputMaybe<StringFieldUpdateOperationsInput>;
+};
+
+export type TenantUpsertWithoutQuestionnairesInput = {
+  create: TenantCreateWithoutQuestionnairesInput;
+  update: TenantUpdateWithoutQuestionnairesInput;
+  where?: InputMaybe<TenantWhereInput>;
+};
+
+export type TenantWhereInput = {
+  AND?: InputMaybe<Array<TenantWhereInput>>;
+  NOT?: InputMaybe<Array<TenantWhereInput>>;
+  OR?: InputMaybe<Array<TenantWhereInput>>;
+  id?: InputMaybe<StringFilter>;
+  name?: InputMaybe<StringFilter>;
+  questionnaires?: InputMaybe<QuestionnaireListRelationFilter>;
+};
+
+export type TenantWhereUniqueInput = {
+  AND?: InputMaybe<Array<TenantWhereInput>>;
+  NOT?: InputMaybe<Array<TenantWhereInput>>;
+  OR?: InputMaybe<Array<TenantWhereInput>>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<StringFilter>;
+  questionnaires?: InputMaybe<QuestionnaireListRelationFilter>;
 };
 
 export type Translation = {
@@ -5277,25 +7615,148 @@ export type TranslationWhereUniqueInput = {
   value?: InputMaybe<StringFilter>;
 };
 
-export type UpdateColumnViewInput = {
-  columnId?: InputMaybe<Scalars['Int']['input']>;
-  columnType?: InputMaybe<Scalars['String']['input']>;
-  filter?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  visible?: InputMaybe<Scalars['Boolean']['input']>;
-  width?: InputMaybe<Scalars['Int']['input']>;
+export type User = {
+  __typename?: 'User';
+  _count: UserCount;
+  createdAt: Scalars['DateTime']['output'];
+  email: Scalars['String']['output'];
+  googleId?: Maybe<Scalars['String']['output']>;
+  googleProfile?: Maybe<Scalars['JSON']['output']>;
+  id: Scalars['ID']['output'];
+  loginLogs?: Maybe<Array<LoginLog>>;
+  password?: Maybe<Scalars['String']['output']>;
+  passwordResetTokens?: Maybe<Array<PasswordResetToken>>;
+  refreshTokens?: Maybe<Array<RefreshToken>>;
+  roles?: Maybe<Array<Roles>>;
+  sessions?: Maybe<Array<Session>>;
+  submissions?: Maybe<Array<Submission>>;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
-export type UpdateTableViewDefinitionInput = {
-  columns?: InputMaybe<Array<UpdateColumnViewInput>>;
-  filters?: InputMaybe<Scalars['String']['input']>;
-  icon?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['String']['input'];
-  isPreset?: InputMaybe<Scalars['Boolean']['input']>;
-  isShared?: InputMaybe<Scalars['Boolean']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  order?: InputMaybe<Scalars['Int']['input']>;
-  sorting?: InputMaybe<Scalars['String']['input']>;
+export type UserCount = {
+  __typename?: 'UserCount';
+  loginLogs: Scalars['Int']['output'];
+  passwordResetTokens: Scalars['Int']['output'];
+  refreshTokens: Scalars['Int']['output'];
+  sessions: Scalars['Int']['output'];
+  submissions: Scalars['Int']['output'];
+};
+
+export type UserCreateNestedOneWithoutSubmissionsInput = {
+  connect?: InputMaybe<UserWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<UserCreateOrConnectWithoutSubmissionsInput>;
+  create?: InputMaybe<UserCreateWithoutSubmissionsInput>;
+};
+
+export type UserCreateOrConnectWithoutSubmissionsInput = {
+  create: UserCreateWithoutSubmissionsInput;
+  where: UserWhereUniqueInput;
+};
+
+export type UserCreateWithoutSubmissionsInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']['input']>;
+  email: Scalars['String']['input'];
+  googleId?: InputMaybe<Scalars['String']['input']>;
+  googleProfile?: InputMaybe<Scalars['JSON']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  loginLogs?: InputMaybe<LoginLogCreateNestedManyWithoutUserInput>;
+  password?: InputMaybe<Scalars['String']['input']>;
+  passwordResetTokens?: InputMaybe<PasswordResetTokenCreateNestedManyWithoutUserInput>;
+  refreshTokens?: InputMaybe<RefreshTokenCreateNestedManyWithoutUserInput>;
+  roles?: InputMaybe<UserCreaterolesInput>;
+  sessions?: InputMaybe<SessionCreateNestedManyWithoutUserInput>;
+  updatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type UserCreaterolesInput = {
+  set: Array<Roles>;
+};
+
+export type UserNullableRelationFilter = {
+  is?: InputMaybe<UserWhereInput>;
+  isNot?: InputMaybe<UserWhereInput>;
+};
+
+export type UserRelationFilter = {
+  is?: InputMaybe<UserWhereInput>;
+  isNot?: InputMaybe<UserWhereInput>;
+};
+
+export type UserUpdateOneRequiredWithoutSubmissionsNestedInput = {
+  connect?: InputMaybe<UserWhereUniqueInput>;
+  connectOrCreate?: InputMaybe<UserCreateOrConnectWithoutSubmissionsInput>;
+  create?: InputMaybe<UserCreateWithoutSubmissionsInput>;
+  update?: InputMaybe<UserUpdateToOneWithWhereWithoutSubmissionsInput>;
+  upsert?: InputMaybe<UserUpsertWithoutSubmissionsInput>;
+};
+
+export type UserUpdateToOneWithWhereWithoutSubmissionsInput = {
+  data: UserUpdateWithoutSubmissionsInput;
+  where?: InputMaybe<UserWhereInput>;
+};
+
+export type UserUpdateWithoutSubmissionsInput = {
+  createdAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+  email?: InputMaybe<StringFieldUpdateOperationsInput>;
+  googleId?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  googleProfile?: InputMaybe<Scalars['JSON']['input']>;
+  id?: InputMaybe<StringFieldUpdateOperationsInput>;
+  loginLogs?: InputMaybe<LoginLogUpdateManyWithoutUserNestedInput>;
+  password?: InputMaybe<NullableStringFieldUpdateOperationsInput>;
+  passwordResetTokens?: InputMaybe<PasswordResetTokenUpdateManyWithoutUserNestedInput>;
+  refreshTokens?: InputMaybe<RefreshTokenUpdateManyWithoutUserNestedInput>;
+  roles?: InputMaybe<UserUpdaterolesInput>;
+  sessions?: InputMaybe<SessionUpdateManyWithoutUserNestedInput>;
+  updatedAt?: InputMaybe<DateTimeFieldUpdateOperationsInput>;
+};
+
+export type UserUpdaterolesInput = {
+  push?: InputMaybe<Array<Roles>>;
+  set?: InputMaybe<Array<Roles>>;
+};
+
+export type UserUpsertWithoutSubmissionsInput = {
+  create: UserCreateWithoutSubmissionsInput;
+  update: UserUpdateWithoutSubmissionsInput;
+  where?: InputMaybe<UserWhereInput>;
+};
+
+export type UserWhereInput = {
+  AND?: InputMaybe<Array<UserWhereInput>>;
+  NOT?: InputMaybe<Array<UserWhereInput>>;
+  OR?: InputMaybe<Array<UserWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  email?: InputMaybe<StringFilter>;
+  googleId?: InputMaybe<StringNullableFilter>;
+  googleProfile?: InputMaybe<JsonNullableFilter>;
+  id?: InputMaybe<StringFilter>;
+  loginLogs?: InputMaybe<LoginLogListRelationFilter>;
+  password?: InputMaybe<StringNullableFilter>;
+  passwordResetTokens?: InputMaybe<PasswordResetTokenListRelationFilter>;
+  refreshTokens?: InputMaybe<RefreshTokenListRelationFilter>;
+  roles?: InputMaybe<EnumRolesNullableListFilter>;
+  sessions?: InputMaybe<SessionListRelationFilter>;
+  submissions?: InputMaybe<SubmissionListRelationFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
+};
+
+export type UserWhereUniqueInput = {
+  AND?: InputMaybe<Array<UserWhereInput>>;
+  NOT?: InputMaybe<Array<UserWhereInput>>;
+  OR?: InputMaybe<Array<UserWhereInput>>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  googleId?: InputMaybe<Scalars['String']['input']>;
+  googleProfile?: InputMaybe<JsonNullableFilter>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  loginLogs?: InputMaybe<LoginLogListRelationFilter>;
+  password?: InputMaybe<StringNullableFilter>;
+  passwordResetTokens?: InputMaybe<PasswordResetTokenListRelationFilter>;
+  refreshTokens?: InputMaybe<RefreshTokenListRelationFilter>;
+  roles?: InputMaybe<EnumRolesNullableListFilter>;
+  sessions?: InputMaybe<SessionListRelationFilter>;
+  submissions?: InputMaybe<SubmissionListRelationFilter>;
+  updatedAt?: InputMaybe<DateTimeFilter>;
 };
 
 export type AuthLoginMutationVariables = Exact<{
@@ -5363,12 +7824,23 @@ export type FoodAutosuggestQueryVariables = Exact<{
 
 export type FoodAutosuggestQuery = { __typename?: 'Query', foodAutosuggest: Array<{ __typename?: 'FoodSearchResult', description: string, rank: number, food: { __typename?: 'Food', description: string, id: string } }> };
 
-export type RecipesQueryVariables = Exact<{
-  where?: InputMaybe<RecipeWhereInput>;
+export type PaginatedFoodsQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+  sortInput?: InputMaybe<FoodOrderByWithRelationInput>;
+  filterInput?: InputMaybe<FoodWhereInput>;
 }>;
 
 
-export type RecipesQuery = { __typename?: 'Query', recipes: Array<{ __typename?: 'Recipe', cookingTime?: string | null, prepTime?: string | null, description?: string | null, id: string, servingsMax?: number | null, servingsMin?: number | null, servingsText?: string | null, sourceId?: string | null, sourceUrl?: string | null, title: string, parts?: Array<{ __typename?: 'RecipePart', name: string, ingredients?: Array<{ __typename?: 'RecipeIngredient', id: string, extraInfo?: string | null, ingredientText?: string | null, quantity: number, maxQuantity?: number | null, minQuantity?: number | null, unit: string, unitText?: string | null }> | null }> | null, categories?: Array<{ __typename?: 'RecipeCategory', name: string }> | null, ingredients?: Array<{ __typename?: 'RecipeIngredient', id: string, extraInfo?: string | null, ingredientText?: string | null, quantity: number, maxQuantity?: number | null, minQuantity?: number | null, unit: string, unitText?: string | null }> | null, images?: Array<{ __typename?: 'RecipeImage', altText?: string | null, url: string }> | null, tags?: Array<{ __typename?: 'Tag', name: string }> | null, seasons?: Array<{ __typename?: 'Season', id: string, name: string }> | null, instructions?: Array<{ __typename?: 'RecipeInstructions', content: string, listIndex?: number | null, order: number, type: RecipeInstructionsType }> | null }> };
+export type PaginatedFoodsQuery = { __typename?: 'Query', paginatedFoods: { __typename?: 'FoodPaginatedModel', data: Array<{ __typename?: 'Food', id: string, updatedAt: any, sourceId: string, scientificName?: string | null, description: string, categories?: Array<{ __typename?: 'FoodCategoryOnFood', category: { __typename?: 'FoodCategory', description?: string | null, code?: string | null } }> | null, nutrients?: Array<{ __typename?: 'FoodNutrient', amount: number, confidenceCode?: string | null, id: string, max?: number | null, median?: number | null, min?: number | null, nutrient: { __typename?: 'Nutrient', id: string, name: string, unitName: string, foodNutrients?: Array<{ __typename?: 'FoodNutrient', amount: number, max?: number | null, median?: number | null, min?: number | null, confidenceCode?: string | null }> | null } }> | null, portions?: Array<{ __typename?: 'FoodPortion', amount: number, gramWeight: number, measureUnitName: string, portionDescription?: string | null, measureUnit: { __typename?: 'MeasureUnit', name: string } }> | null, brandedFood?: { __typename?: 'BrandedFood', brandOwner: string, gtinUpc?: string | null, nutritionLabel?: { __typename?: 'NutritionLabel', brandedFoodId: string, calories?: number | null, totalFat?: number | null, saturatedFat?: number | null, transFat?: number | null, cholesterol?: number | null, sodium?: number | null, totalCarbohydrate?: number | null, dietaryFiber?: number | null, totalSugars?: number | null, addedSugars?: number | null, protein?: number | null, vitaminA?: number | null, vitaminC?: number | null, vitaminD?: number | null, calcium?: number | null, iron?: number | null, potassium?: number | null, servingsPerContainer?: number | null, householdServingFullText?: string | null } | null } | null }> } };
+
+export type PaginatedRecipesQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type PaginatedRecipesQuery = { __typename?: 'Query', paginatedRecipes: { __typename?: 'RecipePaginatedModel', data: Array<{ __typename?: 'Recipe', cookingTime?: string | null, prepTime?: string | null, description?: string | null, id: string, servingsMax?: number | null, servingsMin?: number | null, servingsText?: string | null, sourceId?: string | null, sourceUrl?: string | null, title: string, parts?: Array<{ __typename?: 'RecipePart', name: string, ingredients?: Array<{ __typename?: 'RecipeIngredient', id: string, extraInfo?: string | null, ingredientText?: string | null, quantity: number, maxQuantity?: number | null, minQuantity?: number | null, unit: string, unitText?: string | null }> | null }> | null, categories?: Array<{ __typename?: 'RecipeCategory', name: string }> | null, ingredients?: Array<{ __typename?: 'RecipeIngredient', id: string, extraInfo?: string | null, ingredientText?: string | null, quantity: number, maxQuantity?: number | null, minQuantity?: number | null, unit: string, unitText?: string | null }> | null, images?: Array<{ __typename?: 'RecipeImage', altText?: string | null, url: string }> | null, tags?: Array<{ __typename?: 'Tag', name: string }> | null, seasons?: Array<{ __typename?: 'Season', id: string, name: string }> | null, instructions?: Array<{ __typename?: 'RecipeInstructions', content: string, listIndex?: number | null, order: number, type: RecipeInstructionsType }> | null }>, meta: { __typename?: 'RecipeMeta', lastPage: number, total: number, currentPage: number } } };
 
 
 export const AuthLoginDocument = gql`
@@ -5474,13 +7946,107 @@ export const FoodAutosuggestDocument = gql`
   }
 }
     `;
-export const RecipesDocument = gql`
-    query Recipes($where: RecipeWhereInput) {
-  recipes(where: $where) {
-    cookingTime
-    prepTime
-    parts {
-      name
+export const PaginatedFoodsDocument = gql`
+    query PaginatedFoods($page: Int, $perPage: Int, $sortInput: FoodOrderByWithRelationInput, $filterInput: FoodWhereInput) {
+  paginatedFoods(
+    page: $page
+    perPage: $perPage
+    sortInput: $sortInput
+    filterInput: $filterInput
+  ) {
+    data {
+      id
+      updatedAt
+      sourceId
+      scientificName
+      description
+      categories {
+        category {
+          description
+          code
+        }
+      }
+      nutrients {
+        amount
+        confidenceCode
+        id
+        max
+        median
+        min
+        nutrient {
+          id
+          name
+          unitName
+          foodNutrients {
+            amount
+            max
+            median
+            min
+            confidenceCode
+          }
+        }
+      }
+      portions {
+        amount
+        gramWeight
+        measureUnit {
+          name
+        }
+        measureUnitName
+        portionDescription
+      }
+      brandedFood {
+        brandOwner
+        gtinUpc
+        nutritionLabel {
+          brandedFoodId
+          calories
+          totalFat
+          saturatedFat
+          transFat
+          cholesterol
+          sodium
+          totalCarbohydrate
+          dietaryFiber
+          totalSugars
+          addedSugars
+          protein
+          vitaminA
+          vitaminC
+          vitaminD
+          calcium
+          iron
+          potassium
+          servingsPerContainer
+          householdServingFullText
+        }
+      }
+    }
+  }
+}
+    `;
+export const PaginatedRecipesDocument = gql`
+    query PaginatedRecipes($page: Int, $perPage: Int) {
+  paginatedRecipes(page: $page, perPage: $perPage) {
+    data {
+      cookingTime
+      prepTime
+      parts {
+        name
+        ingredients {
+          id
+          extraInfo
+          ingredientText
+          quantity
+          maxQuantity
+          minQuantity
+          unit
+          unitText
+        }
+      }
+      categories {
+        name
+      }
       ingredients {
         id
         extraInfo
@@ -5491,45 +8057,37 @@ export const RecipesDocument = gql`
         unit
         unitText
       }
-    }
-    categories {
-      name
-    }
-    ingredients {
+      images {
+        altText
+        url
+      }
+      tags {
+        name
+      }
+      description
       id
-      extraInfo
-      ingredientText
-      quantity
-      maxQuantity
-      minQuantity
-      unit
-      unitText
+      seasons {
+        id
+        name
+      }
+      instructions {
+        content
+        listIndex
+        order
+        type
+      }
+      servingsMax
+      servingsMin
+      servingsText
+      sourceId
+      sourceUrl
+      title
     }
-    images {
-      altText
-      url
+    meta {
+      lastPage
+      total
+      currentPage
     }
-    tags {
-      name
-    }
-    description
-    id
-    seasons {
-      id
-      name
-    }
-    instructions {
-      content
-      listIndex
-      order
-      type
-    }
-    servingsMax
-    servingsMin
-    servingsText
-    sourceId
-    sourceUrl
-    title
   }
 }
     `;
@@ -5571,8 +8129,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     FoodAutosuggest(variables: FoodAutosuggestQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FoodAutosuggestQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FoodAutosuggestQuery>(FoodAutosuggestDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'FoodAutosuggest', 'query', variables);
     },
-    Recipes(variables?: RecipesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<RecipesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<RecipesQuery>(RecipesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Recipes', 'query', variables);
+    PaginatedFoods(variables?: PaginatedFoodsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<PaginatedFoodsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PaginatedFoodsQuery>(PaginatedFoodsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'PaginatedFoods', 'query', variables);
+    },
+    PaginatedRecipes(variables?: PaginatedRecipesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<PaginatedRecipesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PaginatedRecipesQuery>(PaginatedRecipesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'PaginatedRecipes', 'query', variables);
     }
   };
 }

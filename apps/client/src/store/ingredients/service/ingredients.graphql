@@ -1,5 +1,5 @@
-query Recipes($where: RecipeWhereInput) {
-  recipes(where: $where) {
+query Recipes {
+  recipes {
     cookingTime
     prepTime
     parts {
@@ -26,6 +26,7 @@ query Recipes($where: RecipeWhereInput) {
       maxQuantity
       minQuantity
       unit
+
       unitText
     }
     images {
@@ -56,3 +57,4 @@ query Recipes($where: RecipeWhereInput) {
     title
   }
 }
+

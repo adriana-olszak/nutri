@@ -7,7 +7,7 @@ import {
 } from '@nutri/client-ui';
 import { LogoutButton } from '@nutri/client-auth';
 
-const Sidebar = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
+const Sidebar = ({ className, width }: React.HTMLAttributes<HTMLDivElement> & {width: string}) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -30,7 +30,7 @@ const Sidebar = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
           className="flex items-center gap-2 font-semibold"
         >
           <Banana className="h-6 w-6" />
-          <span className="">Diet Draft App</span>
+          <span className="">BalancedBite</span>
         </Button>
       </div>
       <nav className="flex flex-col gap-1 h-full">

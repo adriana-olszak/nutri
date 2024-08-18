@@ -28,6 +28,7 @@ export const useGql = () => {
 
   return useMemo(() => {
     const client = ensureClient();
+
     return getSdk(client, customFetcher);
   }, [customFetcher, ensureClient]);
 };

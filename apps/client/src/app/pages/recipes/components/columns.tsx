@@ -7,7 +7,7 @@ import {
 import { getTHeadProps, Input, Skeleton, THead } from '@nutri/client-ui';
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import { RecipeColumnType } from '@nutri/store/tableViews/types';
-import {EditableCell, LinkCell} from "../../components/cell";
+import {EditableCell, LinkCell} from "../../../components/cell";
 
 type ColumnDatum = ColumnDef<ColumnDatum, any>;
 
@@ -17,7 +17,7 @@ const columnHelper = createColumnHelper<ColumnDatum>();
 
 export const recipeColumns = {
   [RecipeColumnType.RECIPES_TITLE]: {
-    accessorKey: 'title',
+    accessorKey: 'value.title',
     size: 300,
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'Title'} title={'Title'} {...getTHeadProps(props)} />
@@ -28,13 +28,13 @@ export const recipeColumns = {
       </div>
     ),
     cell: ({ getValue, row }) => {
-      return <LinkCell title={getValue()} href={`${row.original.id}`}/>
+      return <LinkCell title={getValue()} href={`${row.original.value.id}`}/>
     },
     enableSorting: true,
     enableColumnFilter: true,
   },
   [RecipeColumnType.RECIPES_DESCRIPTION]: {
-    accessorKey: 'description',
+    accessorKey: 'value.description',
     canSort: true,
     canFilter: true,
     header: (props: HeaderContext<object, unknown>) => (
@@ -47,7 +47,7 @@ export const recipeColumns = {
     cell: ({ getValue, row }) => <EditableCell id={row.original.id} value={`${getValue()}`} />,
   },
   [RecipeColumnType.RECIPES_COOKING_TIME]: {
-    accessorKey: 'cookingTime',
+    accessorKey: 'value.cookingTime',
     cell: ({ getValue, row }) => <EditableCell id={row.original.id} value={`${getValue()}`} />,
 
     enableSorting: true,
@@ -63,7 +63,7 @@ export const recipeColumns = {
     ),
   },
   [RecipeColumnType.RECIPES_PREP_TIME]: {
-    accessorKey: 'prepTime',
+    accessorKey: 'value.prepTime',
     canSort: true,
     canFilter: true,
     header: (props: HeaderContext<object, unknown>) => (
@@ -79,7 +79,7 @@ export const recipeColumns = {
     enableColumnFilter: true,
   },
   [RecipeColumnType.RECIPES_SERVINGS_MIN]: {
-    accessorKey: 'servingsMin',
+    accessorKey: 'value.servingsMin',
     canSort: true,
     canFilter: true,
     header: (props: HeaderContext<object, unknown>) => (
@@ -95,7 +95,7 @@ export const recipeColumns = {
     enableColumnFilter: true,
   },
   [RecipeColumnType.RECIPES_SERVINGS_MAX]: {
-    accessorKey: 'servingsMax',
+    accessorKey: 'value.servingsMax',
     canSort: true,
     canFilter: true,
     header: (props: HeaderContext<object, unknown>) => (

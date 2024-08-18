@@ -8,7 +8,7 @@ export function WelcomeDashboard() {
 
         <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 lg:flex lg:items-center lg:justify-between">
           <h1 className="text-4xl font-extrabold tracking-tight ">
-            <span className="block">Welcome to Diet Draft</span>
+            <span className="block">Welcome to BalancedBite</span>
             <span className="block text-blue-200">
               Revolutionize Your Nutrition Practice
             </span>
