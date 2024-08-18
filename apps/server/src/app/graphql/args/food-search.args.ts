@@ -1,6 +1,6 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 import { Max } from 'class-validator';
-import { FoodSearchInput } from '../inputs/food/food-search.input';
+import { FoodSearchInput } from '../inputs/food-search.input';
 
 @ArgsType()
 export class FoodSearchArgs {

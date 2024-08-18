@@ -18,9 +18,9 @@ import { AuthPasswordResetRequestInput } from '../inputs/auth/auth-password-rese
 import { AuthPasswordResetConfirmationInput } from '../inputs/auth/auth-password-reset-confirmation.input';
 import { AuthRegisterInput } from '../inputs/auth/auth-register.input';
 import { AuthPasswordChangeInput } from '../inputs/auth/auth-password-change.input';
-import { AuthSessionModel } from '../models/auth/auth-session.model';
-import { AuthAccountInfoModel } from '../models/auth/auth-account-info.model';
-import { AuthRefreshTokenModel } from '../models/auth/auth-refresh-token.model';
+import { AuthSessionModel } from '../models/auth-session.model';
+import { AuthAccountInfoModel } from '../models/auth-account-info.model';
+import { AuthRefreshTokenModel } from '../models/auth-refresh-token.model';
 
 @Resolver()
 @UseGuards(GqlThrottlerGuard)

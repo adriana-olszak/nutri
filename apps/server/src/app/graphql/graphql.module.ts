@@ -5,22 +5,20 @@ import { NestAuthModule } from '@nutri/server-auth';
 import { GqlConfigService } from './gql-config.service';
 import { GraphQLModule as NestGraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver } from '@nestjs/apollo';
-import { ALL_RESOLVERS } from './resolvers';
 import { DbClientModule } from '@nutri/server-db-client';
-import { ServicesModule } from '../services/services.module';
-import { ALL_DATA_LOADERS } from './data-loaders';
+import { AuthResolver } from './resolvers/auth.resolver';
 
 @Module({
   imports: [
     DbClientModule,
     NestAuthModule,
-    ServicesModule,
     NestGraphQLModule.forRootAsync({
       driver: ApolloDriver,
       useClass: GqlConfigService,
-      imports: [ConfigModule],
-    }),
+      imports: [ConfigModule]
+    })
   ],
-  providers: [...ALL_RESOLVERS, ...ALL_DATA_LOADERS],
+  providers: [AuthResolver]
 })
-export class GraphqlModule {}
+export class GraphqlModule {
+}

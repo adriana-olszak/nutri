@@ -1,0 +1,6 @@
+import { ObjectType } from '@nestjs/graphql';
+import { Paginated } from './paginated.model';
+import { Food } from '../../@generated/food/food.model';
+
+@ObjectType()
+export class FoodPaginatedModel extends Paginated(Food) {}
