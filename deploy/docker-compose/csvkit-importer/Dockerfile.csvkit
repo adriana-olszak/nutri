@@ -1,0 +1,9 @@
+FROM python:3.9-slim
+
+RUN apt-get update && apt-get install -y postgresql-client
+
+RUN pip install csvkit psycopg2-binary
+
+COPY import_script.py /import_script.py
+
+CMD ["python", "/import_script.py"]
