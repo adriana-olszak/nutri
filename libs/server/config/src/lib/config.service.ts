@@ -41,10 +41,6 @@ export class ConfigService {
     return this.environment === Environment.STAGING;
   }
 
-  get authRememberMeExpiresIn(): number {
-    return this.configService.get('AUTH_REMEMBER_ME_EXPIRES_IN', { infer: true });
-  }
-
   get clientUrl(): string {
     return this.configService.get('CLIENT_BASE_URL', { infer: true });
   }

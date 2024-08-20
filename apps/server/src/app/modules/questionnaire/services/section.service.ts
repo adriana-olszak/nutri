@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Section } from '@prisma/client';
-import { SectionCreateInput } from '../../../@generated/section/section-create.input';
-import { SectionUpdateInput } from '../../../@generated/section/section-update.input';
 import { PrismaService } from '@nutri/server-db-client';
+import { SectionCreateInput } from '../../../graphql/inputs/section-create.input';
+import { SectionUpdateInput } from '../../../graphql/inputs/section-update.input';
 
 @Injectable()
 export class SectionService {
@@ -15,8 +15,13 @@ export class SectionService {
     return section;
   }
 
-  async create(input: SectionCreateInput): Promise<Section> {
-    return this.prisma.section.create({ data: input });
+  async create(questionnaireVersionId: string, input: SectionCreateInput): Promise<Section> {
+    return this.prisma.section.create({
+      data: {
+        ...input,
+        questionnaireVersionId
+      }
+    });
   }
 
   async update(id: string, input: SectionUpdateInput): Promise<Section> {

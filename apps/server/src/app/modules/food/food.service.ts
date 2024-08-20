@@ -1,15 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, PrismaService } from '@nutri/server-db-client';
 import { createPaginator, PaginatedResult, PaginateOptions } from 'prisma-pagination';
-import { Food } from '../../@generated/food/food.model';
-import { FoodCount } from '../../@generated/food/food-count.output';
+import { Food } from '../../graphql/models/food.model';
+import { NutritionalValue } from '../../graphql/models/nutritional-value.model';
 
 @Injectable()
 export class FoodService {
-  constructor(private readonly prisma: PrismaService) {}
-
-  findAll(options: Prisma.FoodFindManyArgs) {
-    return this.prisma.food.findMany(options);
+  constructor(private readonly prisma: PrismaService) {
   }
 
   paginatedFindAll(
@@ -53,35 +50,6 @@ export class FoodService {
   `;
 
     return this.prisma.$queryRaw(searchQuery);
-  }
-
-  async getFoodCount(foodId: string): Promise<FoodCount> {
-    const food = await this.prisma.food.findUnique({
-      where: { id: foodId },
-      include: {
-        _count: {
-          select: {
-            nutrients: true,
-            portions: true,
-            categories: true,
-            searchVectors: true,
-            RecipeIngredient: true
-          }
-        }
-      }
-    });
-
-    if (!food) {
-      throw new Error(`Food with id ${foodId} not found`);
-    }
-
-    return {
-      nutrients: food._count.nutrients,
-      portions: food._count.portions,
-      categories: food._count.categories,
-      searchVectors: food._count.searchVectors,
-      RecipeIngredient: food._count.RecipeIngredient
-    };
   }
 
   private _formatTsQuery(input: string): string {

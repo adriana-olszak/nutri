@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@nutri/server-db-client';
-import { QuestionnaireUpdateInput } from '../../../@generated/questionnaire/questionnaire-update.input';
-import { QuestionnaireCreateInput } from '../../../@generated/questionnaire/questionnaire-create.input';
 import { PaginateOptions, PaginatedResult, createPaginator } from 'prisma-pagination';
-import { Questionnaire } from '../../../@generated/questionnaire/questionnaire.model';
+import { Questionnaire } from '../../../graphql/models/questionnaire.model';
+import { QuestionnaireCreateInput } from '../../../graphql/inputs/questionnaire-create.input';
+import { QuestionnaireUpdateInput } from '../../../graphql/inputs/questionnaire-update.input';
 
 @Injectable()
 export class QuestionnaireService {
@@ -101,7 +101,7 @@ export class QuestionnaireService {
 
     return this.prisma.questionnaire.update({
       where: { id },
-      data: { isPublic: false }
+      data: { isPublic: false, deletedAt: new Date() }
     });
   }
 }

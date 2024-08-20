@@ -5,9 +5,9 @@ import {
   PaginateOptions
 } from 'prisma-pagination';
 import { Prisma, PrismaService } from '@nutri/server-db-client';
-import { RecipeCreateInput } from '../../@generated/recipe/recipe-create.input';
-import { RecipeUpdateInput } from '../../@generated/recipe/recipe-update.input';
-import { Recipe } from '../../@generated/recipe/recipe.model';
+import { Recipe } from '../../graphql/models/recipe.model';
+import { RecipeCreateInput } from '../../graphql/inputs/recipe-create.input';
+import { RecipeUpdateInput } from '../../graphql/inputs/recipe-update.input';
 
 @Injectable()
 export class RecipeService {
@@ -39,7 +39,6 @@ export class RecipeService {
     return this.prisma.recipe.create({
       data: {
         title: createRecipeInput.title,
-        images: createRecipeInput.images,
         description: createRecipeInput.description
       }
     });
@@ -53,7 +52,6 @@ export class RecipeService {
       where: { id },
       data: {
         title: updateRecipeInput.title,
-        images: updateRecipeInput.images,
         description: updateRecipeInput.description
       }
     });
@@ -64,4 +62,5 @@ export class RecipeService {
       where: { id }
     });
   }
+
 }

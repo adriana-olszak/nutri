@@ -1,17 +1,18 @@
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from '../../../graphql/args/pagination.args';
-import { Questionnaire } from '../../../@generated/questionnaire/questionnaire.model';
-import { QuestionnaireVersion } from '../../../@generated/questionnaire-version/questionnaire-version.model';
-import { Submission } from '../../../@generated/submission/submission.model';
 import { QuestionnaireService } from '../services/questionnaire.service';
 import { QuestionnaireDataLoader } from '../data-loaders/questionnaire.data-loader';
-import { CreateOneQuestionnaireArgs } from '../../../@generated/questionnaire/create-one-questionnaire.args';
-import { QuestionnaireUpdateInput } from '../../../@generated/questionnaire/questionnaire-update.input';
 import { QuestionnairePaginatedModel } from '../../../graphql/models/questionnaire-paginated.model';
+
+import { Questionnaire } from '../../../graphql/models/questionnaire.model';
+import { QuestionnaireVersion } from '../../../graphql/models/questionnaire-version.model';
+import { Submission } from '../../../graphql/models/submission.model';
 import {
   QuestionnaireOrderByWithRelationInput
-} from '../../../@generated/questionnaire/questionnaire-order-by-with-relation.input';
-import { QuestionnaireWhereInput } from '../../../@generated/questionnaire/questionnaire-where.input';
+} from '../../../graphql/inputs/questionnaire-order-by-with-relation.input';
+import { QuestionnaireWhereInput } from '../../../graphql/inputs/questionnaire-where.input';
+import { QuestionnaireUpdateInput } from '../../../graphql/inputs/questionnaire-update.input';
+import { QuestionnaireCreateInput } from '../../../graphql/inputs/questionnaire-create.input';
 
 @Resolver(() => Questionnaire)
 export class QuestionnaireResolver {
@@ -38,8 +39,8 @@ export class QuestionnaireResolver {
   }
 
   @Mutation(() => Questionnaire)
-  async createQuestionnaire(@Args() createQuestionnaireInput: CreateOneQuestionnaireArgs): Promise<Questionnaire> {
-    return this.questionnaireService.create(createQuestionnaireInput.data);
+  async createQuestionnaire(@Args('input') createQuestionnaireInput: QuestionnaireCreateInput): Promise<Questionnaire> {
+    return this.questionnaireService.create(createQuestionnaireInput);
   }
 
   @Mutation(() => Questionnaire)

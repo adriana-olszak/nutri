@@ -17,7 +17,7 @@ generator nestgraphql {
   // provider = "node node_modules/prisma-nestjs-graphql"
   // for yarn monorepos
   provider = "prisma-nestjs-graphql"
-  output   = "../../../../apps/server/src/app/@generated"
+  output   = "../@generated"
 }
 
 // generator erd {
@@ -502,6 +502,7 @@ model Questionnaire {
   title       String
   description String?
   isPublic    Boolean                @default(false)
+  deletedAt   DateTime?
   versions    QuestionnaireVersion[]
   submissions Submission[]
   createdAt   DateTime               @default(now())
@@ -514,6 +515,7 @@ model QuestionnaireVersion {
   questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
   versionNumber   Int
   isActive        Boolean       @default(false)
+  deletedAt       DateTime?
   sections        Section[]
   submissions     Submission[]
   createdAt       DateTime      @default(now())

@@ -12,7 +12,6 @@ import { AppModule } from './app/app.module';
 import { ConfigService } from '@nutri/server-config';
 import express from 'express';
 
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config: ConfigService = app.get(ConfigService);

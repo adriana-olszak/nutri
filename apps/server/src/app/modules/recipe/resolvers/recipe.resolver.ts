@@ -1,20 +1,19 @@
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { CreateOneRecipeArgs } from '../../../@generated/recipe/create-one-recipe.args';
-import { UpdateOneRecipeArgs } from '../../../@generated/recipe/update-one-recipe.args';
 import { PaginationArgs } from '../../../graphql/args/pagination.args';
 import { RecipePaginatedModel } from '../../../graphql/models/recipe-paginated.model';
-import { Recipe } from '../../../@generated/recipe/recipe.model';
 import { RecipeService } from '../recipe.service';
 import { RecipeDataLoader } from '../recipe.data-loader';
-import { RecipePart } from '../../../@generated/recipe-part/recipe-part.model';
-import { RecipeIngredient } from '../../../@generated/recipe-ingredient/recipe-ingredient.model';
-import { RecipeCategory } from '../../../@generated/recipe-category/recipe-category.model';
-import { RecipeImage } from '../../../@generated/recipe-image/recipe-image.model';
-import { Season } from '../../../@generated/season/season.model';
-import { Tag } from '../../../@generated/tag/tag.model';
-import { RecipeWhereInput } from '../../../@generated/recipe/recipe-where.input';
-import { RecipeOrderByWithRelationInput } from '../../../@generated/recipe/recipe-order-by-with-relation.input';
-
+import { Recipe } from '../../../graphql/models/recipe.model';
+import { RecipeOrderByWithRelationInput } from '../../../graphql/inputs/recipe-order-by-with-relation.input';
+import { RecipeWhereInput } from '../../../graphql/inputs/recipe-where.input';
+import { CreateOneRecipeArgs } from '../../../graphql/args/create-one-recipe.args';
+import { UpdateOneRecipeArgs } from '../../../graphql/args/update-one-recipe.args';
+import { RecipePart } from '../../../graphql/models/recipe-part.model';
+import { RecipeIngredient } from '../../../graphql/models/recipe-ingredient.model';
+import { RecipeCategory } from '../../../graphql/models/recipe-category.model';
+import { RecipeImage } from '../../../graphql/models/recipe-image.model';
+import { Season } from '../../../graphql/models/season.model';
+import { Tag } from '../../../graphql/models/tag.model';
 
 @Resolver(() => Recipe)
 export class RecipeResolver {
@@ -47,7 +46,7 @@ export class RecipeResolver {
 
   @Mutation(() => Recipe)
   updateRecipe(@Args() updateRecipeInput: UpdateOneRecipeArgs): Promise<Recipe> {
-    return this.recipesService.update(updateRecipeInput.where.id, updateRecipeInput.data);
+    return this.recipesService.update(updateRecipeInput.id, updateRecipeInput.data);
   }
 
   @Mutation(() => Recipe)
@@ -57,56 +56,34 @@ export class RecipeResolver {
 
   @ResolveField(() => [RecipePart])
   async parts(@Parent() recipe: Recipe): Promise<RecipePart[]> {
-    const result = await this.recipeDataLoader.batchParts.load(recipe.id);
-    if (result instanceof Error) {
-      throw result;
-    }
-    return result;
+    return this.recipeDataLoader.batchParts.load(recipe.id);
+
   }
 
   @ResolveField(() => [RecipeIngredient])
   async ingredients(@Parent() recipe: Recipe): Promise<RecipeIngredient[]> {
-    const results = await this.recipeDataLoader.batchIngredients.load(recipe.id);
-    const errors = results.filter(result => result instanceof Error);
-    if (errors.length > 0) {
-      throw errors[0];
-    }
-    return results as RecipeIngredient[];
+    return this.recipeDataLoader.batchIngredients.load(recipe.id);
   }
 
   @ResolveField(() => [RecipeCategory])
   async categories(@Parent() recipe: Recipe): Promise<RecipeCategory[]> {
-    const result = await this.recipeDataLoader.batchCategories.load(recipe.id);
-    if (result instanceof Error) {
-      throw result;
-    }
-    return result;
+    return await this.recipeDataLoader.batchCategories.load(recipe.id);
   }
 
   @ResolveField(() => [RecipeImage])
   async images(@Parent() recipe: Recipe): Promise<RecipeImage[]> {
-    const result = await this.recipeDataLoader.batchImages.load(recipe.id);
-    if (result instanceof Error) {
-      throw result;
-    }
-    return result;
+    return await this.recipeDataLoader.batchImages.load(recipe.id);
+
   }
 
   @ResolveField(() => [Season])
   async seasons(@Parent() recipe: Recipe): Promise<Season[]> {
-    const result = await this.recipeDataLoader.batchSeasons.load(recipe.id);
-    if (result instanceof Error) {
-      throw result;
-    }
-    return result;
+    return await this.recipeDataLoader.batchSeasons.load(recipe.id);
+
   }
 
   @ResolveField(() => [Tag])
   async tags(@Parent() recipe: Recipe): Promise<Tag[]> {
-    const result = await this.recipeDataLoader.batchTags.load(recipe.id);
-    if (result instanceof Error) {
-      throw result;
-    }
-    return result;
+    return await this.recipeDataLoader.batchTags.load(recipe.id);
   }
 }

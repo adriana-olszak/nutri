@@ -22,7 +22,6 @@
       "@nutri/client-ui": ["libs/client/ui/src/index.ts"],
       "@nutri/client-ui/*": ["libs/client/ui/src/lib/*"],
       "@nutri/client-utils": ["libs/client/utils/src/index.ts"],
-      "@nutri/store/*": ["apps/client/src/store/*"],
       "@nutri/common-consts": ["libs/common/consts/src/index.ts"],
       "@nutri/data-import": ["libs/data-import/src/index.ts"],
       "@nutri/data-import-usda": ["libs/data-import-usda/src/index.ts"],
@@ -37,7 +36,9 @@
       "@nutri/server-metrics": ["libs/server/metrics/src/index.ts"],
       "@nutri/server-parse-recipe": ["libs/server/parse-recipe/src/index.ts"],
       "@nutri/server-testing": ["libs/server/testing/src/index.ts"],
-      "@nutri/server-utils": ["libs/server/utils/src/index.ts"]
+      "@nutri/server-utils": ["libs/server/utils/src/index.ts"],
+      "@nutri/store": ["apps/client/src/store"],
+      "@nutri/store/*": ["apps/client/src/store/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

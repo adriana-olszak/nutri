@@ -1,8 +1,8 @@
 import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
 
 import { RecipeDataLoader } from '../recipe.data-loader';
-import { RecipePart } from '../../../@generated/recipe-part/recipe-part.model';
-import { RecipeIngredient } from '../../../@generated/recipe-ingredient/recipe-ingredient.model';
+import { RecipeIngredient } from '../../../graphql/models/recipe-ingredient.model';
+import { RecipePart } from '../../../graphql/models/recipe-part.model';
 
 @Resolver(() => RecipePart)
 export class RecipePartResolver {

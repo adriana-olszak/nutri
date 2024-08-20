@@ -1,10 +1,10 @@
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Question } from '../../../@generated/question/question.model';
-import { Answer } from '../../../@generated/answer/answer.model';
 import { QuestionService } from '../services/question.service';
-import { QuestionUpdateInput } from '../../../@generated/question/question-update.input';
-import { QuestionCreateInput } from '../../../@generated/question/question-create.input';
 import { QuestionDataLoader } from '../data-loaders/question.data-loader';
+import { QuestionCreateInput } from '../../../graphql/inputs/question-create.input';
+import { QuestionUpdateInput } from '../../../graphql/inputs/question-update.input';
+import { Question } from '../../../graphql/models/question.model';
+import { Answer } from '../../../graphql/models/answer.model';
 
 @Resolver(() => Question)
 export class QuestionResolver {

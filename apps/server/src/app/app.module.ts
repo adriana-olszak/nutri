@@ -7,6 +7,7 @@ import { ConfigService } from '@nutri/server-config';
 import { RecipeModule } from './modules/recipe/recipe.module';
 import { FoodModule } from './modules/food/food.module';
 import { QuestionnaireModule } from './modules/questionnaire/questionnaire.module';
+import { NutritionModule } from './modules/nutrition/nutrition.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { QuestionnaireModule } from './modules/questionnaire/questionnaire.modul
     GraphqlModule,
     RecipeModule,
     FoodModule,
-    QuestionnaireModule
+    QuestionnaireModule,
+    NutritionModule
   ]
 })
 export class AppModule {

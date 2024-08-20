@@ -393,6 +393,7 @@ Table Questionnaire {
   title String [not null]
   description String
   isPublic Boolean [not null, default: false]
+  deletedAt DateTime
   versions QuestionnaireVersion [not null]
   submissions Submission [not null]
   createdAt DateTime [default: `now()`, not null]
@@ -405,6 +406,7 @@ Table QuestionnaireVersion {
   questionnaire Questionnaire [not null]
   versionNumber Int [not null]
   isActive Boolean [not null, default: false]
+  deletedAt DateTime
   sections Section [not null]
   submissions Submission [not null]
   createdAt DateTime [default: `now()`, not null]

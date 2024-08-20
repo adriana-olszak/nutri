@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Question } from '@prisma/client';
 import { PrismaService } from '@nutri/server-db-client';
-import { QuestionCreateInput } from '../../../@generated/question/question-create.input';
-import { QuestionUpdateInput } from '../../../@generated/question/question-update.input';
+import { QuestionCreateInput } from '../../../graphql/inputs/question-create.input';
+import { QuestionUpdateInput } from '../../../graphql/inputs/question-update.input';
 
 @Injectable()
 export class QuestionService {
@@ -16,12 +16,31 @@ export class QuestionService {
   }
 
   async create(input: QuestionCreateInput): Promise<Question> {
-    return this.prisma.question.create({ data: input });
+    return this.prisma.question.create({
+      data: {
+        config: input.config,
+        description: input.description,
+        isRequired: input.isRequired,
+        order: input.order,
+        sectionId: input.sectionId,
+        title: input.title,
+        type: input.type
+      }
+    });
   }
 
   async update(id: string, input: QuestionUpdateInput): Promise<Question> {
     await this.findOne(id);
-    return this.prisma.question.update({ where: { id }, data: input });
+    return this.prisma.question.update({
+      where: { id }, data: {
+        config: input.config,
+        description: input.description,
+        isRequired: input.isRequired,
+        order: input.order,
+        title: input.title,
+        type: input.type
+      }
+    });
   }
 
   async delete(id: string): Promise<Question> {

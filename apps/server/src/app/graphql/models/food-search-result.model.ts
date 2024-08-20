@@ -1,5 +1,5 @@
-import { Food } from '../../@generated/food/food.model';
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
+import { Food } from './food.model';
 
 @ObjectType()
 export class FoodSearchResult {

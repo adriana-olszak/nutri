@@ -1,13 +1,13 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { PrismaService } from '@nutri/server-db-client';
 import DataLoader from 'dataloader';
-import { RecipeCategory } from '../../@generated/recipe-category/recipe-category.model';
-import { RecipePart } from '../../@generated/recipe-part/recipe-part.model';
-import { RecipeImage } from '../../@generated/recipe-image/recipe-image.model';
-import { Season } from '../../@generated/season/season.model';
-import { Tag } from '../../@generated/tag/tag.model';
-import { RecipeIngredient } from '../../@generated/recipe-ingredient/recipe-ingredient.model';
-import { Food } from '../../@generated/food/food.model';
+import { RecipePart } from '../../graphql/models/recipe-part.model';
+import { RecipeIngredient } from '../../graphql/models/recipe-ingredient.model';
+import { RecipeCategory } from '../../graphql/models/recipe-category.model';
+import { RecipeImage } from '../../graphql/models/recipe-image.model';
+import { Season } from '../../graphql/models/season.model';
+import { Food } from '../../graphql/models/food.model';
+import { Tag } from '../../graphql/models/tag.model';
 
 @Injectable({ scope: Scope.REQUEST })
 export class RecipeDataLoader {
@@ -26,7 +26,7 @@ export class RecipeDataLoader {
           if (!partMap.has(part.recipeId)) {
             partMap.set(part.recipeId, []);
           }
-          partMap.get(part.recipeId)!.push(part);
+          partMap.get(part.recipeId)?.push(part);
         });
 
         return recipeIds.map(id => partMap.get(id) || []);
@@ -87,7 +87,7 @@ export class RecipeDataLoader {
           if (!imageMap.has(image.recipeId)) {
             imageMap.set(image.recipeId, []);
           }
-          imageMap.get(image.recipeId)!.push(image);
+          imageMap.get(image.recipeId)?.push(image);
         });
 
         return recipeIds.map(id => imageMap.get(id) || []);
@@ -112,7 +112,7 @@ export class RecipeDataLoader {
               seasonMap.set(recipe.id, []);
             }
             const { recipes, ...seasonWithoutRecipes } = season;
-            seasonMap.get(recipe.id)!.push(seasonWithoutRecipes);
+            seasonMap.get(recipe.id)?.push(seasonWithoutRecipes);
           });
         });
 
@@ -138,7 +138,7 @@ export class RecipeDataLoader {
               tagMap.set(recipe.id, []);
             }
             const { recipes, ...tagWithoutRecipes } = tag;
-            tagMap.get(recipe.id)!.push(tagWithoutRecipes);
+            tagMap.get(recipe.id)?.push(tagWithoutRecipes);
           });
         });
 
@@ -160,7 +160,7 @@ export class RecipeDataLoader {
           if (!ingredientMap.has(ingredient.partId!)) {
             ingredientMap.set(ingredient.partId!, []);
           }
-          ingredientMap.get(ingredient.partId!)!.push(ingredient);
+          ingredientMap.get(ingredient.partId!)?.push(ingredient);
         });
         return partIds.map(id => ingredientMap.get(id) || []);
       } catch (error) {
@@ -176,7 +176,10 @@ export class RecipeDataLoader {
           where: { id: { in: foodIds as string[] } }
         });
         const foodMap = new Map(foods.map(food => [food.id, food]));
-        return foodIds.map(id => foodMap.get(id) || new Error(`Food with id ${id} not found`));
+        return foodIds.map(id => {
+          const food = foodMap.get(id);
+          return food ? food : new Error(`Food not found for id: ${id}`);
+        });
       } catch (error) {
         return foodIds.map(() => error instanceof Error ? error : new Error('An unknown error occurred'));
       }

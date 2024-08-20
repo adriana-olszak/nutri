@@ -1,13 +1,13 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Section } from '../../../@generated/section/section.model';
 import { SectionService } from '../services/section.service';
-import { SectionCreateInput } from '../../../@generated/section/section-create.input';
-import { SectionUpdateInput } from '../../../@generated/section/section-update.input';
+import { SectionCreateInput } from '../../../graphql/inputs/section-create.input';
+import { SectionUpdateInput } from '../../../graphql/inputs/section-update.input';
+import { Section } from '../../../graphql/models/section.model';
 
 @Resolver(() => Section)
 export class SectionResolver {
   constructor(
-    private readonly sectionService: SectionService,
+    private readonly sectionService: SectionService
   ) {
   }
 
@@ -17,8 +17,8 @@ export class SectionResolver {
   }
 
   @Mutation(() => Section)
-  async createSection(@Args('input') createSectionInput: SectionCreateInput): Promise<Section> {
-    return this.sectionService.create(createSectionInput);
+  async createSection(@Args('questionnaireVersionId') questionnaireVersionId: string, @Args('input') createSectionInput: SectionCreateInput): Promise<Section> {
+    return this.sectionService.create(questionnaireVersionId, createSectionInput);
   }
 
   @Mutation(() => Section)

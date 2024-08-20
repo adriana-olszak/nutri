@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Submission, Answer } from '@prisma/client';
 import { PrismaService } from '@nutri/server-db-client';
-import { SubmissionCreateInput } from '../../../@generated/submission/submission-create.input';
-import { SubmissionUpdateInput } from '../../../@generated/submission/submission-update.input';
-import { AnswerCreateManyInput } from '../../../@generated/answer/answer-create-many.input';
+import { SubmissionCreateInput } from '../../../graphql/inputs/submission-create.input';
+import { AnswerCreateManyInput } from '../../../graphql/inputs/answer-create-many.input';
 
 @Injectable()
 export class SubmissionService {
@@ -17,12 +16,24 @@ export class SubmissionService {
   }
 
   async create(input: SubmissionCreateInput): Promise<Submission> {
-    return this.prisma.submission.create({ data: input });
+    return this.prisma.submission.create({
+      data: {
+        questionnaireId: input.questionnaireId,
+        questionnaireVersionId: input.questionnaireVersionId,
+        userId: input.userId,
+        startedAt: new Date()
+      }
+    });
   }
 
-  async update(id: string, input: SubmissionUpdateInput): Promise<Submission> {
+  async complete(id: string): Promise<Submission> {
     await this.findOne(id);
-    return this.prisma.submission.update({ where: { id }, data: input });
+    return this.prisma.submission.update({
+      where: { id }, data: {
+        isComplete: true,
+        completedAt: new Date()
+      }
+    });
   }
 
   async submitAnswer(input: AnswerCreateManyInput): Promise<Answer> {

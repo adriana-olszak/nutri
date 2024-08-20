@@ -4,13 +4,11 @@ import { CreateTableViewDefinitionInput } from '../../graphql/inputs/create-tabl
 import { UpdateTableViewDefinitionInput } from '../../graphql/inputs/update-table-view-definition.input';
 import { PaginationArgs } from '../../graphql/args/pagination.args';
 import { TableViewDefinitionPaginated } from '../../graphql/models/table-view-definition-paginated.model';
-import { TableViewDefinition } from '../../@generated/table-view-definition/table-view-definition.model';
+
+import { TableViewDefinition } from '../../graphql/models/table-view-definition.model';
 import {
   TableViewDefinitionOrderByWithRelationInput
-} from '../../@generated/table-view-definition/table-view-definition-order-by-with-relation.input';
-import {
-  TableViewDefinitionWhereInput
-} from '../../@generated/table-view-definition/table-view-definition-where.input';
+} from '../../graphql/inputs/table-view-definition-order-by-with-relation.input';
 
 @Resolver(() => TableViewDefinition)
 export class TableViewDefinitionResolver {
@@ -25,9 +23,8 @@ export class TableViewDefinitionResolver {
   @Query(() => TableViewDefinitionPaginated, { name: 'paginatedTableViewDefinitions' })
   async paginatedFindAll(@Args({ nullable: true }) options?: PaginationArgs,
                          @Args('sortInput', { nullable: true }) sortInput?: TableViewDefinitionOrderByWithRelationInput,
-                         @Args('filterInput', { nullable: true }) filterInput?: TableViewDefinitionWhereInput
   ) {
-    return this.tableViewDefinitionService.paginatedFindAll(options, sortInput, filterInput);
+    return this.tableViewDefinitionService.paginatedFindAll(options, sortInput);
   }
 
 

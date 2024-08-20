@@ -1,7 +1,7 @@
 import { FoundationFoodItem } from './interfaces';
 import { v4 as uuid } from 'uuid';
 import { PrismaTransactionalClient } from '@nutri/server-db-client';
-import {Prisma} from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 export async function importFoundationFood(prisma: PrismaTransactionalClient, foodItem: FoundationFoodItem, importInfoId: string) {
   const {
@@ -88,7 +88,7 @@ export async function importFoundationFood(prisma: PrismaTransactionalClient, fo
           }).filter(Boolean)
         },
         portions: {
-          create: (foodPortions || []).map(({ amount, gramWeight, id, measureUnit, portionDescription }) => ({
+          create: (foodPortions || []).map(({ amount, gramWeight, id, measureUnit, portionDescription, modifier }) => ({
             amount,
             gramWeight,
             id: uuid(),
@@ -106,7 +106,7 @@ export async function importFoundationFood(prisma: PrismaTransactionalClient, fo
                 }
               }
             },
-            portionDescription,
+            portionDescription: modifier || portionDescription,
             sourceId: String(id),
             importInfo: {
               connect: {

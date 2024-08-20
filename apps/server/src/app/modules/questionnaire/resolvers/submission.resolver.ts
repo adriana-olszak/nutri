@@ -1,11 +1,10 @@
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Submission } from '../../../@generated/submission/submission.model';
-import { Answer } from '../../../@generated/answer/answer.model';
 import { SubmissionService } from '../services/submission.service';
 import { SubmissionDataLoader } from '../data-loaders/submission.data-loader';
-import { SubmissionCreateInput } from '../../../@generated/submission/submission-create.input';
-import { AnswerCreateManyInput } from '../../../@generated/answer/answer-create-many.input';
-import { SubmissionUpdateInput } from '../../../@generated/submission/submission-update.input';
+import { SubmissionCreateInput } from '../../../graphql/inputs/submission-create.input';
+import { AnswerCreateManyInput } from '../../../graphql/inputs/answer-create-many.input';
+import { Answer } from '../../../graphql/models/answer.model';
+import { Submission } from '../../../graphql/models/submission.model';
 
 @Resolver(() => Submission)
 export class SubmissionResolver {
@@ -21,16 +20,17 @@ export class SubmissionResolver {
   }
 
   @Mutation(() => Submission)
-  async createSubmission(@Args('input') createSubmissionInput: SubmissionCreateInput): Promise<Submission> {
+  async createSubmission(
+    @Args('input') createSubmissionInput: SubmissionCreateInput
+  ): Promise<Submission> {
     return this.submissionService.create(createSubmissionInput);
   }
 
   @Mutation(() => Submission)
-  async updateSubmission(
-    @Args('id', { type: () => String }) id: string,
-    @Args('input') updateSubmissionInput: SubmissionUpdateInput
+  async complete(
+    @Args('id', { type: () => String }) id: string
   ): Promise<Submission> {
-    return this.submissionService.update(id, updateSubmissionInput);
+    return this.submissionService.complete(id);
   }
 
   @Mutation(() => Answer)

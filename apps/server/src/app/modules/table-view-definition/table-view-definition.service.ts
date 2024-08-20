@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@nutri/server-db-client';
-import { TableViewDefinition } from '../../@generated/table-view-definition/table-view-definition.model';
 import { PaginateOptions, PaginatedResult, createPaginator } from 'prisma-pagination';
+import { TableViewDefinition } from '../../graphql/models/table-view-definition.model';
 
 @Injectable()
 export class TableViewDefinitionService {
