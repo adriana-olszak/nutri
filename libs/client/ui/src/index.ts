@@ -20,7 +20,7 @@ export * from './lib/drawer';
 export * from './lib/dropdown-menu';
 export * from './lib/form';
 export * from './lib/hover-card';
-export * from './lib/input';
+export * from '@nutri/client-ui/input/Input';
 export * from './lib/input-otp';
 export * from './lib/label';
 export * from './lib/menubar';

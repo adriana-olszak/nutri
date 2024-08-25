@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '@nutri/client-utils';
-import { Home, User, BookOpen, Banana, UsersRound, Cog } from 'lucide-react';
+import {Home, User, BookOpen, Banana, UsersRound, Cog, Workflow, FileEdit} from 'lucide-react';
 import {
   Button,
 } from '@nutri/client-ui';
@@ -15,6 +15,8 @@ const Sidebar = ({ className, width }: React.HTMLAttributes<HTMLDivElement> & {w
     { path: '/dashboard', label: 'Dashboard', icon: Home },
     { path: '/recipes', label: 'Recipes', icon: BookOpen },
     { path: '/patients', label: 'Patients', icon: UsersRound },
+    { path: '/tools', label: 'Assessment Tools', icon: FileEdit },
+    { path: '/workflows', label: 'Patient Flows', icon: Workflow },
   ];
   const sidebarBottomSectionLinks = [
     { path: '/profile', label: 'My Profile', icon: User },

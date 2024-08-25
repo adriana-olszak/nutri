@@ -14,7 +14,7 @@ const buttonSize = cva([], {
   variants: {
     size: {
       xxs: ['p-1', 'rounded-md'],
-      xs: ['p-1.5', 'rounded-md'],
+      xs: ['p-1', 'rounded-md'],
       sm: ['p-2', 'rounded-lg', 'text-lg'],
       md: ['p-[10px]', 'rounded-lg'],
       lg: ['p-[10px]', 'rounded-lg'],

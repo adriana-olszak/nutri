@@ -41,7 +41,7 @@ export function WelcomeDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <FeatureCard
             icon={<ChefHat className="h-6 w-8 text-primary-500" />}
-            title="Customizable Recipe Database"
+            title="Customizable AssessmentTools Database"
             description="Add your own recipes or use our extensive collection. Easily tailor meals to your clients' preferences and dietary needs."
             ctaText="Explore Recipes"
             ctaLink="#explore-recipes"

@@ -21,6 +21,7 @@ export class ClientAuthService implements AuthService {
 
   async logout(accessToken: string): Promise<void> {
     this.graphqlClient.setHeader('Authorization', `Bearer ${accessToken}`);
+    console.log(this.client)
     await this.client.AuthLogout();
     this.graphqlClient.setHeader('Authorization', ''); // Clear the header after logout
   }
