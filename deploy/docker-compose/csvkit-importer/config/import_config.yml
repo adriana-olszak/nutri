@@ -1,0 +1,4 @@
+/dara/uk-food-data:
+  skip_sheets:
+    - "List of tables"
+    - "1.1 Notes"

@@ -6,7 +6,13 @@
     "dev": "npx nx run-many -t serve",
     "gen:gql:codegen": "npx nx run client-gql:gen",
     "gen:prisma:migrate": "npx nx run server-db-client:migratelool",
-    "gen:prisma:client": "npx nx run server-db-client:generate-types"
+    "gen:prisma:client": "npx nx run server-db-client:generate-types",
+    "import:usda": "npx nx run data-import-usda:import",
+    "import:otto": "npx nx run data-import:import:otto",
+    "db:nutri:migrate": "npx nx run server-db-client:migrate",
+    "db:tui:nutri": "harlequin -a postgres -h localhost -p 3100 -U nutri --password nutri -d nutri",
+    "db:tui:sffood": "harlequin -a postgres -h localhost -p 3100 -U nutri --password nutri -d sf-legacy-food",
+    "db:tui:foundationfood": "harlequin -a postgres -h localhost -p 3100 -U nutri --password nutri -d foundation-food"
   },
   "private": true,
   "dependencies": {

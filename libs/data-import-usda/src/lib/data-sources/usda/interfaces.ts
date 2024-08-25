@@ -1409,6 +1409,12 @@ export interface SRLegacyFoodItem {
    * @memberof SRLegacyFoodItem
    */
   nutrientConversionFactors?: Array<NutrientConversionFactors>;
+  /**
+   *
+   * @type {Array<FoodPortion>}
+   * @memberof SRLegacyFoodItem
+   */
+  foodPortions?: Array<FoodPortion>;
 }
 
 /**

@@ -9,9 +9,6 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
       PG_DATA: /var/lib/postgresql/data
       POSTGRES_INITDB_ARGS: "--wal-segsize=512"
-      USDA_DATABASE_NAME: ${USDA_DATABASE_NAME}
-      USDA_DATABASE_USER: ${USDA_DATABASE_USER}
-      USDA_DATABASE_PASSWORD: ${USDA_DATABASE_PASSWORD}
     ports:
       - "${DATABASE_PORT}:5432"
     volumes:
@@ -29,11 +26,15 @@ services:
       dockerfile: Dockerfile.csvkit
     environment:
       POSTGRES_HOST: postgres-nutri
-      POSTGRES_DB: ${USDA_DATABASE_NAME}
-      POSTGRES_USER: ${USDA_DATABASE_USER}
-      POSTGRES_PASSWORD: ${USDA_DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      PYTHONUNBUFFERED: 1
     volumes:
-      - ./deploy/docker-compose/csvkit-importer/csv:/csv
+      - ./deploy/docker-compose/csvkit-importer/data:/data
+      - ./deploy/docker-compose/csvkit-importer/config:/config
+      - ./deploy/docker-compose/csvkit-importer/import_script.py:/import_script.py
+    command: python /import_script.py
     depends_on:
       postgres-nutri:
         condition: service_healthy
