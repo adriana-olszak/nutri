@@ -26,7 +26,6 @@
       "@nutri/data-import": ["libs/data-import/src/index.ts"],
       "@nutri/data-import-usda": ["libs/data-import-usda/src/index.ts"],
       "@nutri/emails": ["libs/emails/src/index.ts"],
-      "@nutri/generator": ["libs/generator/src/index.ts"],
       "@nutri/server-auth": ["libs/server/auth/src/index.ts"],
       "@nutri/server-config": ["libs/server/config/src/index.ts"],
       "@nutri/server-config/*": ["libs/server/config/src/lib/*"],
