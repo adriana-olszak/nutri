@@ -1,0 +1,30 @@
+{
+  "name": "emails",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/emails/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project client-emails --web",
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../coverage/libs/emails"
+      }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/emails/src/lib",
+        "command": "pnpm email dev",
+        "forwardAllArgs": true,
+        "args": "-d ./libs/emails/src/lib/emails -p 4321"
+      }
+    }
+  }
+}
