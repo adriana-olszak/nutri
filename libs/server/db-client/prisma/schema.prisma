@@ -331,6 +331,7 @@ enum FoodDataSource {
   USDA
   EUROFIR
   CIQUAL
+  CANADA
   USER_INPUT
 }
 
