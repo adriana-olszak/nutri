@@ -1,12 +1,14 @@
 import * as fs from 'fs';
+import { ParserType } from './config';
 
-export function getParser(type: 'json') {
+
+export function getParser(type: ParserType) {
   switch (type) {
     case 'json':
       return {
-        parse(filePath: string): unknown {
+        parse<File>(filePath: string): string {
           const fileContent = fs.readFileSync(filePath, 'utf8');
-          return  JSON.parse(fileContent);
+          return JSON.parse(fileContent);
         }
       };
     default:

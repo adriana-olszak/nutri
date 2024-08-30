@@ -8,6 +8,7 @@ import { Type } from 'class-transformer';
 export enum FoodDataSource {
   USDA = 'USDA',
   CIQUAL = 'CIQUAL',
+  CANADA = 'CANADA',
   EUROFIR = 'EUROFIR',
 }
 
@@ -52,6 +53,9 @@ export class Config {
   @ValidateNested({ each: true })
   @Type(() => DataSourceConfig)
   data_sources: DataSourceConfig[];
+
+  @IsEnum(FoodDataSource)
+  use_data_source: FoodDataSource
 
 }
 

@@ -142,7 +142,7 @@ async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, i
 }
 
 async function findOrCreateFood(prisma: PrismaClient, foodName: string) {
-  const matches = await matchIngredientToFood(prisma, foodName);
+  const matches = await matchIngredientToFood(prisma, manualFoodMapping(foodName));
 
   let food = matches.length ? await prisma.food.findUnique({
     where: { id: matches[0].foodId }
@@ -207,32 +207,37 @@ export async function matchIngredientToFood(prisma: PrismaClient, name: string):
   foodId: string,
   rank: number
 }]> {
-  const similarityThreshold = 0.3;
-  const nonBrandedBoost = 1.5;
-
-  const formattedName = _formatTsQuery(name);
+  const similarityThreshold = 0.05;
 
   const searchQuery = Prisma.sql`
-    SELECT f.id "foodId",
-           CASE
-               WHEN bf.id IS NULL THEN
-                   (ts_rank(fv."searchVector", to_tsquery(${formattedName})) + word_similarity(f.description, ${name})) *
-                   ${nonBrandedBoost}
-               ELSE ts_rank(fv."searchVector", to_tsquery(${formattedName})) + word_similarity(f.description, ${name})
-           END as "rank"
-    FROM "FoodSearchVector" fv
-    JOIN "Food" f ON f.id = fv."foodId"
-    LEFT JOIN "BrandedFood" bf ON bf."foodId" = f.id
-    WHERE fv."searchVector" @@ to_tsquery(${formattedName})
-      AND word_similarity(f.description, ${name}) > ${similarityThreshold}
-    ORDER BY "rank" DESC
+SELECT f.id "foodId",
+       ts_rank(fv."searchVector", plainto_tsquery(${name})) + word_similarity(f.description, ${name}) as "rank"
+FROM "FoodSearchVector" fv
+         JOIN "Food" f ON f.id = fv."foodId"
+WHERE (ts_rank(fv."searchVector", plainto_tsquery(${name})) > ${similarityThreshold} OR
+       word_similarity(f.description, ${name}) > ${similarityThreshold})
+ORDER BY "rank" DESC
     LIMIT 1;
   `;
 
   return prisma.$queryRaw(searchQuery);
 }
 
-function _formatTsQuery(input: string): string {
-  const words = input.split(/\s+/).filter(word => word.length > 0);
-  return words.join(' & ');
+function manualFoodMapping(name: string) {
+
+  return name.toLowerCase()
+    .replace(/caster sugar/g, 'Sweets, sugars, fructose, powder')
+    .replace(/spices/g, 'Spices, cumin seed')
+    .replace(/spices/g, 'Spices, cumin seed')
+    .replace(/chilli flakes/g, 'Spices, chili powder')
+    .replace(/red chillies/g, 'Pepper, hot chili, red or green, raw')
+    .replace(/green chilli/g, 'Pepper, hot chili, red or green, raw')
+    .replace(/red chilli/g, 'Pepper, hot chili, red or green, raw')
+    .replace(/aleppo chilli/g, 'Pepper, hot chili, red or green, raw')
+    .replace(/urfa chilli flakes/g, 'Pepper, hot chili, red or green, raw')
+    .replace(/aleppo chilli flakes/g, 'Pepper, hot chili, red or green, raw')
+    .replace(/dijon mustard/g, 'Sauce, mustard, yellow, ready-to-serve')
+    .replace(/vanilla pod/g, 'Vanilla extract')
+    .replace(/cherry tomatoes/g, 'Tomato, red, ripe, raw, year round average')
+    .replace(/mint leaves/g, 'Spices, spearmint, fresh');
 }
