@@ -25,6 +25,7 @@
       "@nutri/common-consts": ["libs/common/consts/src/index.ts"],
       "@nutri/data-import": ["libs/data-import/src/index.ts"],
       "@nutri/data-import-usda": ["libs/data-import-usda/src/index.ts"],
+      "@nutri/emails": ["libs/emails/src/index.ts"],
       "@nutri/generator": ["libs/generator/src/index.ts"],
       "@nutri/server-auth": ["libs/server/auth/src/index.ts"],
       "@nutri/server-config": ["libs/server/config/src/index.ts"],
@@ -33,6 +34,13 @@
         "libs/server/data-access-users/src/index.ts"
       ],
       "@nutri/server-db-client": ["libs/server/db-client/src/index.ts"],
+      "@nutri/server-email-renderer": [
+        "libs/server/email-renderer/src/index.ts"
+      ],
+      "@nutri/server-mailer": ["libs/server/mailer/src/index.ts"],
+      "@nutri/server-mailer-renderer": [
+        "libs/server/mailer-renderer/src/index.ts"
+      ],
       "@nutri/server-metrics": ["libs/server/metrics/src/index.ts"],
       "@nutri/server-parse-recipe": ["libs/server/parse-recipe/src/index.ts"],
       "@nutri/server-testing": ["libs/server/testing/src/index.ts"],
