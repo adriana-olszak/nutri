@@ -41,7 +41,7 @@ EOSQL
 }
 
 # Process SQL files for each database
-for db in "$POSTGRES_DB" "$USDA_DATABASE_NAME"; do
+for db in "$POSTGRES_DB"; do
     echo "Processing database: $db"
     for sql_file in /docker-entrypoint-initdb.d/"$db"/*.sql; do
         if [ -f "$sql_file" ]; then

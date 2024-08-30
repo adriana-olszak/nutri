@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir \
     pandas \
     openpyxl \
     xlrd \
-    pyyaml
+    pyyaml \
+    chardet
 
 CMD ["/bin/bash"]

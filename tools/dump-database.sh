@@ -33,10 +33,10 @@ dump_filename="${dbname}_${timestamp}_dump.sql"
 echo "The dump will be stored in: $dump_filename"
 
 # Execute pg_dump using the dynamically created filename and other user inputs
-pg_dump --file="./deploy/docker-compose/$container_name/$dump_filename" --username="$username" --host="127.0.0.1" --port="$port" --dbname="$dbname"
+pg_dump --file="./deploy/docker-compose/$container_name/$dbname/$dump_filename" --username="$username" --host="127.0.0.1" --port="$port" --dbname="$dbname"
 
 echo "Removing all dumps except the latest one"
 # Remove all files with .sql  except the latest one
-ls -t ./deploy/docker-compose/$container_name/*.sql | tail -n +2 | xargs rm --
-ls -t ./deploy/docker-compose/$container_name/*.sql.cache | tail -n +2 | xargs rm --
+ls -t ./deploy/docker-compose/$container_name/$dbname/*.sql | tail -n +2 | xargs rm --
+ls -t ./deploy/docker-compose/$container_name/$dbname/*.sql.cache | tail -n +2 | xargs rm --
 
