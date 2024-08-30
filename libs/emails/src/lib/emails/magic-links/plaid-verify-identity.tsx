@@ -10,6 +10,8 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
+import { renderEmail } from '../../render';
+import NotionMagicLinkEmail from './notion-magic-link';
 
 interface PlaidVerifyIdentityEmailProps {
   validationCode?: string;
@@ -58,6 +60,9 @@ PlaidVerifyIdentityEmail.PreviewProps = {
   validationCode: "144833",
 } as PlaidVerifyIdentityEmailProps;
 
+export const renderNotionMagicLinkEmail = (props: PlaidVerifyIdentityEmailProps): string => {
+  return renderEmail(PlaidVerifyIdentityEmail, props);
+};
 export default PlaidVerifyIdentityEmail;
 
 const main = {

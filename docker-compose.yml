@@ -39,5 +39,12 @@ services:
       postgres-nutri:
         condition: service_healthy
 
+  # Used for access to local EMAIL notification functionality
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web UI
+
 volumes:
   pgdata-postgres-nutri:

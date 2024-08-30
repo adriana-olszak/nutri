@@ -12,6 +12,7 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
+import { renderEmail } from '../../render';
 
 const baseUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -95,6 +96,10 @@ export const StripeWelcomeEmail = () => (
     </Body>
   </Html>
 );
+
+export const renderStripeWelcomeEmail = (props: void): string => {
+  return renderEmail(StripeWelcomeEmail, props);
+};
 
 export default StripeWelcomeEmail;
 

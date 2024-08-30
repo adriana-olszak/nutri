@@ -5,8 +5,9 @@ import { StrategyOptions as GoogleStrategyOptions } from 'passport-google-oauth2
 import type { JwtModuleOptions } from '@nestjs/jwt';
 
 import { Environment, EnvironmentVariablesType } from './env.validation';
+import { EmailConfig } from '@nutri/server-mailer';
+import * as os from 'node:os';
 
-// Just an example for now.
 @Injectable()
 export class ConfigService {
   constructor(
@@ -92,6 +93,27 @@ export class ConfigService {
       uploads: {
         maxFileSize: 20_000_000, // 20 MB
         maxFiles: 5
+      }
+    };
+  }
+
+  get emailConfig(): EmailConfig {
+    if (this.isDev) {
+      const isRunningInDocker = os.hostname().indexOf('docker') !== -1;
+      return {
+        provider: 'mailhog',
+        options: {
+          host: isRunningInDocker ? 'mailhog' : '127.0.0.1',
+          port: 1025
+        }
+      };
+    }
+
+    return {
+      provider: 'sendgrid',
+      options: {
+        apiKey: 'DUMMY_API_KEY',
+        fromEmail: 'example@example.com'
       }
     };
   }

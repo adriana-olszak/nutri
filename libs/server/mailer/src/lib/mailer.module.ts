@@ -1,29 +1,85 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import { MailerService } from './mailer.service';
-import { SendGridService } from './sendgrid.service';
+import { DynamicModule, Module, Provider } from '@nestjs/common';
+import { MailerService } from './services/mailer.service';
+import { I_EMAIL_SENDER, I_MAILER, MAILER_MODULE_OPTIONS } from './conts';
+import { IEmailSender } from './interfaces/email-sender.interface';
+import { EmailConfig } from './interfaces/email-config.interface';
+import { SendgridDestination } from './destinations/sendgrid.destination';
+import { MailHogDestination } from './destinations/mail-hog.destination';
 
 export interface MailerModuleOptions {
-  rendererProvider: any; // This should be the provider for IRenderer
-  emailSenderProvider?: any; // Optional, defaults to SendGridService
+  config: EmailConfig;
+}
+
+export interface MailerModuleAsyncOptions {
+  useFactory: (...args: any[]) => Promise<MailerModuleOptions> | MailerModuleOptions;
+  inject?: any[];
+  imports?: any[];
 }
 
 @Module({})
 export class MailerModule {
   static forRoot(options: MailerModuleOptions): DynamicModule {
+    const emailSenderProvider: Provider<IEmailSender> = {
+      provide: I_EMAIL_SENDER,
+      useFactory: () => {
+        switch (options.config.provider) {
+          case 'sendgrid':
+            return new SendgridDestination(options.config.options);
+
+          case 'mailhog':
+            return new MailHogDestination(options.config.options);
+
+          default:
+            throw new Error('Not supported destination');
+        }
+      }
+    };
+
     return {
       module: MailerModule,
       providers: [
         {
-          provide: 'IMailer',
-          useClass: MailerService,
+          provide: I_MAILER,
+          useClass: MailerService
         },
-        options.rendererProvider,
-        options.emailSenderProvider || {
-          provide: 'IEmailSender',
-          useClass: SendGridService,
-        },
+        emailSenderProvider
       ],
-      exports: ['IMailer'],
+      exports: [I_MAILER]
+    };
+  }
+
+  static forRootAsync(options: MailerModuleAsyncOptions): DynamicModule {
+    return {
+      module: MailerModule,
+      imports: options.imports || [],
+      providers: [
+        {
+          provide: I_MAILER,
+          useClass: MailerService
+        },
+        {
+          provide: MAILER_MODULE_OPTIONS,
+          useFactory: options.useFactory,
+          inject: options.inject || []
+        },
+        {
+          provide: I_EMAIL_SENDER,
+          useFactory: (options: MailerModuleOptions) => {
+            switch (options.config.provider) {
+              case 'sendgrid':
+                return new SendgridDestination(options.config.options);
+
+              case 'mailhog':
+                return new MailHogDestination(options.config.options);
+
+              default:
+                throw new Error('Not supported destination');
+            }
+          },
+          inject: [MAILER_MODULE_OPTIONS]
+        }
+      ],
+      exports: [I_MAILER]
     };
   }
 }

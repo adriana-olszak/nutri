@@ -12,6 +12,8 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
+import { renderEmail } from '../../render';
+import PlaidVerifyIdentityEmail from './plaid-verify-identity';
 
 interface RaycastMagicLinkEmailProps {
   magicLink?: string;
@@ -73,6 +75,10 @@ export const RaycastMagicLinkEmail = ({
 RaycastMagicLinkEmail.PreviewProps = {
   magicLink: "https://raycast.com",
 } as RaycastMagicLinkEmailProps;
+
+export const renderRaycastMagicLinkEmail = (props: RaycastMagicLinkEmailProps): string => {
+  return renderEmail(RaycastMagicLinkEmail, props);
+};
 
 export default RaycastMagicLinkEmail;
 

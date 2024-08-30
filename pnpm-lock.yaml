@@ -299,6 +299,9 @@ importers:
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      nodemailer:
+        specifier: ^6.9.14
+        version: 6.9.14
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -519,6 +522,9 @@ importers:
       '@types/node':
         specifier: 18.16.9
         version: 18.16.9
+      '@types/nodemailer':
+        specifier: ^6.4.15
+        version: 6.4.15
       '@types/passport-google-oauth20':
         specifier: ^2.0.16
         version: 2.0.16
@@ -4674,6 +4680,9 @@ packages:
   '@types/node@18.16.9':
     resolution: {integrity: sha512-IeB32oIV4oGArLrd7znD2rkHQ6EDCM+2Sr76dJnrHwv9OHBTTM6nuDLK9bmikXzPa0ZlWMWtRGo/Uw4mrzQedA==}
 
+  '@types/nodemailer@6.4.15':
+    resolution: {integrity: sha512-0EBJxawVNjPkng1zm2vopRctuWVCxk34JcIlRuXSf54habUWdz1FB7wHDqOqvDa8Mtpt0Q3LTXQkAs2LNyK5jQ==}
+
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
 
@@ -8760,6 +8769,10 @@ packages:
 
   node-releases@2.0.17:
     resolution: {integrity: sha512-Ww6ZlOiEQfPfXM45v17oabk77Z7mg5bOt7AjDyzy7RjK9OrLrLC8dyZQoAPEOtFX9SaNf1Tdvr5gRJWdTJj7GA==}
+
+  nodemailer@6.9.14:
+    resolution: {integrity: sha512-Dobp/ebDKBvz91sbtRKhcznLThrKxKt97GI2FAlAyy+fk19j73Uz3sBXolVtmcXjaorivqsbbbjDY+Jkt4/bQA==}
+    engines: {node: '>=6.0.0'}
 
   non-layered-tidy-tree-layout@2.0.2:
     resolution: {integrity: sha512-gkXMxRzUH+PB0ax9dUN0yYF0S25BqeAYqhgMaLUFmpXLEk7Fcu8f4emJuOAY0V8kjDICxROIKsTAKsV/v355xw==}
@@ -16778,6 +16791,10 @@ snapshots:
 
   '@types/node@18.16.9': {}
 
+  '@types/nodemailer@6.4.15':
+    dependencies:
+      '@types/node': 18.16.9
+
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/oauth@0.9.5':
@@ -21657,6 +21674,8 @@ snapshots:
   node-machine-id@1.1.12: {}
 
   node-releases@2.0.17: {}
+
+  nodemailer@6.9.14: {}
 
   non-layered-tidy-tree-layout@2.0.2: {}
 

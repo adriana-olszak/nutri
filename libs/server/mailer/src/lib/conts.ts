@@ -1,0 +1,3 @@
+export const I_MAILER = 'I_MAILER';
+export const MAILER_MODULE_OPTIONS = 'MAILER_MODULE_OPTIONS';
+export const I_EMAIL_SENDER = 'I_EMAIL_SENDER';

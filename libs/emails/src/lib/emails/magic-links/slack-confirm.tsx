@@ -13,6 +13,8 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
+import { renderEmail } from '../../render';
+import PlaidVerifyIdentityEmail from './plaid-verify-identity';
 
 interface SlackConfirmEmailProps {
   validationCode?: string;
@@ -158,6 +160,11 @@ export const SlackConfirmEmail = ({
 SlackConfirmEmail.PreviewProps = {
   validationCode: "DJZ-TLX",
 } as SlackConfirmEmailProps;
+
+
+export const renderSlackConfirmEmail = (props: SlackConfirmEmailProps): string => {
+  return renderEmail(PlaidVerifyIdentityEmail, props);
+};
 
 export default SlackConfirmEmail;
 

@@ -10,6 +10,8 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
+import { renderEmail } from '../../render';
+import LinearLoginCodeEmail from './linear-login-code';
 
 interface NotionMagicLinkEmailProps {
   loginCode?: string;
@@ -90,6 +92,10 @@ export const NotionMagicLinkEmail = ({
 NotionMagicLinkEmail.PreviewProps = {
   loginCode: "sparo-ndigo-amurt-secan",
 } as NotionMagicLinkEmailProps;
+
+export const renderNotionMagicLinkEmail = (props: NotionMagicLinkEmailProps): string => {
+  return renderEmail(NotionMagicLinkEmail, props);
+};
 
 export default NotionMagicLinkEmail;
 

@@ -13,6 +13,8 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
+import { renderEmail } from '../../render';
+import MagicCodeEmail from './jobaccepted-magic-link';
 
 interface LinearLoginCodeEmailProps {
   validationCode?: string;
@@ -60,6 +62,10 @@ export const LinearLoginCodeEmail = ({
 LinearLoginCodeEmail.PreviewProps = {
   validationCode: "tt226-5398x",
 } as LinearLoginCodeEmailProps;
+
+export const renderLinearLoginCodeEmail = (props: LinearLoginCodeEmailProps): string => {
+  return renderEmail(LinearLoginCodeEmail, props);
+};
 
 export default LinearLoginCodeEmail;
 
