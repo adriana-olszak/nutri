@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "npx nx run-many -t serve",
     "ml:install": "npx nx run ml:install",
-    "ml:run": "npx nx run ml:run",
+    "ml:app:run": "npx nx run ml:run",
+    "ml:worker:run": "npx nx run ml:worker",
     "gql:codegen": "npx nx run client-gql:gen",
     "import:usda": "npx nx run data-import-usda:import",
     "import:otto": "npx nx run data-import:import:otto",

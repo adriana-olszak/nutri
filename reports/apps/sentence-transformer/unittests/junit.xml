@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="21.773" timestamp="2024-08-30T13:58:26.027777" hostname="Adriana.OIszak MacBookPro"><testcase classname="tests.test_ingredient_matcher.TestIngredientMatcher" name="test_find_similar_ingredients" time="18.243" /></testsuite></testsuites>
