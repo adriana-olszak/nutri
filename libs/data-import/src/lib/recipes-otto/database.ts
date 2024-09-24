@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient, RecipeInstructionsType } from '@prisma/client';
 import { ParsedRecipe, ParsedIngredient, ParsedImage, EntityType, EntityHandler } from './types';
+import { MatchStatus } from '../../../../server/db-client/@generated/prisma/match-status.enum';
 
 
 export async function populateDatabase(prisma: PrismaClient, parsedRecipes: ParsedRecipe[]) {
@@ -103,7 +104,6 @@ export async function createRecipeEntities(prisma: PrismaClient, recipeId: strin
   }
 }
 
-
 async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, ingredients: ParsedIngredient[]) {
   let currentPartId: string | undefined;
 
@@ -118,7 +118,8 @@ async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, i
         });
         currentPartId = part.id;
       } else {
-        await prisma.recipeIngredient.create({
+        // Create the RecipeIngredient
+        const recipeIngredient = await prisma.recipeIngredient.create({
           data: {
             recipeId,
             partId: currentPartId,
@@ -132,13 +133,22 @@ async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, i
             extraInfo: ingredient.extra
           }
         });
+
+        // Create a new Match entry for the RecipeIngredient
+        await prisma.match.create({
+          data: {
+            recipeIngredientId: recipeIngredient.id,
+            status: MatchStatus.PENDING_MATCH
+          }
+        });
+
+        console.log(`Created RecipeIngredient and Match for: ${ingredient.ingredient}`);
       }
     } catch (error) {
       console.error(`Error creating ingredient for recipe ${recipeId}: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 }
-
 
 export async function findOrCreateRecipe(prisma: PrismaClient, recipeData: ParsedRecipe) {
   try {

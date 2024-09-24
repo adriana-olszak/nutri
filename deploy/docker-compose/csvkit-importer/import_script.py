@@ -115,6 +115,12 @@ def normalize_name(name):
 def import_files(schema_name, dir_path):
     dir_config = config.get(dir_path, {})
     skip_sheets = dir_config.get("skip_sheets", [])
+    should_load = dir_config.get("should_load", 'false') == True
+
+    if not should_load:
+      return
+
+    create_schema_if_not_exists(schema_name)
 
     for filename in os.listdir(dir_path):
         file_path = os.path.join(dir_path, filename)
@@ -150,7 +156,6 @@ def main():
     for subdir in subdirs:
         schema_name = subdir
         dir_path = os.path.join(DATA_BASE_DIR, subdir)
-        create_schema_if_not_exists(schema_name)
         import_files(schema_name, dir_path)
 
     print("All files have been imported to their respective databases")

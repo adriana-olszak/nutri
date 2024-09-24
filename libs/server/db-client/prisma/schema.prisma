@@ -39,7 +39,7 @@ model User {
   refreshTokens       RefreshToken[]
   sessions            Session[]
   submissions         Submission[]
-  MatchManualReview   MatchManualReview[]
+  reviews             MatchManualReview[]
 
   @@map("users")
 }
@@ -150,15 +150,15 @@ model Food {
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
 
-  categoryId        String                      @map("category_id") @db.Uuid
+  categoryId        String             @map("category_id") @db.Uuid
   embeddings        FoodEmbedding[]
   nutrients         FoodNutrient[]
   portions          FoodPortion[]
   searchVectors     FoodSearchVector[]
-  category          FoodCategory                @relation(fields: [categoryId], references: [id])
-  importInfo        ImportInfo?                 @relation(fields: [importInfoId], references: [id])
-  ingredientMatches MatchRecipeIngredientFood[]
+  category          FoodCategory       @relation(fields: [categoryId], references: [id])
+  importInfo        ImportInfo?        @relation(fields: [importInfoId], references: [id])
   recipeIngredients RecipeIngredient[]
+  matchedFood       MatchFood[]
 
   @@index([id, description])
   @@index([description(ops: raw("gin_trgm_ops"))], type: Gin)
@@ -414,10 +414,10 @@ model RecipeIngredient {
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
 
-  foodMatches MatchRecipeIngredientFood[]
-  food        Food?                       @relation(fields: [foodId], references: [id])
-  part        RecipePart?                 @relation(fields: [partId], references: [id])
-  recipe      Recipe                      @relation(fields: [recipeId], references: [id])
+  matches Match[]
+  food    Food?       @relation(fields: [foodId], references: [id])
+  part    RecipePart? @relation(fields: [partId], references: [id])
+  recipe  Recipe      @relation(fields: [recipeId], references: [id])
 
   @@index([recipeId])
   @@index([partId])
@@ -425,62 +425,64 @@ model RecipeIngredient {
   @@map("recipe_ingredients")
 }
 
-model MatchRecipeIngredientFood {
-  id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  recipeIngredient   RecipeIngredient @relation(fields: [recipeIngredientId], references: [id])
-  recipeIngredientId String           @map("recipe_ingredient_id") @db.Uuid
-  matchedFood        Food             @relation(fields: [matchedFoodId], references: [id])
-  matchedFoodId      String           @map("matched_food_id") @db.Uuid
+model Match {
+  id                  String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status              MatchStatus         @default(PENDING_MATCH)
+  recipeIngredient    RecipeIngredient    @relation(fields: [recipeIngredientId], references: [id])
+  recipeIngredientId  String              @map("recipe_ingredient_id") @db.Uuid
+  selectedFoodMatch   MatchFood?          @relation("SelectedMatch", fields: [selectedFoodMatchId], references: [id])
+  selectedFoodMatchId String?             @unique @map("selected_food_match_id") @db.Uuid
+  foodMatches         MatchFood[]
+  manualReviews       MatchManualReview[]
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @default(now()) @updatedAt @map("updated_at")
 
-  // Scoring and ranking
-  biEncoderScore    Float   @map("bi_encoder_score")
-  crossEncoderScore Float?  @map("cross_encoder_score")
-  rank              Int
-  confidence        Float // Overall confidence score
-  algorithmVersion  String? @map("algorithm_version")
+  @@index([recipeIngredientId])
+  @@index([status])
+  @@map("matches")
+}
 
-  // Review status
-  needsReview  Boolean            @default(true) @map("needs_review")
-  manualReview MatchManualReview?
+model MatchFood {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  match            Match     @relation(fields: [matchId], references: [id])
+  matchId          String    @map("match_id") @db.Uuid
+  selectedForMatch Match?    @relation("SelectedMatch")
+  food             Food      @relation(fields: [foodId], references: [id])
+  foodId           String    @map("food_id") @db.Uuid
+  matchType        MatchType @default(AUTOMATIC) @map("match_type")
 
-  // Additional useful information
-  matchQuality MatchQuality @default(MEDIUM) @map("match_quality")
-  matchType    MatchType    @default(AUTOMATIC) @map("match_type")
-  notes        String? // For reviewers to add comments
-
-  potentialNutritionalImpact Float? @map("potential_nutritional_impact")
-  nutritionalConfidence      Float? @map("nutritional_confidence")
-  substitutionComplexity     Float? @map("substitution_complexity")
+  // automated scoring and ranking
+  matchQuality      MatchQuality? @map("match_quality") // Optional for manual entries
+  biEncoderScore    Float?        @map("bi_encoder_score") // Optional for manual entries
+  crossEncoderScore Float?        @map("cross_encoder_score") // Optional for manual entries
+  rank              Int? // Optional for manual entries
+  confidence        Float? // Overall confidence score; Optional for manual entries
+  algorithmVersion  String?       @map("algorithm_version") // Optional for manual entries
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  @@unique([recipeIngredientId, matchedFoodId])
-  @@index([recipeIngredientId])
-  @@index([matchedFoodId])
-  @@index([needsReview])
-  @@index([matchQuality])
-  @@index([matchType])
-  @@map("matches_recipe_ingredient_food")
+  @@index([matchId])
+  @@index([foodId])
+  @@map("match_foods")
 }
 
 model MatchManualReview {
-  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id      String @id @default(uuid())
+  match   Match  @relation(fields: [matchId], references: [id])
+  matchId String @map("match_id") @db.Uuid
 
-  matchRecipeIngredientFoodId String                    @unique @db.Uuid
-  match                       MatchRecipeIngredientFood @relation(fields: [matchRecipeIngredientFoodId], references: [id])
-
-  reviewedBy   User?        @relation(fields: [reviewedById], references: [id])
-  reviewedById String?      @map("reviewed_by_id") @db.Uuid
-  reviewedAt   DateTime?    @map("reviewed_at")
-  reviewStatus ReviewStatus @default(PENDING) @map("review_status")
-
+  reviewStatus ReviewStatus
+  reviewer     User?        @relation(fields: [reviewerId], references: [id])
+  reviewerId   String?      @map("reviewer_id") @db.Uuid
+  notes        String?
   // Timestamps
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @default(now()) @updatedAt @map("updated_at")
 
-  @@map("matches_manual_reviews")
+  @@index([matchId])
+  @@map("match_manual_reviews")
 }
 
 model RecipeCategory {
@@ -655,12 +657,6 @@ enum FoodDataSource {
   CANADA
 }
 
-enum ReviewStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
-
 enum MatchQuality {
   EXACT
   HIGH
@@ -669,10 +665,30 @@ enum MatchQuality {
   POOR
 }
 
+enum MatchStatus {
+  PENDING_MATCH
+  AUTO_MATCHING_IN_PROGRESS
+  AUTO_MATCHING_FAILED
+  PENDING_REVIEW
+  IN_REVIEW
+  AUTO_APPROVED
+  APPROVED
+  REJECTED
+  NEEDS_REMATCH
+}
+
+enum ReviewStatus {
+  PENDING
+  IN_PROGRESS
+  APPROVED
+  REJECTED
+  NEEDS_FURTHER_REVIEW
+  MANUAL_SELECTION
+}
+
 enum MatchType {
   AUTOMATIC
   MANUAL
-  CORRECTED
 }
 
 enum RecipeInstructionsType {

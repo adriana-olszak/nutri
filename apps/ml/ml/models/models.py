@@ -2,13 +2,25 @@ import uuid
 from enum import Enum
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import func
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import mapped_column, relationship
 
 from ..extensions import db
 
 
 def generate_uuid():
     return str(uuid.uuid4())
+
+
+class MatchStatus(Enum):
+    PENDING_MATCH = "PENDING_MATCH"
+    AUTO_MATCHING_IN_PROGRESS = "AUTO_MATCHING_IN_PROGRESS"
+    AUTO_MATCHING_FAILED = "AUTO_MATCHING_FAILED"
+    PENDING_REVIEW = "PENDING_REVIEW"
+    IN_REVIEW = "IN_REVIEW"
+    AUTO_APPROVED = "AUTO_APPROVED"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+    NEEDS_REMATCH = "NEEDS_REMATCH"
 
 
 class MatchQuality(Enum):
@@ -22,13 +34,15 @@ class MatchQuality(Enum):
 class MatchType(Enum):
     AUTOMATIC = "AUTOMATIC"
     MANUAL = "MANUAL"
-    CORRECTED = "CORRECTED"
 
 
 class ReviewStatus(Enum):
     PENDING = "PENDING"
+    IN_PROGRESS = "IN_PROGRESS"
     APPROVED = "APPROVED"
     REJECTED = "REJECTED"
+    NEEDS_FURTHER_REVIEW = "NEEDS_FURTHER_REVIEW"
+    MANUAL_SELECTION = "MANUAL_SELECTION"
 
 
 class Recipe(db.Model):
@@ -69,9 +83,63 @@ class RecipeIngredient(db.Model):
     created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    food_matches = db.relationship("MatchRecipeIngredientFood", back_populates="recipe_ingredient")
     food = db.relationship("Food", back_populates="recipe_ingredients")
     recipe = db.relationship("Recipe", back_populates="ingredients")
+    matches = relationship("Match", back_populates="recipe_ingredient")
+
+
+class Match(db.Model):
+    __tablename__ = "matches"
+
+    id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=generate_uuid)
+    status = db.Column(db.Enum(MatchStatus), nullable=False, default=MatchStatus.PENDING_MATCH)
+    recipe_ingredient_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey("recipe_ingredients.id"), nullable=False)
+    selected_food_match_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey("match_foods.id"), unique=True)
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
+    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    recipe_ingredient = relationship("RecipeIngredient", back_populates="matches")
+    selected_food_match = relationship("MatchFood", foreign_keys=[selected_food_match_id],
+                                       back_populates="selected_for_match")
+    food_matches = relationship("MatchFood", back_populates="match", foreign_keys="[MatchFood.match_id]")
+    manual_reviews = relationship("MatchManualReview", back_populates="match")
+
+
+class MatchFood(db.Model):
+    __tablename__ = 'match_foods'
+
+    id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=generate_uuid)
+    match_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey('matches.id'), nullable=False)
+    food_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey('foods.id'), nullable=False)
+    match_type = db.Column(db.Enum(MatchType), nullable=False, default=MatchType.AUTOMATIC)
+    match_quality = db.Column(db.Enum(MatchQuality))
+    bi_encoder_score = db.Column(db.Float)
+    cross_encoder_score = db.Column(db.Float)
+    rank = db.Column(db.Integer)
+    confidence = db.Column(db.Float)
+    algorithm_version = db.Column(db.String)
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
+    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    match = relationship("Match", back_populates="food_matches", foreign_keys=[match_id])
+    selected_for_match = relationship("Match", back_populates="selected_food_match",
+                                      foreign_keys=[Match.selected_food_match_id])
+    food = relationship("Food", back_populates="matches")
+
+
+class MatchManualReview(db.Model):
+    __tablename__ = 'match_manual_reviews'
+
+    id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=generate_uuid)
+    match_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey('matches.id'), nullable=False)
+    review_status = db.Column(db.Enum(ReviewStatus), nullable=False)
+    reviewer_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey('users.id'))
+    notes = db.Column(db.String)
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
+    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    match = relationship("Match", back_populates="manual_reviews")
+    reviewer = relationship("User", back_populates="reviews")
 
 
 class Food(db.Model):
@@ -79,9 +147,9 @@ class Food(db.Model):
     id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=generate_uuid)
     description = db.Column(db.String)
 
-    recipe_ingredients = db.relationship("RecipeIngredient", back_populates="food")
-    ingredient_matches = db.relationship("MatchRecipeIngredientFood", back_populates="matched_food")
-    embeddings = db.relationship('FoodEmbedding', back_populates='food')
+    recipe_ingredients = relationship("RecipeIngredient", back_populates="food")
+    matches = relationship("MatchFood", back_populates="food")
+    embeddings = relationship('FoodEmbedding', back_populates='food')
 
 
 class I18nLanguage(db.Model):
@@ -103,7 +171,6 @@ class FoodEmbedding(db.Model):
     created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    # Relationships
     food = db.relationship('Food', back_populates='embeddings')
     language = db.relationship('I18nLanguage', back_populates='food_embeddings')
 
@@ -112,74 +179,9 @@ class FoodEmbedding(db.Model):
     )
 
 
-class Ingredient(db.Model):
-    __tablename__ = 'ingredients'
-    ingredient_id = db.Column(db.Integer, primary_key=True)
-    ingredient_name = db.Column(db.String)
-    best_match_food_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey('foods.id'))
-    match_score = db.Column(db.Float)
-
-
-class MatchRecipeIngredientFood(db.Model):
-    __tablename__ = 'matches_recipe_ingredient_food'
-
-    id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=generate_uuid)
-    recipe_ingredient_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey('recipe_ingredients.id'), nullable=False)
-    matched_food_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey('foods.id'), nullable=False)
-
-    bi_encoder_score = db.Column(db.Float, nullable=False)
-    cross_encoder_score = db.Column(db.Float)
-    rank = db.Column(db.Integer, nullable=False)
-    confidence = db.Column(db.Float, nullable=False)
-    algorithm_version = db.Column(db.String)
-
-    needs_review = db.Column(db.Boolean, default=True, nullable=False)
-    match_quality = db.Column(db.Enum(MatchQuality), default=MatchQuality.MEDIUM, nullable=False)
-    match_type = db.Column(db.Enum(MatchType), default=MatchType.AUTOMATIC, nullable=False)
-    potential_nutritional_impact = db.Column(db.Float)
-    nutritional_confidence = db.Column(db.Float)
-    substitution_complexity = db.Column(db.Float)
-
-    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
-    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
-
-    recipe_ingredient = db.relationship("RecipeIngredient", back_populates="food_matches")
-    matched_food = db.relationship("Food", back_populates="ingredient_matches")
-    manual_review = db.relationship("MatchManualReview", back_populates="match", uselist=False)
-
-    __table_args__ = (
-        db.UniqueConstraint('recipe_ingredient_id', 'matched_food_id'),
-        db.Index('idx_recipe_ingredient_id', 'recipe_ingredient_id'),
-        db.Index('idx_matched_food_id', 'matched_food_id'),
-        db.Index('idx_needs_review', 'needs_review'),
-        db.Index('idx_match_quality', 'match_quality'),
-        db.Index('idx_match_type', 'match_type'),
-    )
-
-
-class MatchManualReview(db.Model):
-    __tablename__ = 'matches_manual_reviews'
-
-    id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=generate_uuid)
-    match_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey('matches_recipe_ingredient_food.id'), unique=True,
-                         nullable=False)
-
-    reviewed_by_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey('users.id'))
-    reviewed_at = db.Column(db.DateTime)
-    review_status = db.Column(db.Enum(ReviewStatus), default=ReviewStatus.PENDING, nullable=False)
-
-    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
-    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
-
-    match = db.relationship("MatchRecipeIngredientFood", back_populates="manual_review",
-                            foreign_keys=[match_id])
-    reviewed_by = db.relationship("User", back_populates="reviews")
-
-
 class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=generate_uuid)
-    # Add other fields as needed
 
-    reviews = db.relationship("MatchManualReview", back_populates="reviewed_by")
+    reviews = relationship("MatchManualReview", back_populates="reviewer")

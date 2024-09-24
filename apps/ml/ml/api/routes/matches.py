@@ -1,9 +1,10 @@
 from flask_restx import Resource
 from procrastinate.exceptions import AlreadyEnqueued
+from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, Conflict
 
 from ml.extensions import db
-from ml.models.models import RecipeIngredient
+from ml.models.models import RecipeIngredient, Match, MatchStatus
 from ml.tasks.matching_tasks import perform_ingredient_matching
 from ml.utils.logging import setup_logger
 from . import matches_ns
@@ -24,7 +25,7 @@ class MatchesList(Resource):
         201: 'Successfully started matching process',
         400: 'Bad request',
         404: 'Recipe Ingredient not found',
-        409: 'Conflict - Job already exists',
+        409: 'Conflict - Match already exists',
         500: 'Internal server error'
     })
     def post(self):
@@ -39,10 +40,25 @@ class MatchesList(Resource):
         if not recipe_ingredient:
             raise NotFound(description='Recipe Ingredient not found')
 
-        try:
-            job_id = perform_ingredient_matching.configure(queueing_lock=str(recipe_ingredient_id)).defer(
-                recipe_ingredient_id=str(recipe_ingredient_id))
-        except AlreadyEnqueued:
-            raise Conflict(description='Recipe Ingredient already enqueued')
+        # Check if a Match already exists for this RecipeIngredient
+        existing_match = db.session.query(Match).filter_by(recipe_ingredient_id=recipe_ingredient_id).first()
+        if existing_match:
+            raise Conflict(description='Match already exists for this Recipe Ingredient')
 
-        return {'job_id': job_id}, 201
+        # Create a new Match
+        try:
+            new_match = Match(recipe_ingredient_id=recipe_ingredient_id, status=MatchStatus.PENDING_MATCH)
+            db.session.add(new_match)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            raise Conflict(description='Match already exists for this Recipe Ingredient')
+
+        # Enqueue the matching job
+        try:
+            job_id = perform_ingredient_matching.configure(queueing_lock=str(new_match.id)).defer(
+                match_id=str(new_match.id))
+        except AlreadyEnqueued:
+            raise Conflict(description='Matching job already enqueued for this Recipe Ingredient')
+
+        return {'job_id': job_id, 'match_id': str(new_match.id)}, 201

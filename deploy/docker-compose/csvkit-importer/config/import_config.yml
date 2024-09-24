@@ -1,4 +1,23 @@
-/dara/uk-food-data:
+/data/cnf-fcen-csv:
+  should_load: true
+
+/data/ciqual:
+  should_load: false
+
+/data/fao:
+  should_load: false
+
+/data/foundation-food:
+  should_load: false
+
+/data/sf-legacy-food:
+  should_load: false
+
+/data/survey-food:
+  should_load: false
+
+/data/uk-food-data:
+  should_load: false
   skip_sheets:
     - "List of tables"
     - "1.1 Notes"

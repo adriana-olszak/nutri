@@ -15,6 +15,7 @@ def create_responses(api):
     return {
         'match': api.model('MatchResponse', {
             'job_id': fields.Integer(description='Job ID'),
+            'match_id': fields.Integer(description='Match ID'),
         }),
         'similar_ingredients': api.model('SimilarIngredientsOutput', {
             'similar_ingredients': fields.List(fields.Raw, description='List of similar ingredients')

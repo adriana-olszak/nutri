@@ -1,7 +1,7 @@
 from sentence_transformers import SentenceTransformer, CrossEncoder
 
 from ml.extensions import db
-from ml.models.models import Food, RecipeIngredient, MatchRecipeIngredientFood, FoodEmbedding
+from ml.models.models import Food, RecipeIngredient, FoodEmbedding, MatchFood, Match,  MatchType
 from ml.utils.logging import setup_logger
 from datetime import datetime, UTC
 
@@ -14,15 +14,6 @@ logger = setup_logger(__name__)
 
 
 def match_ingredient(ingredient: RecipeIngredient):
-    # Check for existing matches first
-    existing_match = db.session.query(MatchRecipeIngredientFood).filter_by(
-        recipe_ingredient_id=ingredient.id,
-        match_type='AUTOMATIC'
-    ).order_by(MatchRecipeIngredientFood.confidence.desc()).first()
-
-    if existing_match:
-        return [(existing_match.matched_food_id, existing_match.bi_encoder_score)], [existing_match.cross_encoder_score]
-
     # Encode the ingredient text
     ingredient_vector = bi_encoder.encode(ingredient.ingredient_text)
     logger.info('querying for top matches')
@@ -89,52 +80,27 @@ def determine_match_quality(confidence):
         return 'POOR'
 
 
-def create_food_matches(ingredient: RecipeIngredient, top_matches, cross_encoder_scores):
+def create_food_matches(match: Match, top_matches, cross_encoder_scores):
     matches = []
     current_time = datetime.now(UTC)
     for rank, ((food_id, bi_score), cross_score) in enumerate(zip(top_matches, cross_encoder_scores), 1):
         confidence = calculate_confidence(bi_score, cross_score)
         match_quality = determine_match_quality(confidence)
-        needs_review = match_quality in ['LOW', 'POOR']
 
-        match = MatchRecipeIngredientFood(
-            recipe_ingredient_id=ingredient.id,
-            matched_food_id=food_id,
+        food_match = MatchFood(
+            match_id=match.id,
+            food_id=food_id,
             bi_encoder_score=bi_score,
             cross_encoder_score=cross_score,
             rank=rank,
             confidence=confidence,
-            algorithm_version='v1.0',
-            needs_review=needs_review,
             match_quality=match_quality,
-            match_type='AUTOMATIC',
+            match_type=MatchType.AUTOMATIC,
+            algorithm_version='v1.0',
             created_at=current_time,
             updated_at=current_time
         )
-        matches.append(match)
+        matches.append(food_match)
 
     return matches
 
-
-def apply_match_decision(ingredient, matches):
-    if len(matches) == 0:
-        return
-
-    top_match = matches[0]
-
-    if top_match['confidence'] > 0.95:
-        ingredient.food_id = top_match['matched_food_id']
-        ingredient.auto_matched = True
-        db.session.query(MatchRecipeIngredientFood).filter_by(
-            id=top_match['id']
-        ).update({
-            'match_type': 'AUTOMATIC',
-            'needs_review': False
-        })
-    elif top_match['confidence'] > 0.8:
-        ingredient.food_id = top_match['matched_food_id']
-        ingredient.auto_matched = False
-    else:
-        ingredient.auto_matched = False
-
-    db.session.commit()

@@ -47,6 +47,13 @@
         "cwd": "apps/ml/ml"
       }
     },
+    "queue": {
+      "executor": "@nxlv/python:run-commands",
+      "options": {
+        "command": "poetry run procrastinate --app=ml.tasks.procrastinate.procrastinate_app schema --apply",
+        "cwd": "apps/ml/ml"
+      }
+    },
     "install": {
       "executor": "@nxlv/python:install",
       "options": {

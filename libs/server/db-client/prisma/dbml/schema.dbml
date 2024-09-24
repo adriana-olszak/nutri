@@ -10,13 +10,13 @@ Table users {
   googleId String [unique]
   googleProfile Json
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   loginLogs auth_login_log [not null]
   passwordResetTokens auth_password_reset_token [not null]
   refreshTokens auth_refresh_token [not null]
   sessions auth_session [not null]
   submissions poll_submissions [not null]
-  MatchManualReview matches_manual_reviews [not null]
+  reviews match_manual_reviews [not null]
 }
 
 Table auth_refresh_token {
@@ -28,7 +28,7 @@ Table auth_refresh_token {
   expiresAt DateTime [not null]
   used Boolean [not null, default: false]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   user users [not null]
 }
 
@@ -39,7 +39,7 @@ Table auth_session {
   ipAddress String
   lastActiveAt DateTime [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   user users [not null]
 }
 
@@ -50,7 +50,7 @@ Table auth_login_log {
   ipAddress String
   userAgent String
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   user users
 }
 
@@ -60,7 +60,7 @@ Table auth_password_reset_token {
   userId String [not null]
   expiresAt DateTime [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   user users [not null]
 }
 
@@ -69,14 +69,14 @@ Table auth_token_blacklist {
   token String [unique, not null]
   expiresAt DateTime [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
 }
 
 Table i18n_languages {
   code String [pk]
   name String [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   foodEmbeddings food_embeddings [not null]
   searchVectors food_search_vectors [not null]
   translations i18n_translations [not null]
@@ -90,7 +90,7 @@ Table i18n_translations {
   value String [not null]
   languageCode String [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   language i18n_languages [not null]
 
   indexes {
@@ -105,7 +105,7 @@ Table foods {
   scientificName String
   importInfoId String
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   categoryId String [not null]
   embeddings food_embeddings [not null]
   nutrients food_food_nutrients [not null]
@@ -113,8 +113,8 @@ Table foods {
   searchVectors food_search_vectors [not null]
   category food_categories [not null]
   importInfo import_infos
-  ingredientMatches matches_recipe_ingredient_food [not null]
   recipeIngredients recipe_ingredients [not null]
+  matchedFood match_foods [not null]
 }
 
 Table food_search_vectors {
@@ -122,7 +122,7 @@ Table food_search_vectors {
   foodId String [not null]
   languageCode String [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   food foods [not null]
   language i18n_languages [not null]
 
@@ -138,7 +138,7 @@ Table food_embeddings {
   embeddingType String [not null]
   modelVersion String [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   food foods [not null]
   language i18n_languages [not null]
 
@@ -155,7 +155,7 @@ Table food_categories {
   sourceId String [unique, not null]
   importInfoId String
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   importInfo import_infos
   Food foods [not null]
 }
@@ -167,7 +167,7 @@ Table food_nutrients {
   sourceId String [unique, not null]
   importInfoId String
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   foodNutrients food_food_nutrients [not null]
   importInfo import_infos
 }
@@ -183,7 +183,7 @@ Table food_food_nutrients {
   sourceId String [not null]
   importInfoId String
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   food foods [not null]
   importInfo import_infos
   nutrient food_nutrients [not null]
@@ -199,7 +199,7 @@ Table food_measure_units {
   sourceId String [not null]
   importInfoId String [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   importInfo import_infos [not null]
   FoodPortion food_portions [not null]
 }
@@ -210,7 +210,7 @@ Table food_portions {
   foodId String [not null]
   importInfoId String
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   covnersionFactor Float [not null]
   measureUnitId String [not null]
   food foods [not null]
@@ -251,7 +251,7 @@ Table recipes {
   servingsMin Int
   servingsMax Int
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   instructions recipe_instructions [not null]
   parts recipe_parts [not null]
   ingredients recipe_ingredients [not null]
@@ -269,7 +269,7 @@ Table recipe_images {
   width Int
   height Int
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   recipe recipes [not null]
 }
 
@@ -277,7 +277,7 @@ Table recipe_seasons {
   id String [pk]
   name String [unique, not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   recipes recipes [not null]
 }
 
@@ -285,7 +285,7 @@ Table recipe_tags {
   id String [pk]
   name String [unique, not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   recipes recipes [not null]
 }
 
@@ -294,7 +294,7 @@ Table recipe_parts {
   name String [not null]
   recipeId String [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   ingredients recipe_ingredients [not null]
   recipe recipes [not null]
 }
@@ -307,7 +307,7 @@ Table recipe_instructions {
   order Int [not null]
   listIndex Int
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   recipe recipes [not null]
 }
 
@@ -325,50 +325,54 @@ Table recipe_ingredients {
   ingredientText String [not null]
   extraInfo String
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
-  foodMatches matches_recipe_ingredient_food [not null]
+  updatedAt DateTime [default: `now()`, not null]
+  matches matches [not null]
   food foods
   part recipe_parts
   recipe recipes [not null]
 }
 
-Table matches_recipe_ingredient_food {
+Table matches {
   id String [pk]
+  status MatchStatus [not null, default: 'PENDING_MATCH']
   recipeIngredient recipe_ingredients [not null]
   recipeIngredientId String [not null]
-  matchedFood foods [not null]
-  matchedFoodId String [not null]
-  biEncoderScore Float [not null]
-  crossEncoderScore Float
-  rank Int [not null]
-  confidence Float [not null]
-  algorithmVersion String
-  needsReview Boolean [not null, default: true]
-  manualReview matches_manual_reviews
-  matchQuality MatchQuality [not null, default: 'MEDIUM']
-  matchType MatchType [not null, default: 'AUTOMATIC']
-  notes String
-  potentialNutritionalImpact Float
-  nutritionalConfidence Float
-  substitutionComplexity Float
+  selectedFoodMatch match_foods
+  selectedFoodMatchId String [unique]
+  foodMatches match_foods [not null]
+  manualReviews match_manual_reviews [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
-
-  indexes {
-    (recipeIngredientId, matchedFoodId) [unique]
-  }
+  updatedAt DateTime [default: `now()`, not null]
 }
 
-Table matches_manual_reviews {
+Table match_foods {
   id String [pk]
-  matchRecipeIngredientFoodId String [unique, not null]
-  match matches_recipe_ingredient_food [not null]
-  reviewedBy users
-  reviewedById String
-  reviewedAt DateTime
-  reviewStatus ReviewStatus [not null, default: 'PENDING']
+  match matches [not null]
+  matchId String [not null]
+  selectedForMatch matches
+  food foods [not null]
+  foodId String [not null]
+  matchType MatchType [not null, default: 'AUTOMATIC']
+  matchQuality MatchQuality
+  biEncoderScore Float
+  crossEncoderScore Float
+  rank Int
+  confidence Float
+  algorithmVersion String
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
+}
+
+Table match_manual_reviews {
+  id String [pk]
+  match matches [not null]
+  matchId String [not null]
+  reviewStatus ReviewStatus [not null]
+  reviewer users
+  reviewerId String
+  notes String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
 }
 
 Table recipe_categories {
@@ -380,7 +384,7 @@ Table recipe_categories {
 Table table_view_definitions {
   id String [pk]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   userId String
   tableId String [not null]
   tableType String [not null]
@@ -404,7 +408,7 @@ Table table_view_column_views {
   filter String
   tableViewDefinitionId String [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   tableViewDefinition table_view_definitions [not null]
 }
 
@@ -412,7 +416,7 @@ Table tenants {
   id String [pk]
   name String [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   questionnaires polls [not null]
 }
 
@@ -424,7 +428,7 @@ Table polls {
   isPublic Boolean [not null, default: false]
   deletedAt DateTime
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   submissions poll_submissions [not null]
   versions poll_versions [not null]
   tenant tenants
@@ -437,7 +441,7 @@ Table poll_versions {
   isActive Boolean [not null, default: false]
   deletedAt DateTime
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   sections poll_sections [not null]
   submissions poll_submissions [not null]
   questionnaire polls [not null]
@@ -454,7 +458,7 @@ Table poll_sections {
   description String
   order Int [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   questions poll_questions [not null]
   questionnaireVersion poll_versions [not null]
 }
@@ -469,7 +473,7 @@ Table poll_questions {
   order Int [not null]
   config Json [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   answers poll_answers [not null]
   section poll_sections [not null]
 }
@@ -483,7 +487,7 @@ Table poll_submissions {
   startedAt DateTime [default: `now()`, not null]
   completedAt DateTime
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   answers poll_answers [not null]
   questionnaire polls [not null]
   questionnaireVersion poll_versions [not null]
@@ -496,7 +500,7 @@ Table poll_answers {
   questionId String [not null]
   value Json [not null]
   createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  updatedAt DateTime [default: `now()`, not null]
   question poll_questions [not null]
   submission poll_submissions [not null]
 }
@@ -529,12 +533,6 @@ Enum FoodDataSource {
   CANADA
 }
 
-Enum ReviewStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
-
 Enum MatchQuality {
   EXACT
   HIGH
@@ -543,10 +541,30 @@ Enum MatchQuality {
   POOR
 }
 
+Enum MatchStatus {
+  PENDING_MATCH
+  AUTO_MATCHING_IN_PROGRESS
+  AUTO_MATCHING_FAILED
+  PENDING_REVIEW
+  IN_REVIEW
+  AUTO_APPROVED
+  APPROVED
+  REJECTED
+  NEEDS_REMATCH
+}
+
+Enum ReviewStatus {
+  PENDING
+  IN_PROGRESS
+  APPROVED
+  REJECTED
+  NEEDS_FURTHER_REVIEW
+  MANUAL_SELECTION
+}
+
 Enum MatchType {
   AUTOMATIC
   MANUAL
-  CORRECTED
 }
 
 Enum RecipeInstructionsType {
@@ -607,13 +625,17 @@ Ref: recipe_ingredients.partId > recipe_parts.id
 
 Ref: recipe_ingredients.recipeId > recipes.id
 
-Ref: matches_recipe_ingredient_food.recipeIngredientId > recipe_ingredients.id
+Ref: matches.recipeIngredientId > recipe_ingredients.id
 
-Ref: matches_recipe_ingredient_food.matchedFoodId > foods.id
+Ref: matches.selectedFoodMatchId - match_foods.id
 
-Ref: matches_manual_reviews.matchRecipeIngredientFoodId - matches_recipe_ingredient_food.id
+Ref: match_foods.matchId - matches.id
 
-Ref: matches_manual_reviews.reviewedById > users.id
+Ref: match_foods.foodId > foods.id
+
+Ref: match_manual_reviews.matchId > matches.id
+
+Ref: match_manual_reviews.reviewerId > users.id
 
 Ref: table_view_column_views.tableViewDefinitionId > table_view_definitions.id
 

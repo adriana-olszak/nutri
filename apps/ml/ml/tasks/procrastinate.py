@@ -11,4 +11,4 @@ procrastinate_app = App(
             "options": "-c search_path=procrastinate"
         }
     )
-    , import_paths=['ml.tasks.matching_tasks'])
+    , import_paths=['ml.tasks.matching_tasks', 'ml.tasks.cron'])
