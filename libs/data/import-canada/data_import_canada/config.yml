@@ -1,0 +1,11 @@
+database_url: "postgresql://nutri:nutri@localhost:3100/nutri"
+data_source:
+  source_version: "test-08"
+  schema_name: "cnf-fcen-csv"
+  tables:
+    - name: CONVERSION_FACTOR
+    - name: FOOD_GROUP
+    - name: FOOD_NAME
+    - name: MEASURE_NAME
+    - name: NUTRIENT_AMOUNT
+    - name: NUTRIENT_NAME

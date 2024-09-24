@@ -45,3 +45,8 @@ Thumbs.db
 /libs/data-import-usda/src/lib/__data__/
 
 deploy/docker-compose/postgres-nutri/**/*.sql
+/libs/data/import-canada/.idea/
+/libs/data/import-canada/.venv/
+/.cache/
+/.vscode/
+/apps/ml/.idea/

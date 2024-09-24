@@ -2,68 +2,69 @@
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
 
-Table User {
+Table users {
   id String [pk]
   email String [unique, not null]
   password String
   roles Roles[] [not null]
   googleId String [unique]
   googleProfile Json
-  refreshTokens RefreshToken [not null]
-  sessions Session [not null]
-  loginLogs LoginLog [not null]
-  passwordResetTokens PasswordResetToken [not null]
-  submissions Submission [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  loginLogs auth_login_log [not null]
+  passwordResetTokens auth_password_reset_token [not null]
+  refreshTokens auth_refresh_token [not null]
+  sessions auth_session [not null]
+  submissions poll_submissions [not null]
+  MatchManualReview matches_manual_reviews [not null]
 }
 
-Table RefreshToken {
+Table auth_refresh_token {
   id String [pk]
   token String [unique, not null]
   userId String [not null]
-  user User [not null]
   familyId String [not null]
   sessionId String [not null]
   expiresAt DateTime [not null]
   used Boolean [not null, default: false]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  user users [not null]
 }
 
-Table Session {
+Table auth_session {
   id String [pk]
   userId String [not null]
-  user User [not null]
   deviceInfo String
   ipAddress String
   lastActiveAt DateTime [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  user users [not null]
 }
 
-Table LoginLog {
+Table auth_login_log {
   id String [pk]
   userId String
-  user User
   success Boolean [not null]
   ipAddress String
   userAgent String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  user users
 }
 
-Table PasswordResetToken {
+Table auth_password_reset_token {
   id String [pk]
   token String [unique, not null]
   userId String [not null]
-  user User [not null]
   expiresAt DateTime [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  user users [not null]
 }
 
-Table TokenBlacklist {
+Table auth_token_blacklist {
   id String [pk]
   token String [unique, not null]
   expiresAt DateTime [not null]
@@ -71,150 +72,108 @@ Table TokenBlacklist {
   updatedAt DateTime [not null]
 }
 
-Table Language {
+Table i18n_languages {
   code String [pk]
   name String [not null]
-  translations Translation [not null]
-  searchVectors FoodSearchVector [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  foodEmbeddings food_embeddings [not null]
+  searchVectors food_search_vectors [not null]
+  translations i18n_translations [not null]
 }
 
-Table Translation {
+Table i18n_translations {
   id String [pk]
   entityType String [not null]
   entityId String [not null]
   field String [not null]
   value String [not null]
   languageCode String [not null]
-  language Language [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  language i18n_languages [not null]
 
   indexes {
     (languageCode, entityType, entityId, field) [unique]
   }
 }
 
-Table Food {
+Table foods {
   id String [pk]
   sourceId String [unique, not null]
   description String [not null]
   scientificName String
-  nutrients FoodNutrient [not null]
-  portions FoodPortion [not null]
-  brandedFood BrandedFood
-  categories FoodCategoryOnFood [not null]
-  searchVectors FoodSearchVector [not null]
-  importInfo ImportInfo
   importInfoId String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  RecipeIngredient RecipeIngredient [not null]
+  categoryId String [not null]
+  embeddings food_embeddings [not null]
+  nutrients food_food_nutrients [not null]
+  portions food_portions [not null]
+  searchVectors food_search_vectors [not null]
+  category food_categories [not null]
+  importInfo import_infos
+  ingredientMatches matches_recipe_ingredient_food [not null]
+  recipeIngredients recipe_ingredients [not null]
 }
 
-Table FoodSearchVector {
+Table food_search_vectors {
   id String [pk]
-  food Food [not null]
   foodId String [not null]
-  language Language [not null]
   languageCode String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  food foods [not null]
+  language i18n_languages [not null]
 
   indexes {
     (foodId, languageCode) [unique]
   }
 }
 
-Table FoodCategory {
+Table food_embeddings {
   id String [pk]
-  code String [unique]
-  description String [unique]
-  parentCategoryId String
-  level Int [not null]
-  sourceId String [unique, not null]
-  foods FoodCategoryOnFood [not null]
-  importInfo ImportInfo
-  importInfoId String
-  parentCategory FoodCategory
-  childCategories FoodCategory [not null]
-}
-
-Table FoodCategoryOnFood {
-  food Food [not null]
   foodId String [not null]
-  category FoodCategory [not null]
-  categoryId String [not null]
-  isPrimaryCategory Boolean [not null, default: false]
+  languageCode String [not null]
+  embeddingType String [not null]
+  modelVersion String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  food foods [not null]
+  language i18n_languages [not null]
 
   indexes {
-    (foodId, categoryId) [pk]
+    (foodId, languageCode, embeddingType) [unique]
   }
 }
 
-Table BrandedFood {
+Table food_categories {
   id String [pk]
-  food Food [not null]
-  foodId String [unique, not null]
-  brandOwner String [not null]
-  gtinUpc String
-  ingredients String
-  servingSize Float
-  servingUnit String
-  sourceId String [not null]
-  importInfo ImportInfo
+  code String [unique]
+  description String [unique]
+  level Int [not null]
+  sourceId String [unique, not null]
   importInfoId String
-  nutritionLabel NutritionLabel
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  importInfo import_infos
+  Food foods [not null]
 }
 
-Table NutritionLabel {
-  id String [pk]
-  brandedFood BrandedFood [not null]
-  brandedFoodId String [unique, not null]
-  calories Float
-  totalFat Float
-  saturatedFat Float
-  transFat Float
-  cholesterol Float
-  sodium Float
-  totalCarbohydrate Float
-  dietaryFiber Float
-  totalSugars Float
-  addedSugars Float
-  protein Float
-  vitaminA Float
-  vitaminC Float
-  vitaminD Float
-  calcium Float
-  iron Float
-  potassium Float
-  servingsPerContainer Float
-  householdServingFullText String
-  percentDailyValueFat Float
-  percentDailyValueSaturatedFat Float
-  percentDailyValueCholesterol Float
-  percentDailyValueSodium Float
-  percentDailyValueCarbohydrate Float
-  percentDailyValueFiber Float
-  percentDailyValueProtein Float
-  percentDailyValueVitaminA Float
-  percentDailyValueVitaminC Float
-  percentDailyValueVitaminD Float
-  percentDailyValueCalcium Float
-  percentDailyValueIron Float
-  percentDailyValuePotassium Float
-}
-
-Table Nutrient {
+Table food_nutrients {
   id String [pk]
   name String [not null]
   unitName String [not null]
   sourceId String [unique, not null]
-  foodNutrients FoodNutrient [not null]
-  importInfo ImportInfo
   importInfoId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  foodNutrients food_food_nutrients [not null]
+  importInfo import_infos
 }
 
-Table FoodNutrient {
-  id String [pk]
-  food Food [not null]
+Table food_food_nutrients {
   foodId String [not null]
-  nutrient Nutrient [not null]
   nutrientId String [not null]
   amount Float [not null]
   min Float
@@ -222,50 +181,65 @@ Table FoodNutrient {
   max Float
   confidenceCode String
   sourceId String [not null]
-  importInfo ImportInfo
   importInfoId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  food foods [not null]
+  importInfo import_infos
+  nutrient food_nutrients [not null]
+
+  indexes {
+    (foodId, nutrientId) [pk]
+  }
 }
 
-Table FoodPortion {
+Table food_measure_units {
   id String [pk]
-  amount Float [not null]
-  gramWeight Float [not null]
-  portionDescription String
+  name String [unique, not null]
   sourceId String [not null]
-  food Food [not null]
+  importInfoId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  importInfo import_infos [not null]
+  FoodPortion food_portions [not null]
+}
+
+Table food_portions {
+  id String [pk]
+  gramWeight Float [not null]
   foodId String [not null]
-  measureUnitName String [not null]
-  measureUnit MeasureUnit [not null]
-  importInfo ImportInfo
   importInfoId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  covnersionFactor Float [not null]
+  measureUnitId String [not null]
+  food foods [not null]
+  importInfo import_infos
+  measureUnit food_measure_units [not null]
+
+  indexes {
+    (foodId, measureUnitId) [unique]
+  }
 }
 
-Table MeasureUnit {
-  name String [pk]
-  FoodPortion FoodPortion [not null]
-  importInfo ImportInfo
-  importInfoId String
-}
-
-Table ImportInfo {
+Table import_infos {
   id String [pk]
   sourceVersion String [not null]
   importDate DateTime [not null]
   dataSource FoodDataSource [not null]
-  foods Food [not null]
-  foodCategories FoodCategory [not null]
-  brandedFoods BrandedFood [not null]
-  nutrients Nutrient [not null]
-  foodNutrients FoodNutrient [not null]
-  foodPortions FoodPortion [not null]
-  measureUnits MeasureUnit [not null]
+  foodCategories food_categories [not null]
+  foodNutrients food_food_nutrients [not null]
+  FoodMeasureUnit food_measure_units [not null]
+  nutrients food_nutrients [not null]
+  foodPortions food_portions [not null]
+  foods foods [not null]
 
   indexes {
     (dataSource, sourceVersion) [unique]
   }
 }
 
-Table Recipe {
+Table recipes {
   id String [pk]
   title String [unique, not null]
   sourceId String
@@ -276,82 +250,134 @@ Table Recipe {
   servingsText String
   servingsMin Int
   servingsMax Int
-  instructions RecipeInstructions [not null]
-  parts RecipePart [not null]
-  ingredients RecipeIngredient [not null]
-  categories RecipeCategory [not null]
-  images RecipeImage [not null]
-  seasons Season [not null]
-  tags Tag [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  instructions recipe_instructions [not null]
+  parts recipe_parts [not null]
+  ingredients recipe_ingredients [not null]
+  categories recipe_categories [not null]
+  images recipe_images [not null]
+  seasons recipe_seasons [not null]
+  tags recipe_tags [not null]
 }
 
-Table RecipeImage {
+Table recipe_images {
   id String [pk]
-  recipe Recipe [not null]
   recipeId String [not null]
   url String [not null]
   altText String
   width Int
   height Int
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  recipe recipes [not null]
 }
 
-Table Season {
+Table recipe_seasons {
   id String [pk]
   name String [unique, not null]
-  recipes Recipe [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  recipes recipes [not null]
 }
 
-Table Tag {
+Table recipe_tags {
   id String [pk]
   name String [unique, not null]
-  recipes Recipe [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  recipes recipes [not null]
 }
 
-Table RecipePart {
+Table recipe_parts {
   id String [pk]
   name String [not null]
-  recipe Recipe [not null]
   recipeId String [not null]
-  ingredients RecipeIngredient [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  ingredients recipe_ingredients [not null]
+  recipe recipes [not null]
 }
 
-Table RecipeInstructions {
+Table recipe_instructions {
   id String [pk]
-  recipe Recipe [not null]
   recipeId String [not null]
   content String [not null]
   type RecipeInstructionsType [not null]
   order Int [not null]
   listIndex Int
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  recipe recipes [not null]
 }
 
-Table RecipeIngredient {
+Table recipe_ingredients {
   id String [pk]
-  recipe Recipe [not null]
   recipeId String [not null]
-  part RecipePart
   partId String
-  food Food [not null]
-  foodId String [not null]
+  foodId String
   quantity Float [not null]
   quantityText String
   minQuantity Float
   maxQuantity Float
   unit String [not null]
   unitText String
-  ingredientText String
+  ingredientText String [not null]
   extraInfo String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  foodMatches matches_recipe_ingredient_food [not null]
+  food foods
+  part recipe_parts
+  recipe recipes [not null]
 }
 
-Table RecipeCategory {
+Table matches_recipe_ingredient_food {
+  id String [pk]
+  recipeIngredient recipe_ingredients [not null]
+  recipeIngredientId String [not null]
+  matchedFood foods [not null]
+  matchedFoodId String [not null]
+  biEncoderScore Float [not null]
+  crossEncoderScore Float
+  rank Int [not null]
+  confidence Float [not null]
+  algorithmVersion String
+  needsReview Boolean [not null, default: true]
+  manualReview matches_manual_reviews
+  matchQuality MatchQuality [not null, default: 'MEDIUM']
+  matchType MatchType [not null, default: 'AUTOMATIC']
+  notes String
+  potentialNutritionalImpact Float
+  nutritionalConfidence Float
+  substitutionComplexity Float
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (recipeIngredientId, matchedFoodId) [unique]
+  }
+}
+
+Table matches_manual_reviews {
+  id String [pk]
+  matchRecipeIngredientFoodId String [unique, not null]
+  match matches_recipe_ingredient_food [not null]
+  reviewedBy users
+  reviewedById String
+  reviewedAt DateTime
+  reviewStatus ReviewStatus [not null, default: 'PENDING']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table recipe_categories {
   id String [pk]
   name String [unique, not null]
-  recipes Recipe [not null]
+  recipes recipes [not null]
 }
 
-Table TableViewDefinition {
+Table table_view_definitions {
   id String [pk]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
@@ -365,10 +391,10 @@ Table TableViewDefinition {
   sorting String
   isPreset Boolean [not null, default: false]
   isShared Boolean [not null, default: false]
-  ColumnView ColumnView [not null]
+  ColumnView table_view_column_views [not null]
 }
 
-Table ColumnView {
+Table table_view_column_views {
   id String [pk]
   columnId Int [not null]
   columnType String [not null]
@@ -376,106 +402,118 @@ Table ColumnView {
   visible Boolean [not null]
   name String [not null]
   filter String
-  tableViewDefinition TableViewDefinition [not null]
   tableViewDefinitionId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  tableViewDefinition table_view_definitions [not null]
 }
 
-Table Tenant {
+Table tenants {
   id String [pk]
   name String [not null]
-  questionnaires Questionnaire [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  questionnaires polls [not null]
 }
 
-Table Questionnaire {
+Table polls {
   id String [pk]
   tenantId String
-  tenant Tenant
   title String [not null]
   description String
   isPublic Boolean [not null, default: false]
   deletedAt DateTime
-  versions QuestionnaireVersion [not null]
-  submissions Submission [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  submissions poll_submissions [not null]
+  versions poll_versions [not null]
+  tenant tenants
 }
 
-Table QuestionnaireVersion {
+Table poll_versions {
   id String [pk]
   questionnaireId String [not null]
-  questionnaire Questionnaire [not null]
   versionNumber Int [not null]
   isActive Boolean [not null, default: false]
   deletedAt DateTime
-  sections Section [not null]
-  submissions Submission [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  sections poll_sections [not null]
+  submissions poll_submissions [not null]
+  questionnaire polls [not null]
 
   indexes {
     (questionnaireId, versionNumber) [unique]
   }
 }
 
-Table Section {
+Table poll_sections {
   id String [pk]
   questionnaireVersionId String [not null]
-  questionnaireVersion QuestionnaireVersion [not null]
   title String [not null]
   description String
   order Int [not null]
-  questions Question [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  questions poll_questions [not null]
+  questionnaireVersion poll_versions [not null]
 }
 
-Table Question {
+Table poll_questions {
   id String [pk]
   sectionId String [not null]
-  section Section [not null]
   type String [not null]
   title String [not null]
   description String
   isRequired Boolean [not null, default: false]
   order Int [not null]
   config Json [not null]
-  answers Answer [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  answers poll_answers [not null]
+  section poll_sections [not null]
 }
 
-Table Submission {
+Table poll_submissions {
   id String [pk]
   questionnaireId String [not null]
-  questionnaire Questionnaire [not null]
   questionnaireVersionId String [not null]
-  questionnaireVersion QuestionnaireVersion [not null]
   userId String [not null]
-  user User [not null]
-  answers Answer [not null]
   isComplete Boolean [not null, default: false]
   startedAt DateTime [default: `now()`, not null]
   completedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  answers poll_answers [not null]
+  questionnaire polls [not null]
+  questionnaireVersion poll_versions [not null]
+  user users [not null]
 }
 
-Table Answer {
+Table poll_answers {
   id String [pk]
   submissionId String [not null]
-  submission Submission [not null]
   questionId String [not null]
-  question Question [not null]
   value Json [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  question poll_questions [not null]
+  submission poll_submissions [not null]
 }
 
 Table RecipeToRecipeCategory {
-  categoriesId String [ref: > RecipeCategory.id]
-  recipesId String [ref: > Recipe.id]
+  categoriesId String [ref: > recipe_categories.id]
+  recipesId String [ref: > recipes.id]
 }
 
 Table RecipeToSeason {
-  seasonsId String [ref: > Season.id]
-  recipesId String [ref: > Recipe.id]
+  seasonsId String [ref: > recipe_seasons.id]
+  recipesId String [ref: > recipes.id]
 }
 
 Table RecipeToTag {
-  tagsId String [ref: > Tag.id]
-  recipesId String [ref: > Recipe.id]
+  tagsId String [ref: > recipe_tags.id]
+  recipesId String [ref: > recipes.id]
 }
 
 Enum Roles {
@@ -487,8 +525,28 @@ Enum FoodDataSource {
   USDA
   EUROFIR
   CIQUAL
-  CANADA
   USER_INPUT
+  CANADA
+}
+
+Enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+Enum MatchQuality {
+  EXACT
+  HIGH
+  MEDIUM
+  LOW
+  POOR
+}
+
+Enum MatchType {
+  AUTOMATIC
+  MANUAL
+  CORRECTED
 }
 
 Enum RecipeInstructionsType {
@@ -497,80 +555,82 @@ Enum RecipeInstructionsType {
   PART
 }
 
-Ref: RefreshToken.userId > User.id [delete: Cascade]
+Ref: auth_refresh_token.userId > users.id [delete: Cascade]
 
-Ref: Session.userId > User.id [delete: Cascade]
+Ref: auth_session.userId > users.id [delete: Cascade]
 
-Ref: LoginLog.userId > User.id [delete: Cascade]
+Ref: auth_login_log.userId > users.id [delete: Cascade]
 
-Ref: PasswordResetToken.userId > User.id [delete: Cascade]
+Ref: auth_password_reset_token.userId > users.id [delete: Cascade]
 
-Ref: Translation.languageCode > Language.code
+Ref: i18n_translations.languageCode > i18n_languages.code
 
-Ref: Food.importInfoId > ImportInfo.id
+Ref: foods.categoryId > food_categories.id
 
-Ref: FoodSearchVector.foodId > Food.id
+Ref: foods.importInfoId > import_infos.id
 
-Ref: FoodSearchVector.languageCode > Language.code
+Ref: food_search_vectors.foodId > foods.id
 
-Ref: FoodCategory.importInfoId > ImportInfo.id
+Ref: food_search_vectors.languageCode > i18n_languages.code
 
-Ref: FoodCategory.parentCategoryId - FoodCategory.id
+Ref: food_embeddings.foodId > foods.id
 
-Ref: FoodCategoryOnFood.foodId > Food.id
+Ref: food_embeddings.languageCode > i18n_languages.code
 
-Ref: FoodCategoryOnFood.categoryId > FoodCategory.id
+Ref: food_categories.importInfoId > import_infos.id
 
-Ref: BrandedFood.foodId - Food.id
+Ref: food_nutrients.importInfoId > import_infos.id
 
-Ref: BrandedFood.importInfoId > ImportInfo.id
+Ref: food_food_nutrients.foodId > foods.id
 
-Ref: NutritionLabel.brandedFoodId - BrandedFood.id
+Ref: food_food_nutrients.importInfoId > import_infos.id
 
-Ref: Nutrient.importInfoId > ImportInfo.id
+Ref: food_food_nutrients.nutrientId > food_nutrients.id
 
-Ref: FoodNutrient.foodId > Food.id
+Ref: food_measure_units.importInfoId > import_infos.id
 
-Ref: FoodNutrient.nutrientId > Nutrient.id
+Ref: food_portions.foodId > foods.id
 
-Ref: FoodNutrient.importInfoId > ImportInfo.id
+Ref: food_portions.importInfoId > import_infos.id
 
-Ref: FoodPortion.foodId > Food.id
+Ref: food_portions.measureUnitId > food_measure_units.id
 
-Ref: FoodPortion.measureUnitName > MeasureUnit.name
+Ref: recipe_images.recipeId > recipes.id
 
-Ref: FoodPortion.importInfoId > ImportInfo.id
+Ref: recipe_parts.recipeId > recipes.id
 
-Ref: MeasureUnit.importInfoId > ImportInfo.id
+Ref: recipe_instructions.recipeId > recipes.id
 
-Ref: RecipeImage.recipeId > Recipe.id
+Ref: recipe_ingredients.foodId > foods.id
 
-Ref: RecipePart.recipeId > Recipe.id
+Ref: recipe_ingredients.partId > recipe_parts.id
 
-Ref: RecipeInstructions.recipeId > Recipe.id
+Ref: recipe_ingredients.recipeId > recipes.id
 
-Ref: RecipeIngredient.recipeId > Recipe.id
+Ref: matches_recipe_ingredient_food.recipeIngredientId > recipe_ingredients.id
 
-Ref: RecipeIngredient.partId > RecipePart.id
+Ref: matches_recipe_ingredient_food.matchedFoodId > foods.id
 
-Ref: RecipeIngredient.foodId > Food.id
+Ref: matches_manual_reviews.matchRecipeIngredientFoodId - matches_recipe_ingredient_food.id
 
-Ref: ColumnView.tableViewDefinitionId > TableViewDefinition.id
+Ref: matches_manual_reviews.reviewedById > users.id
 
-Ref: Questionnaire.tenantId > Tenant.id
+Ref: table_view_column_views.tableViewDefinitionId > table_view_definitions.id
 
-Ref: QuestionnaireVersion.questionnaireId > Questionnaire.id
+Ref: polls.tenantId > tenants.id
 
-Ref: Section.questionnaireVersionId > QuestionnaireVersion.id
+Ref: poll_versions.questionnaireId > polls.id
 
-Ref: Question.sectionId > Section.id
+Ref: poll_sections.questionnaireVersionId > poll_versions.id
 
-Ref: Submission.questionnaireId > Questionnaire.id
+Ref: poll_questions.sectionId > poll_sections.id
 
-Ref: Submission.questionnaireVersionId > QuestionnaireVersion.id
+Ref: poll_submissions.questionnaireId > polls.id
 
-Ref: Submission.userId > User.id
+Ref: poll_submissions.questionnaireVersionId > poll_versions.id
 
-Ref: Answer.submissionId > Submission.id
+Ref: poll_submissions.userId > users.id
 
-Ref: Answer.questionId > Question.id
+Ref: poll_answers.questionId > poll_questions.id
+
+Ref: poll_answers.submissionId > poll_submissions.id

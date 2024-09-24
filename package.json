@@ -4,16 +4,17 @@
   "license": "MIT",
   "scripts": {
     "dev": "npx nx run-many -t serve",
-    "gen:gql:codegen": "npx nx run client-gql:gen",
-    "gen:prisma:migrate": "npx nx run server-db-client:migratelool",
-    "gen:prisma:client": "npx nx run server-db-client:generate-types",
+    "ml:install": "npx nx run ml:install",
+    "ml:run": "npx nx run ml:run",
+    "gql:codegen": "npx nx run client-gql:gen",
     "import:usda": "npx nx run data-import-usda:import",
     "import:otto": "npx nx run data-import:import:otto",
+    "import:canada": "npx nx run data-import-canada:run",
+    "db:nutri:reset": "docker-compose down -v && docker-compose up -d && echo 'waiting for import to finish' && docker wait $(docker-compose ps -q csvkit-importer) && pnpm db:nutri:migrate",
     "db:nutri:migrate": "npx nx run server-db-client:migrate",
+    "db:nutri:client": "npx nx run server-db-client:generate-types",
     "db:nutri:dump": "./tools/dump-database.sh nutri postgres-nutri",
-    "db:tui:nutri": "harlequin -a postgres -h localhost -p 3100 -U nutri --password nutri -d nutri",
-    "db:tui:sffood": "harlequin -a postgres -h localhost -p 3100 -U nutri --password nutri -d sf-legacy-food",
-    "db:tui:foundationfood": "harlequin -a postgres -h localhost -p 3100 -U nutri --password nutri -d foundation-food"
+    "db:nutri:tui": "harlequin -a postgres -h localhost -p 3100 -U nutri --password nutri -d nutri"
   },
   "private": true,
   "dependencies": {
@@ -173,6 +174,7 @@
     "@nx/web": "19.4.4",
     "@nx/webpack": "19.4.4",
     "@nx/workspace": "19.4.4",
+    "@nxlv/python": "^19.0.2",
     "@parcel/watcher": "^2.4.1",
     "@playwright/test": "^1.36.0",
     "@swc-node/register": "~1.9.1",

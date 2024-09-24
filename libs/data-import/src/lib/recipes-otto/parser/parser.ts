@@ -84,10 +84,7 @@ function mergeIngredientsWithEmptyQuantities(acc: ParsedIngredient[], item: Pars
 
 export function parseIngredients(ingredientsData: string): ParsedIngredient[] {
   const parsedIngredients: IngredientRoot = JSON.parse(ingredientsData);
-  console.log(' >>>>>>>>>@>  (JSON.stringify(parsedIngredients, null, 2))', JSON.stringify(parsedIngredients, null, 2));
-
   const ingredientLines = extractIngredientLines(parsedIngredients);
-  console.log(' >>>>>>>>>@>  (ingredientLines)', ingredientLines);
 
   return ingredientLines.map(line => {
     if (line.toUpperCase() === line) {

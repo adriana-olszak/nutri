@@ -5,7 +5,6 @@ from csvkit.utilities.csvsql import CSVSQL
 import pandas as pd
 import tempfile
 import yaml
-import sys
 import re
 import chardet
 

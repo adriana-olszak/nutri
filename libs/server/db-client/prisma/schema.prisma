@@ -14,357 +14,296 @@ generator dbml {
 }
 
 generator nestgraphql {
-  // provider = "node node_modules/prisma-nestjs-graphql"
-  // for yarn monorepos
   provider = "prisma-nestjs-graphql"
   output   = "../@generated"
 }
 
-// generator erd {
-//   provider = "prisma-erd-generator"
-//   mmdcPath = "../../../node_modules/.bin"
-// }
-
 datasource db {
   provider   = "postgresql"
-  // FIXME: when deploying we have to use ENV. For whatever reson it does not work.
   url        = "postgresql://nutri:nutri@localhost:3100/nutri"
-  extensions = [pg_trgm, fuzzystrmatch]
+  extensions = [fuzzystrmatch, pg_trgm, pgvector(map: "vector")]
 }
 
 model User {
-  id       String  @id @default(uuid())
-  email    String  @unique
-  password String?
-
-  roles         Roles[]
-  googleId      String? @unique
-  googleProfile Json?
-
-  refreshTokens       RefreshToken[]
-  sessions            Session[]
+  id                  String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email               String               @unique
+  password            String?
+  roles               Roles[]
+  googleId            String?              @unique @map("google_id")
+  googleProfile       Json?                @map("google_profile")
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
   loginLogs           LoginLog[]
   passwordResetTokens PasswordResetToken[]
+  refreshTokens       RefreshToken[]
+  sessions            Session[]
+  submissions         Submission[]
+  MatchManualReview   MatchManualReview[]
 
-  submissions Submission[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum Roles {
-  USER
-  SUPERADMIN
+  @@map("users")
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   token     String   @unique
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  familyId  String
-  sessionId String
-  expiresAt DateTime
+  userId    String   @map("user_id") @db.Uuid
+  familyId  String   @map("family_id")
+  sessionId String   @map("session_id")
+  expiresAt DateTime @map("expires_at")
   used      Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("auth_refresh_token")
 }
 
 model Session {
-  id           String   @id @default(uuid())
-  userId       String
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  deviceInfo   String?  @map("device_info")
+  ipAddress    String?  @map("ip_address")
+  lastActiveAt DateTime @updatedAt @map("last_active_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  deviceInfo   String?
-  ipAddress    String?
-  lastActiveAt DateTime @updatedAt
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+
+  @@map("auth_session")
 }
 
 model LoginLog {
-  id        String   @id @default(uuid())
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String?  @map("user_id") @db.Uuid
   success   Boolean
-  ipAddress String?
-  userAgent String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("auth_login_log")
 }
 
 model PasswordResetToken {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   token     String   @unique
-  userId    String
+  userId    String   @map("user_id") @db.Uuid
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  @@map("auth_password_reset_token")
 }
 
-// TODO: Replace this with Redis or another in-memory store for production use.
-// Using an in-memory store will provide better performance for token blacklist checks.
 model TokenBlacklist {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   token     String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("auth_token_blacklist")
 }
 
-// Represents languages used in the database
 model Language {
-  code          String             @id @unique
-  name          String
-  translations  Translation[]
-  searchVectors FoodSearchVector[]
+  code           String             @id @unique
+  name           String
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @updatedAt @map("updated_at")
+  foodEmbeddings FoodEmbedding[]
+  searchVectors  FoodSearchVector[]
+  translations   Translation[]
+
+  @@map("i18n_languages")
 }
 
-// Stores translations for various entities in different languages
 model Translation {
-  id         String @id @default(uuid())
-  entityType String
-  entityId   String
-
-  // name of transalted column
-  field String
-  value String
-
-  languageCode String
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  entityType   String   @map("entity_type")
+  entityId     String   @map("entity_id")
+  field        String
+  value        String
+  languageCode String   @map("language_code")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
   language     Language @relation(fields: [languageCode], references: [code])
 
   @@unique([languageCode, entityType, entityId, field])
   @@index([entityType, entityId])
+  @@map("i18n_translations")
 }
 
-// Represents a food item with its nutritional information
-// All values are given per 100g edible part of the food
 model Food {
-  id               String               @id @default(uuid())
-  sourceId         String               @unique
-  description      String
-  scientificName   String?
-  nutrients        FoodNutrient[]
-  portions         FoodPortion[]
-  brandedFood      BrandedFood?
-  categories       FoodCategoryOnFood[]
-  searchVectors    FoodSearchVector[]
-  importInfo       ImportInfo?          @relation(fields: [importInfoId], references: [id])
-  importInfoId     String?
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
-  RecipeIngredient RecipeIngredient[]
+  id                String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceId          String                      @unique @map("source_id")
+  description       String
+  scientificName    String?                     @map("scientific_name")
+  importInfoId      String?                     @map("import_info_id") @db.Uuid
+  createdAt         DateTime                    @default(now()) @map("created_at")
+  updatedAt         DateTime                    @updatedAt @map("updated_at")
+  categoryId        String                      @map("category_id") @db.Uuid
+  embeddings        FoodEmbedding[]
+  nutrients         FoodNutrient[]
+  portions          FoodPortion[]
+  searchVectors     FoodSearchVector[]
+  category          FoodCategory                @relation(fields: [categoryId], references: [id])
+  importInfo        ImportInfo?                 @relation(fields: [importInfoId], references: [id])
+  ingredientMatches MatchRecipeIngredientFood[]
+  recipeIngredients RecipeIngredient[]
 
-  @@index([id, description]) // Composite index for JOIN conditions
+  @@index([id, description])
   @@index([description(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@map("foods")
 }
 
-// Stores search vectors for efficient food searching
 model FoodSearchVector {
-  id           String                  @id @default(uuid())
+  id           String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  foodId       String                  @map("food_id") @db.Uuid
+  languageCode String                  @map("language_code")
+  searchVector Unsupported("tsvector") @map("search_vector")
+  createdAt    DateTime                @default(now()) @map("created_at")
+  updatedAt    DateTime                @updatedAt @map("updated_at")
   food         Food                    @relation(fields: [foodId], references: [id])
-  foodId       String
   language     Language                @relation(fields: [languageCode], references: [code])
-  languageCode String
-  searchVector Unsupported("tsvector")
 
   @@unique([foodId, languageCode])
   @@index([searchVector], type: Gin)
+  @@map("food_search_vectors")
 }
 
-// Represents food categories, which can be hierarchical
+model FoodEmbedding {
+  id            String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  foodId        String                @map("food_id") @db.Uuid
+  languageCode  String                @map("language_code")
+  embeddingType String                @map("embedding_type")
+  embedding     Unsupported("vector")
+  modelVersion  String                @map("model_version")
+  createdAt     DateTime              @default(now()) @map("created_at")
+  updatedAt     DateTime              @updatedAt @map("updated_at")
+  food          Food                  @relation(fields: [foodId], references: [id])
+  language      Language              @relation(fields: [languageCode], references: [code])
+
+  @@unique([foodId, languageCode, embeddingType])
+  @@map("food_embeddings")
+}
+
 model FoodCategory {
-  id               String               @id @default(uuid())
-  code             String?              @unique
-  description      String?              @unique
-  parentCategoryId String?
-  level            Int
-  sourceId         String               @unique
-  foods            FoodCategoryOnFood[] // New field
-  importInfo       ImportInfo?          @relation(fields: [importInfoId], references: [id])
-  importInfoId     String?
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code         String?     @unique
+  description  String?     @unique
+  level        Int
+  sourceId     String      @unique @map("source_id")
+  importInfoId String?     @map("import_info_id") @db.Uuid
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+  importInfo   ImportInfo? @relation(fields: [importInfoId], references: [id])
+  Food         Food[]
 
-  parentCategory  FoodCategory?  @relation("ParentChild", fields: [parentCategoryId], references: [id])
-  childCategories FoodCategory[] @relation("ParentChild")
-
-  @@index([parentCategoryId])
   @@index([level])
+  @@map("food_categories")
 }
 
-model FoodCategoryOnFood {
-  food              Food         @relation(fields: [foodId], references: [id])
-  foodId            String
-  category          FoodCategory @relation(fields: [categoryId], references: [id])
-  categoryId        String
-  isPrimaryCategory Boolean      @default(false)
-
-  @@id([foodId, categoryId])
-  @@index([foodId])
-  @@index([categoryId])
-}
-
-// Represents branded food products
-model BrandedFood {
-  id             String          @id @default(uuid())
-  food           Food            @relation(fields: [foodId], references: [id])
-  foodId         String          @unique
-  brandOwner     String
-  gtinUpc        String?
-  ingredients    String?
-  servingSize    Float?
-  servingUnit    String?
-  sourceId       String
-  importInfo     ImportInfo?     @relation(fields: [importInfoId], references: [id])
-  importInfoId   String?
-  nutritionLabel NutritionLabel?
-
-  @@index([brandOwner])
-  @@index([gtinUpc])
-  @@index([foodId]) // Covering index including id for JOIN conditions
-}
-
-// Represents nutritional label information for branded foods
-model NutritionLabel {
-  id            String      @id @default(uuid())
-  brandedFood   BrandedFood @relation(fields: [brandedFoodId], references: [id])
-  brandedFoodId String      @unique
-
-  calories          Float?
-  totalFat          Float?
-  saturatedFat      Float?
-  transFat          Float?
-  cholesterol       Float?
-  sodium            Float?
-  totalCarbohydrate Float?
-  dietaryFiber      Float?
-  totalSugars       Float?
-  addedSugars       Float?
-  protein           Float?
-  vitaminA          Float?
-  vitaminC          Float?
-  vitaminD          Float?
-  calcium           Float?
-  iron              Float?
-  potassium         Float?
-
-  servingsPerContainer     Float?
-  householdServingFullText String?
-
-  percentDailyValueFat          Float?
-  percentDailyValueSaturatedFat Float?
-  percentDailyValueCholesterol  Float?
-  percentDailyValueSodium       Float?
-  percentDailyValueCarbohydrate Float?
-  percentDailyValueFiber        Float?
-  percentDailyValueProtein      Float?
-  percentDailyValueVitaminA     Float?
-  percentDailyValueVitaminC     Float?
-  percentDailyValueVitaminD     Float?
-  percentDailyValueCalcium      Float?
-  percentDailyValueIron         Float?
-  percentDailyValuePotassium    Float?
-}
-
-// Represents nutrients and their properties
 model Nutrient {
-  id       String @id @default(uuid())
-  name     String
-  // The standard unit of measure for the nutrient (per 100g of food)
-  unitName String
-  sourceId String @unique
-
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String
+  unitName      String         @map("unit_name")
+  sourceId      String         @unique @map("source_id")
+  importInfoId  String?        @map("import_info_id") @db.Uuid
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
   foodNutrients FoodNutrient[]
   importInfo    ImportInfo?    @relation(fields: [importInfoId], references: [id])
-  importInfoId  String?
 
   @@index([name])
+  @@map("food_nutrients")
 }
 
-// Represents the nutritional content of a food
 model FoodNutrient {
-  id             String      @id @default(uuid())
-  food           Food        @relation(fields: [foodId], references: [id])
-  foodId         String
-  nutrient       Nutrient    @relation(fields: [nutrientId], references: [id])
-  nutrientId     String
+  foodId         String      @map("food_id") @db.Uuid
+  nutrientId     String      @map("nutrient_id") @db.Uuid
   amount         Float
   min            Float?
   median         Float?
   max            Float?
-  confidenceCode String?
-  sourceId       String
+  confidenceCode String?     @map("confidence_code")
+  sourceId       String      @map("source_id")
+  importInfoId   String?     @map("import_info_id") @db.Uuid
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  food           Food        @relation(fields: [foodId], references: [id])
   importInfo     ImportInfo? @relation(fields: [importInfoId], references: [id])
-  importInfoId   String?
+  nutrient       Nutrient    @relation(fields: [nutrientId], references: [id])
 
+  @@id([foodId, nutrientId])
   @@index([foodId])
   @@index([nutrientId])
   @@index([amount])
+  @@map("food_food_nutrients")
 }
 
-// Represents portion sizes for foods
-model FoodPortion {
-  id                 String  @id @default(uuid())
-  amount             Float
-  gramWeight         Float
-  portionDescription String?
-  sourceId           String
-
-  food            Food        @relation(fields: [foodId], references: [id])
-  foodId          String
-  measureUnitName String
-  measureUnit     MeasureUnit @relation(fields: [measureUnitName], references: [name])
-  importInfo      ImportInfo? @relation(fields: [importInfoId], references: [id])
-  importInfoId    String?
-
-  @@index([foodId])
-}
-
-model MeasureUnit {
-  name         String        @id @unique
+model FoodMeasureUnit {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String        @unique
+  sourceId     String        @map("source_id")
+  importInfoId String        @map("import_info_id") @db.Uuid
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  importInfo   ImportInfo    @relation(fields: [importInfoId], references: [id])
   FoodPortion  FoodPortion[]
-  importInfo   ImportInfo?   @relation(fields: [importInfoId], references: [id])
-  importInfoId String?
+
+  @@map("food_measure_units")
 }
 
-// Represents the source of food data (e.g., USDA, FDA, EUROFIR, CIQUAL, CUSTOM)
-enum FoodDataSource {
-  USDA
-  EUROFIR
-  CIQUAL
-  CANADA
-  USER_INPUT
+model FoodPortion {
+  id               String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  gramWeight       Float           @map("gram_weight")
+  foodId           String          @map("food_id") @db.Uuid
+  importInfoId     String?         @map("import_info_id") @db.Uuid
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+  covnersionFactor Float           @map("conversion_factor")
+  measureUnitId    String          @map("measure_unit_id") @db.Uuid
+  food             Food            @relation(fields: [foodId], references: [id])
+  importInfo       ImportInfo?     @relation(fields: [importInfoId], references: [id])
+  measureUnit      FoodMeasureUnit @relation(fields: [measureUnitId], references: [id])
+
+  @@unique([foodId, measureUnitId])
+  @@index([foodId])
+  @@index([measureUnitId])
+  @@map("food_portions")
 }
 
-// Stores information about data imports
 model ImportInfo {
-  id             String         @id @default(uuid())
-  sourceVersion  String
-  importDate     DateTime
-  dataSource     FoodDataSource
-  foods          Food[]
-  foodCategories FoodCategory[]
-  brandedFoods   BrandedFood[]
-  nutrients      Nutrient[]
-  foodNutrients  FoodNutrient[]
-  foodPortions   FoodPortion[]
-  measureUnits   MeasureUnit[]
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceVersion   String            @map("source_version")
+  importDate      DateTime          @map("import_date")
+  dataSource      FoodDataSource    @map("data_source")
+  foodCategories  FoodCategory[]
+  foodNutrients   FoodNutrient[]
+  FoodMeasureUnit FoodMeasureUnit[]
+  nutrients       Nutrient[]
+  foodPortions    FoodPortion[]
+  foods           Food[]
 
   @@unique([dataSource, sourceVersion])
   @@index([importDate])
+  @@map("import_infos")
 }
 
 model Recipe {
-  id           String  @id @default(uuid())
-  title        String  @unique
-  sourceId     String?
-  sourceUrl    String?
+  id           String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String               @unique
+  sourceId     String?              @map("source_id")
+  sourceUrl    String?              @map("source_url")
   description  String?
-  cookingTime  String?
-  prepTime     String?
-  servingsText String? // Full serving description
-  servingsMin  Int? // Minimum number of servings
-  servingsMax  Int? // Maximum number of servings
-
+  cookingTime  String?              @map("cooking_time")
+  prepTime     String?              @map("prep_time")
+  servingsText String?              @map("servings_text")
+  servingsMin  Int?                 @map("servings_min")
+  servingsMax  Int?                 @map("servings_max")
+  createdAt    DateTime             @default(now()) @map("created_at")
+  updatedAt    DateTime             @updatedAt @map("updated_at")
   instructions RecipeInstructions[]
   parts        RecipePart[]
   ingredients  RecipeIngredient[]
@@ -373,200 +312,340 @@ model Recipe {
   seasons      Season[]
   tags         Tag[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@map("recipes")
 }
 
 model RecipeImage {
-  id       String  @id @default(uuid())
-  recipe   Recipe  @relation(fields: [recipeId], references: [id])
-  recipeId String
-  url      String
-  altText  String?
-  width    Int?
-  height   Int?
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  recipeId  String   @map("recipe_id") @db.Uuid
+  url       String
+  altText   String?  @map("alt_text")
+  width     Int?
+  height    Int?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
 
   @@index([recipeId])
+  @@map("recipe_images")
 }
 
 model Season {
-  id      String   @id @default(uuid())
-  name    String   @unique
-  recipes Recipe[]
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  recipes   Recipe[]
+
+  @@map("recipe_seasons")
 }
 
 model Tag {
-  id      String   @id @default(uuid())
-  name    String   @unique
-  recipes Recipe[]
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  recipes   Recipe[]
+
+  @@map("recipe_tags")
 }
 
 model RecipePart {
-  id          String             @id @default(uuid())
+  id          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String
-  recipe      Recipe             @relation(fields: [recipeId], references: [id])
-  recipeId    String
+  recipeId    String             @map("recipe_id") @db.Uuid
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
   ingredients RecipeIngredient[]
+  recipe      Recipe             @relation(fields: [recipeId], references: [id])
 
   @@index([recipeId])
+  @@map("recipe_parts")
+}
+
+model RecipeInstructions {
+  id        String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  recipeId  String                 @map("recipe_id") @db.Uuid
+  content   String
+  type      RecipeInstructionsType
+  order     Int
+  listIndex Int?                   @map("list_index")
+  createdAt DateTime               @default(now()) @map("created_at")
+  updatedAt DateTime               @updatedAt @map("updated_at")
+  recipe    Recipe                 @relation(fields: [recipeId], references: [id])
+
+  @@map("recipe_instructions")
+}
+
+model RecipeIngredient {
+  id             String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  recipeId       String                      @map("recipe_id") @db.Uuid
+  partId         String?                     @map("part_id") @db.Uuid
+  foodId         String?                     @map("food_id") @db.Uuid
+  quantity       Float
+  quantityText   String?                     @map("quantity_text")
+  minQuantity    Float?                      @map("min_quantity")
+  maxQuantity    Float?                      @map("max_quantity")
+  unit           String
+  unitText       String?                     @map("unit_text")
+  ingredientText String                      @map("ingredient_text")
+  extraInfo      String?                     @map("extra_info")
+  createdAt      DateTime                    @default(now()) @map("created_at")
+  updatedAt      DateTime                    @updatedAt @map("updated_at")
+  foodMatches    MatchRecipeIngredientFood[]
+  food           Food?                       @relation(fields: [foodId], references: [id])
+  part           RecipePart?                 @relation(fields: [partId], references: [id])
+  recipe         Recipe                      @relation(fields: [recipeId], references: [id])
+
+  @@index([recipeId])
+  @@index([partId])
+  @@index([foodId])
+  @@map("recipe_ingredients")
+}
+
+model MatchRecipeIngredientFood {
+  id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  recipeIngredient   RecipeIngredient @relation(fields: [recipeIngredientId], references: [id])
+  recipeIngredientId String           @map("recipe_ingredient_id") @db.Uuid
+  matchedFood        Food             @relation(fields: [matchedFoodId], references: [id])
+  matchedFoodId      String           @map("matched_food_id") @db.Uuid
+
+  // Scoring and ranking
+  biEncoderScore    Float   @map("bi_encoder_score")
+  crossEncoderScore Float?  @map("cross_encoder_score")
+  rank              Int
+  confidence        Float // Overall confidence score
+  algorithmVersion  String? @map("algorithm_version")
+
+  // Review status
+  needsReview  Boolean            @default(true) @map("needs_review")
+  manualReview MatchManualReview?
+
+  // Additional useful information
+  matchQuality MatchQuality @default(MEDIUM) @map("match_quality")
+  matchType    MatchType    @default(AUTOMATIC) @map("match_type")
+  notes        String? // For reviewers to add comments
+
+  potentialNutritionalImpact Float? @map("potential_nutritional_impact")
+  nutritionalConfidence      Float? @map("nutritional_confidence")
+  substitutionComplexity     Float? @map("substitution_complexity")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([recipeIngredientId, matchedFoodId])
+  @@index([recipeIngredientId])
+  @@index([matchedFoodId])
+  @@index([needsReview])
+  @@index([matchQuality])
+  @@index([matchType])
+  @@map("matches_recipe_ingredient_food")
+}
+
+model MatchManualReview {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  matchRecipeIngredientFoodId String                    @unique @db.Uuid
+  match                       MatchRecipeIngredientFood @relation(fields: [matchRecipeIngredientFoodId], references: [id])
+
+  reviewedBy   User?        @relation(fields: [reviewedById], references: [id])
+  reviewedById String?      @map("reviewed_by_id") @db.Uuid
+  reviewedAt   DateTime?    @map("reviewed_at")
+  reviewStatus ReviewStatus @default(PENDING) @map("review_status")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("matches_manual_reviews")
+}
+
+model RecipeCategory {
+  id      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name    String   @unique
+  recipes Recipe[]
+
+  @@map("recipe_categories")
+}
+
+model TableViewDefinition {
+  id         String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+  userId     String?      @map("user_id")
+  tableId    String       @map("table_id")
+  tableType  String       @map("table_type")
+  name       String
+  order      Int
+  icon       String?
+  filters    String?
+  sorting    String?
+  isPreset   Boolean      @default(false) @map("is_preset")
+  isShared   Boolean      @default(false) @map("is_shared")
+  ColumnView ColumnView[]
+
+  @@index([userId])
+  @@index([tableType])
+  @@map("table_view_definitions")
+}
+
+model ColumnView {
+  id                    String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  columnId              Int                 @map("column_id")
+  columnType            String              @map("column_type")
+  width                 Int
+  visible               Boolean
+  name                  String
+  filter                String?
+  tableViewDefinitionId String              @map("table_view_definition_id") @db.Uuid
+  createdAt             DateTime            @default(now()) @map("created_at")
+  updatedAt             DateTime            @updatedAt @map("updated_at")
+  tableViewDefinition   TableViewDefinition @relation(fields: [tableViewDefinitionId], references: [id])
+
+  @@index([tableViewDefinitionId])
+  @@map("table_view_column_views")
+}
+
+model Tenant {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  questionnaires Questionnaire[]
+
+  @@map("tenants")
+}
+
+model Questionnaire {
+  id          String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId    String?                @map("tenant_id") @db.Uuid
+  title       String
+  description String?
+  isPublic    Boolean                @default(false) @map("is_public")
+  deletedAt   DateTime?              @map("deleted_at")
+  createdAt   DateTime               @default(now()) @map("created_at")
+  updatedAt   DateTime               @updatedAt @map("updated_at")
+  submissions Submission[]
+  versions    QuestionnaireVersion[]
+  tenant      Tenant?                @relation(fields: [tenantId], references: [id])
+
+  @@map("polls")
+}
+
+model QuestionnaireVersion {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  questionnaireId String        @map("questionnaire_id") @db.Uuid
+  versionNumber   Int           @map("version_number")
+  isActive        Boolean       @default(false) @map("is_active")
+  deletedAt       DateTime?     @map("deleted_at")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  sections        Section[]
+  submissions     Submission[]
+  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
+
+  @@unique([questionnaireId, versionNumber])
+  @@map("poll_versions")
+}
+
+model Section {
+  id                     String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  questionnaireVersionId String               @map("questionnaire_version_id") @db.Uuid
+  title                  String
+  description            String?
+  order                  Int
+  createdAt              DateTime             @default(now()) @map("created_at")
+  updatedAt              DateTime             @updatedAt @map("updated_at")
+  questions              Question[]
+  questionnaireVersion   QuestionnaireVersion @relation(fields: [questionnaireVersionId], references: [id])
+
+  @@map("poll_sections")
+}
+
+model Question {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sectionId   String   @map("section_id") @db.Uuid
+  type        String
+  title       String
+  description String?
+  isRequired  Boolean  @default(false) @map("is_required")
+  order       Int
+  config      Json
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  answers     Answer[]
+  section     Section  @relation(fields: [sectionId], references: [id])
+
+  @@map("poll_questions")
+}
+
+model Submission {
+  id                     String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  questionnaireId        String               @map("questionnaire_id") @db.Uuid
+  questionnaireVersionId String               @map("questionnaire_version_id") @db.Uuid
+  userId                 String               @map("user_id") @db.Uuid
+  isComplete             Boolean              @default(false) @map("is_complete")
+  startedAt              DateTime             @default(now()) @map("started_at")
+  completedAt            DateTime?            @map("completed_at")
+  createdAt              DateTime             @default(now()) @map("created_at")
+  updatedAt              DateTime             @updatedAt @map("updated_at")
+  answers                Answer[]
+  questionnaire          Questionnaire        @relation(fields: [questionnaireId], references: [id])
+  questionnaireVersion   QuestionnaireVersion @relation(fields: [questionnaireVersionId], references: [id])
+  user                   User                 @relation(fields: [userId], references: [id])
+
+  @@map("poll_submissions")
+}
+
+model Answer {
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  submissionId String     @map("submission_id") @db.Uuid
+  questionId   String     @map("question_id") @db.Uuid
+  value        Json
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  question     Question   @relation(fields: [questionId], references: [id])
+  submission   Submission @relation(fields: [submissionId], references: [id])
+
+  @@map("poll_answers")
+}
+
+enum Roles {
+  USER
+  SUPERADMIN
+}
+
+enum FoodDataSource {
+  USDA
+  EUROFIR
+  CIQUAL
+  USER_INPUT
+  CANADA
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MatchQuality {
+  EXACT
+  HIGH
+  MEDIUM
+  LOW
+  POOR
+}
+
+enum MatchType {
+  AUTOMATIC
+  MANUAL
+  CORRECTED
 }
 
 enum RecipeInstructionsType {
   TEXT
   IMAGE
   PART
-}
-
-model RecipeInstructions {
-  id        String                 @id @default(uuid())
-  recipe    Recipe                 @relation(fields: [recipeId], references: [id])
-  recipeId  String
-  content   String
-  type      RecipeInstructionsType
-  order     Int
-  listIndex Int?
-}
-
-model RecipeIngredient {
-  id             String      @id @default(uuid())
-  recipe         Recipe      @relation(fields: [recipeId], references: [id])
-  recipeId       String
-  part           RecipePart? @relation(fields: [partId], references: [id])
-  partId         String?
-  food           Food        @relation(fields: [foodId], references: [id])
-  foodId         String
-  quantity       Float
-  quantityText   String?
-  minQuantity    Float?
-  maxQuantity    Float?
-  unit           String
-  unitText       String?
-  ingredientText String?
-  extraInfo      String?
-
-  @@index([recipeId])
-  @@index([partId])
-  @@index([foodId])
-}
-
-model RecipeCategory {
-  id      String   @id @default(uuid())
-  name    String   @unique
-  recipes Recipe[]
-}
-
-model TableViewDefinition {
-  id         String       @id @default(uuid())
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  userId     String?
-  tableId    String
-  tableType  String
-  name       String
-  order      Int
-  icon       String?
-  filters    String?
-  sorting    String?
-  isPreset   Boolean      @default(false)
-  isShared   Boolean      @default(false)
-  ColumnView ColumnView[]
-
-  @@index([userId])
-  @@index([tableType])
-}
-
-model ColumnView {
-  id         String  @id @default(uuid())
-  columnId   Int
-  columnType String
-  width      Int
-  visible    Boolean
-  name       String
-  filter     String?
-
-  tableViewDefinition   TableViewDefinition @relation(fields: [tableViewDefinitionId], references: [id])
-  tableViewDefinitionId String
-
-  @@index([tableViewDefinitionId])
-}
-
-model Tenant {
-  id             String          @id @default(uuid())
-  name           String
-  questionnaires Questionnaire[]
-}
-
-model Questionnaire {
-  id          String                 @id @default(uuid())
-  tenantId    String?
-  tenant      Tenant?                @relation(fields: [tenantId], references: [id])
-  title       String
-  description String?
-  isPublic    Boolean                @default(false)
-  deletedAt   DateTime?
-  versions    QuestionnaireVersion[]
-  submissions Submission[]
-  createdAt   DateTime               @default(now())
-  updatedAt   DateTime               @updatedAt
-}
-
-model QuestionnaireVersion {
-  id              String        @id @default(uuid())
-  questionnaireId String
-  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
-  versionNumber   Int
-  isActive        Boolean       @default(false)
-  deletedAt       DateTime?
-  sections        Section[]
-  submissions     Submission[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-
-  @@unique([questionnaireId, versionNumber])
-}
-
-model Section {
-  id                     String               @id @default(uuid())
-  questionnaireVersionId String
-  questionnaireVersion   QuestionnaireVersion @relation(fields: [questionnaireVersionId], references: [id])
-  title                  String
-  description            String?
-  order                  Int
-  questions              Question[]
-}
-
-model Question {
-  id          String   @id @default(uuid())
-  sectionId   String
-  section     Section  @relation(fields: [sectionId], references: [id])
-  type        String // Use an enum in application code
-  title       String
-  description String?
-  isRequired  Boolean  @default(false)
-  order       Int
-  config      Json // Includes options and other configuration
-  answers     Answer[]
-}
-
-model Submission {
-  id                     String               @id @default(uuid())
-  questionnaireId        String
-  questionnaire          Questionnaire        @relation(fields: [questionnaireId], references: [id])
-  questionnaireVersionId String
-  questionnaireVersion   QuestionnaireVersion @relation(fields: [questionnaireVersionId], references: [id])
-  userId                 String
-  user                   User                 @relation(fields: [userId], references: [id])
-  answers                Answer[]
-  isComplete             Boolean              @default(false)
-  startedAt              DateTime             @default(now())
-  completedAt            DateTime?
-}
-
-model Answer {
-  id           String     @id @default(uuid())
-  submissionId String
-  submission   Submission @relation(fields: [submissionId], references: [id])
-  questionId   String
-  question     Question   @relation(fields: [questionId], references: [id])
-  value        Json // Stores all types of answers
 }

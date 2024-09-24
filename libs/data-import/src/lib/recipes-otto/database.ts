@@ -118,12 +118,10 @@ async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, i
         });
         currentPartId = part.id;
       } else {
-        const food = await findOrCreateFood(prisma, ingredient.ingredient);
         await prisma.recipeIngredient.create({
           data: {
             recipeId,
             partId: currentPartId,
-            foodId: food.id,
             quantity: ingredient.quantity,
             quantityText: ingredient.quantityText,
             minQuantity: ingredient.minQuantity,
@@ -141,26 +139,6 @@ async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, i
   }
 }
 
-async function findOrCreateFood(prisma: PrismaClient, foodName: string) {
-  const matches = await matchIngredientToFood(prisma, manualFoodMapping(foodName));
-
-  let food = matches.length ? await prisma.food.findUnique({
-    where: { id: matches[0].foodId }
-  }) : await prisma.food.findUnique({
-    where: { sourceId: `OTTO_${foodName}` }
-  });
-
-  if (!food) {
-    food = await prisma.food.create({
-      data: {
-        description: foodName,
-        sourceId: `OTTO_${foodName}`
-      }
-    });
-  }
-
-  return food;
-}
 
 export async function findOrCreateRecipe(prisma: PrismaClient, recipeData: ParsedRecipe) {
   try {
@@ -175,10 +153,10 @@ export async function findOrCreateRecipe(prisma: PrismaClient, recipeData: Parse
 
     const newRecipe = await prisma.recipe.create({
       data: {
-        title: recipeData.title,
+        title: recipeData.title.trim(),
         sourceId: recipeData.sourceId,
         sourceUrl: recipeData.sourceUrl,
-        description: recipeData.description,
+        description: recipeData.description.trim(),
         cookingTime: recipeData.cookingTime,
         prepTime: recipeData.prepTime,
         servingsText: recipeData.servingsText,
@@ -200,44 +178,4 @@ export async function findOrCreateRecipe(prisma: PrismaClient, recipeData: Parse
   } catch (error) {
     throw new Error(`Error finding or creating recipe "${recipeData.title}": ${error instanceof Error ? error.message : String(error)}`);
   }
-}
-
-
-export async function matchIngredientToFood(prisma: PrismaClient, name: string): Promise<[{
-  foodId: string,
-  rank: number
-}]> {
-  const similarityThreshold = 0.05;
-
-  const searchQuery = Prisma.sql`
-SELECT f.id "foodId",
-       ts_rank(fv."searchVector", plainto_tsquery(${name})) + word_similarity(f.description, ${name}) as "rank"
-FROM "FoodSearchVector" fv
-         JOIN "Food" f ON f.id = fv."foodId"
-WHERE (ts_rank(fv."searchVector", plainto_tsquery(${name})) > ${similarityThreshold} OR
-       word_similarity(f.description, ${name}) > ${similarityThreshold})
-ORDER BY "rank" DESC
-    LIMIT 1;
-  `;
-
-  return prisma.$queryRaw(searchQuery);
-}
-
-function manualFoodMapping(name: string) {
-
-  return name.toLowerCase()
-    .replace(/caster sugar/g, 'Sweets, sugars, fructose, powder')
-    .replace(/spices/g, 'Spices, cumin seed')
-    .replace(/spices/g, 'Spices, cumin seed')
-    .replace(/chilli flakes/g, 'Spices, chili powder')
-    .replace(/red chillies/g, 'Pepper, hot chili, red or green, raw')
-    .replace(/green chilli/g, 'Pepper, hot chili, red or green, raw')
-    .replace(/red chilli/g, 'Pepper, hot chili, red or green, raw')
-    .replace(/aleppo chilli/g, 'Pepper, hot chili, red or green, raw')
-    .replace(/urfa chilli flakes/g, 'Pepper, hot chili, red or green, raw')
-    .replace(/aleppo chilli flakes/g, 'Pepper, hot chili, red or green, raw')
-    .replace(/dijon mustard/g, 'Sauce, mustard, yellow, ready-to-serve')
-    .replace(/vanilla pod/g, 'Vanilla extract')
-    .replace(/cherry tomatoes/g, 'Tomato, red, ripe, raw, year round average')
-    .replace(/mint leaves/g, 'Spices, spearmint, fresh');
 }
