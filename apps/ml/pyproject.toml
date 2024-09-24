@@ -29,6 +29,7 @@ readme = 'README.md'
   flask-sqlalchemy = "^3.1.1"
   psycopg2 = "^2.9.9"
   procrastinate = "^2.14.0"
+  pgvector = "^0.3.3"
 
   [tool.poetry.group.dev.dependencies]
   autopep8 = "2.0.2"

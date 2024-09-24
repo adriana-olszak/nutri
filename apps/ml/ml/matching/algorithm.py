@@ -1,100 +1,140 @@
-import numpy as np
-from sentence_transformers import SentenceTransformer, CrossEncoder, util
-from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, \
-    ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sentence_transformers import SentenceTransformer, CrossEncoder
 
-Base = declarative_base()
-
-
-
-# Initialize database
-engine = create_engine('postgresql://username:password@localhost/dbname')
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
+from ml.extensions import db
+from ml.models.models import Food, RecipeIngredient, MatchRecipeIngredientFood, FoodEmbedding
+from ml.utils.logging import setup_logger
+from datetime import datetime, UTC
 
 # Initialize models
 bi_encoder = SentenceTransformer('all-MiniLM-L6-v2')
 cross_encoder = CrossEncoder('cross-encoder/stsb-roberta-large')
 
-
-def vector_to_string(vector):
-    return ','.join(map(str, vector))
-
-
-def string_to_vector(string):
-    return np.fromstring(string, sep=',')
+# Setup logging
+logger = setup_logger(__name__)
 
 
-def add_food(session, food_name):
-    vector = bi_encoder.encode(food_name)
-    food = Food(food_name=food_name, food_vector=vector_to_string(vector))
-    session.add(food)
-    session.commit()
+def match_ingredient(ingredient: RecipeIngredient):
+    # Check for existing matches first
+    existing_match = db.session.query(MatchRecipeIngredientFood).filter_by(
+        recipe_ingredient_id=ingredient.id,
+        match_type='AUTOMATIC'
+    ).order_by(MatchRecipeIngredientFood.confidence.desc()).first()
 
+    if existing_match:
+        return [(existing_match.matched_food_id, existing_match.bi_encoder_score)], [existing_match.cross_encoder_score]
 
-def match_ingredient(session, ingredient_name):
-    ingredient_vector = bi_encoder.encode(ingredient_name)
+    # Encode the ingredient text
+    ingredient_vector = bi_encoder.encode(ingredient.ingredient_text)
+    logger.info('querying for top matches')
 
-    # Fetch all foods and their vectors
-    foods = session.query(Food).all()
-    food_vectors = np.array(
-        [string_to_vector(food.food_vector) for food in foods])
-
-    # Compute cosine similarities
-    cosine_scores = util.pytorch_cos_sim(ingredient_vector, food_vectors)[0]
-
-    # Get top 5 matches
-    top_matches = sorted(zip(foods, cosine_scores), key=lambda x: x[1],
-                         reverse=True)[:5]
-
-    # Use cross-encoder for more accurate scoring
-    cross_encoder_inputs = [(ingredient_name, food.food_name) for food, _ in
-                            top_matches]
-    cross_encoder_scores = cross_encoder.predict(cross_encoder_inputs)
-
-    # Find best match
-    best_match_idx = np.argmax(cross_encoder_scores)
-    best_match, best_bi_score = top_matches[best_match_idx]
-    best_cross_score = cross_encoder_scores[best_match_idx]
-
-    # Add ingredient and best match to database
-    ingredient = Ingredient(ingredient_name=ingredient_name,
-                            best_match_food_id=best_match.food_id,
-                            match_score=best_cross_score)
-    session.add(ingredient)
-
-    # Add all potential matches to database
-    for food, bi_score in top_matches:
-        match = IngredientFoodMatch(
-            ingredient_id=ingredient.ingredient_id,
-            food_id=food.food_id,
-            bi_encoder_score=bi_score.item(),
-            cross_encoder_score=cross_encoder_scores[
-                top_matches.index((food, bi_score))],
-            uncertainty=0.0,  # You could implement uncertainty estimation here
-            needs_review=cross_encoder_scores[
-                             top_matches.index((food, bi_score))] < 0.7
-            # Example threshold
+    # Query for top 5 matches using cosine distance
+    top_matches = db.session.scalars(
+        db.select(Food)
+        .join(FoodEmbedding)
+        .filter(
+            FoodEmbedding.embedding_type == 'sentenceTransformer',
+            FoodEmbedding.model_version == 'all-MiniLM-L6-v2'
         )
-        session.add(match)
+        .order_by(FoodEmbedding.embedding.cosine_distance(ingredient_vector))
+        .limit(5)
+    ).all()
 
-    session.commit()
-    return best_match.food_name, best_cross_score
+    if not top_matches:
+        logger.warning(f"No matches found for ingredient: {ingredient.ingredient_text}")
+        return [], []
+
+    logger.info('querying for distances')
+
+    # Get distances for the top matches
+    distances = db.session.scalars(
+        db.select(FoodEmbedding.embedding.cosine_distance(ingredient_vector))
+        .filter(
+            FoodEmbedding.food_id.in_([food.id for food in top_matches]),
+            FoodEmbedding.embedding_type == 'sentenceTransformer',
+            FoodEmbedding.model_version == 'all-MiniLM-L6-v2'
+        )
+    ).all()
+
+    # Prepare inputs for cross-encoder
+    cross_encoder_inputs = [(ingredient.ingredient_text, food.description) for food in top_matches]
+
+    logger.info('Get cross-encoder scores')
+    # Get cross-encoder scores
+    cross_encoder_scores = cross_encoder.predict(cross_encoder_inputs) if cross_encoder_inputs else []
+
+    logger.info('Prepare the final results')
+    # Prepare the final results
+    # Convert distance to similarity score (1 - distance)
+    final_matches = [(food.id, 1 - distance) for food, distance in zip(top_matches, distances)]
+    final_cross_scores = [float(score) for score in cross_encoder_scores]
+
+    return final_matches, final_cross_scores
 
 
-# Example usage
-session = Session()
+def calculate_confidence(bi_score, cross_score):
+    # You might want to fine-tune this formula based on your specific needs
+    return (bi_score + cross_score) / 2
 
-# Add some foods
-add_food(session, "Red Apple")
-add_food(session, "Green Apple")
-add_food(session, "Banana")
 
-# Match an ingredient
-best_match, score = match_ingredient(session, "Granny Smith Apple")
-print(
-    f"Best match for 'Granny Smith Apple': {best_match} (score: {score:.4f})")
+def determine_match_quality(confidence):
+    if confidence > 0.9:
+        return 'EXACT'
+    elif confidence > 0.8:
+        return 'HIGH'
+    elif confidence > 0.6:
+        return 'MEDIUM'
+    elif confidence > 0.4:
+        return 'LOW'
+    else:
+        return 'POOR'
 
-session.close()
+
+def create_food_matches(ingredient: RecipeIngredient, top_matches, cross_encoder_scores):
+    matches = []
+    current_time = datetime.now(UTC)
+    for rank, ((food_id, bi_score), cross_score) in enumerate(zip(top_matches, cross_encoder_scores), 1):
+        confidence = calculate_confidence(bi_score, cross_score)
+        match_quality = determine_match_quality(confidence)
+        needs_review = match_quality in ['LOW', 'POOR']
+
+        match = MatchRecipeIngredientFood(
+            recipe_ingredient_id=ingredient.id,
+            matched_food_id=food_id,
+            bi_encoder_score=bi_score,
+            cross_encoder_score=cross_score,
+            rank=rank,
+            confidence=confidence,
+            algorithm_version='v1.0',
+            needs_review=needs_review,
+            match_quality=match_quality,
+            match_type='AUTOMATIC',
+            created_at=current_time,
+            updated_at=current_time
+        )
+        matches.append(match)
+
+    return matches
+
+
+def apply_match_decision(ingredient, matches):
+    if len(matches) == 0:
+        return
+
+    top_match = matches[0]
+
+    if top_match['confidence'] > 0.95:
+        ingredient.food_id = top_match['matched_food_id']
+        ingredient.auto_matched = True
+        db.session.query(MatchRecipeIngredientFood).filter_by(
+            id=top_match['id']
+        ).update({
+            'match_type': 'AUTOMATIC',
+            'needs_review': False
+        })
+    elif top_match['confidence'] > 0.8:
+        ingredient.food_id = top_match['matched_food_id']
+        ingredient.auto_matched = False
+    else:
+        ingredient.auto_matched = False
+
+    db.session.commit()
