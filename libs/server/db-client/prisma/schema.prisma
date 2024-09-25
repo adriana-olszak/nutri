@@ -443,21 +443,20 @@ model Match {
 }
 
 model MatchFood {
-  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  match            Match     @relation(fields: [matchId], references: [id])
-  matchId          String    @map("match_id") @db.Uuid
-  selectedForMatch Match?    @relation("SelectedMatch")
-  food             Food      @relation(fields: [foodId], references: [id])
-  foodId           String    @map("food_id") @db.Uuid
-  matchType        MatchType @default(AUTOMATIC) @map("match_type")
+  id               String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  match            Match  @relation(fields: [matchId], references: [id])
+  matchId          String @map("match_id") @db.Uuid
+  selectedForMatch Match? @relation("SelectedMatch")
+  food             Food   @relation(fields: [foodId], references: [id])
+  foodId           String @map("food_id") @db.Uuid
 
   // automated scoring and ranking
-  matchQuality      MatchQuality? @map("match_quality") // Optional for manual entries
-  biEncoderScore    Float?        @map("bi_encoder_score") // Optional for manual entries
-  crossEncoderScore Float?        @map("cross_encoder_score") // Optional for manual entries
-  rank              Int? // Optional for manual entries
-  confidence        Float? // Overall confidence score; Optional for manual entries
-  algorithmVersion  String?       @map("algorithm_version") // Optional for manual entries
+  rank             Int? // Optional for manual entries
+  confidence       Float? // Overall confidence score; Optional for manual entries
+  matchQuality     MatchQuality? @map("match_quality") // Optional for manual entries
+  matchType        MatchType     @default(AUTOMATIC) @map("match_type")
+  algorithmVersion String?       @map("algorithm_version") // Optional for manual entries
+  algorithmData    Json?         @map("algorithm_data") // Optional for manual entries
 
   // Timestamps
   createdAt DateTime @default(now()) @map("created_at")

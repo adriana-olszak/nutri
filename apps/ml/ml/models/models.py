@@ -1,7 +1,7 @@
 import uuid
 from enum import Enum
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import func
+from sqlalchemy import func, JSON
 from sqlalchemy.orm import mapped_column, relationship
 
 from ..extensions import db
@@ -113,11 +113,10 @@ class MatchFood(db.Model):
     food_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey('foods.id'), nullable=False)
     match_type = db.Column(db.Enum(MatchType), nullable=False, default=MatchType.AUTOMATIC)
     match_quality = db.Column(db.Enum(MatchQuality))
-    bi_encoder_score = db.Column(db.Float)
-    cross_encoder_score = db.Column(db.Float)
     rank = db.Column(db.Integer)
     confidence = db.Column(db.Float)
     algorithm_version = db.Column(db.String)
+    algorithm_data = db.Column(JSON)
     created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 

@@ -352,13 +352,12 @@ Table match_foods {
   selectedForMatch matches
   food foods [not null]
   foodId String [not null]
-  matchType MatchType [not null, default: 'AUTOMATIC']
-  matchQuality MatchQuality
-  biEncoderScore Float
-  crossEncoderScore Float
   rank Int
   confidence Float
+  matchQuality MatchQuality
+  matchType MatchType [not null, default: 'AUTOMATIC']
   algorithmVersion String
+  algorithmData Json
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
 }
