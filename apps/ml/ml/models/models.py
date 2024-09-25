@@ -1,5 +1,6 @@
 import uuid
 from enum import Enum
+
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import func, JSON
 from sqlalchemy.orm import mapped_column, relationship
@@ -71,6 +72,7 @@ class RecipeIngredient(db.Model):
     id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=generate_uuid)
     recipe_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey("recipes.id"), nullable=False)
     food_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey("foods.id"), nullable=True)
+    match_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey("matches.id"), nullable=True)
 
     quantity = db.Column(db.Float, nullable=False)
     quantity_text = db.Column(db.String, nullable=True)
@@ -85,7 +87,7 @@ class RecipeIngredient(db.Model):
 
     food = db.relationship("Food", back_populates="recipe_ingredients")
     recipe = db.relationship("Recipe", back_populates="ingredients")
-    matches = relationship("Match", back_populates="recipe_ingredient")
+    match = db.relationship("Match", back_populates="recipe_ingredients")
 
 
 class Match(db.Model):
@@ -93,12 +95,12 @@ class Match(db.Model):
 
     id = db.Column(db.UUID(as_uuid=True), primary_key=True, default=generate_uuid)
     status = db.Column(db.Enum(MatchStatus), nullable=False, default=MatchStatus.PENDING_MATCH)
-    recipe_ingredient_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey("recipe_ingredients.id"), nullable=False)
+    ingredient_text = db.Column(db.String, nullable=False, unique=True)
     selected_food_match_id = db.Column(db.UUID(as_uuid=True), db.ForeignKey("match_foods.id"), unique=True)
     created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
     updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    recipe_ingredient = relationship("RecipeIngredient", back_populates="matches")
+    recipe_ingredients = relationship("RecipeIngredient", back_populates="match")
     selected_food_match = relationship("MatchFood", foreign_keys=[selected_food_match_id],
                                        back_populates="selected_for_match")
     food_matches = relationship("MatchFood", back_populates="match", foreign_keys="[MatchFood.match_id]")

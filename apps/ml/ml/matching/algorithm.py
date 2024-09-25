@@ -14,11 +14,11 @@ cross_encoder = CrossEncoder('cross-encoder/stsb-roberta-large')
 logger = setup_logger(__name__)
 
 
-def match_ingredient(ingredient: RecipeIngredient):
-    logger.debug(f"Starting matching process for ingredient: {ingredient.ingredient_text}")
+def match_ingredient(ingredient_text: str):
+    logger.debug(f"Starting matching process for ingredient: {ingredient_text}")
 
     # Encode the ingredient text
-    ingredient_vector = bi_encoder.encode(ingredient.ingredient_text)
+    ingredient_vector = bi_encoder.encode(ingredient_text)
     logger.debug(f"Encoded ingredient vector shape: {ingredient_vector.shape}")
 
     logger.info('Querying for top matches')
@@ -35,7 +35,7 @@ def match_ingredient(ingredient: RecipeIngredient):
     ).all()
 
     if not top_matches:
-        logger.warning(f"No matches found for ingredient: {ingredient.ingredient_text}")
+        logger.warning(f"No matches found for ingredient: {ingredient_text}")
         return [], []
 
     logger.info(f'Found {len(top_matches)} potential matches')
@@ -55,7 +55,7 @@ def match_ingredient(ingredient: RecipeIngredient):
     logger.debug(f"Distances: {distances}")
 
     # Prepare inputs for cross-encoder
-    cross_encoder_inputs = [(ingredient.ingredient_text, food.description) for food in top_matches]
+    cross_encoder_inputs = [(ingredient_text, food.description) for food in top_matches]
 
     logger.info('Getting cross-encoder scores')
     # Get cross-encoder scores

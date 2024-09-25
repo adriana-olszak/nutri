@@ -29,14 +29,8 @@ def process_match(match_id: str):
         logger.error(f"No Match found with id {match_id}")
         raise ValueError(f"No Match found with id {match_id}")
 
-    ingredient = db.session.query(RecipeIngredient).get(match.recipe_ingredient_id)
-
-    if not ingredient:
-        logger.error(f"No RecipeIngredient found with id {match.recipe_ingredient_id}")
-        raise ValueError(f"No RecipeIngredient found with id {match.recipe_ingredient_id}")
-
-    logger.info(f"Processing match for ingredient: {ingredient.ingredient_text}")
-    top_matches, cross_encoder_scores = match_ingredient(ingredient)
+    logger.info(f"Processing match for ingredient text: {match.ingredient_text}")
+    top_matches, cross_encoder_scores = match_ingredient(match.ingredient_text)
 
     food_matches = create_food_matches(match, top_matches, cross_encoder_scores)
 
@@ -72,9 +66,8 @@ def apply_auto_match(match: Match, food_match: MatchFood):
     logger.info(f"Applying auto match for match ID: {match.id}, food ID: {food_match.food_id}")
     match.status = MatchStatus.AUTO_APPROVED
     match.selected_food_match = food_match
-    match.recipe_ingredient.food_id = food_match.food_id
-    match.recipe_ingredient.auto_matched = True
-
+    for recipe_ingredient in match.recipe_ingredients:
+        recipe_ingredient.food_id = food_match.food_id
 
 def update_match_status(match_id: str, status: MatchStatus):
     logger.info(f"Updating match status to {status} for match ID: {match_id}")

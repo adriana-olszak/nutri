@@ -326,7 +326,8 @@ Table recipe_ingredients {
   extraInfo String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
-  matches matches [not null]
+  match matches
+  matchId String
   food foods
   part recipe_parts
   recipe recipes [not null]
@@ -335,14 +336,14 @@ Table recipe_ingredients {
 Table matches {
   id String [pk]
   status MatchStatus [not null, default: 'PENDING_MATCH']
-  recipeIngredient recipe_ingredients [not null]
-  recipeIngredientId String [not null]
-  selectedFoodMatch match_foods
+  ingredientText String [unique, not null]
   selectedFoodMatchId String [unique]
-  foodMatches match_foods [not null]
-  manualReviews match_manual_reviews [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
+  recipeIngredients recipe_ingredients [not null]
+  manualReviews match_manual_reviews [not null]
+  foodMatches match_foods [not null]
+  selectedFoodMatch match_foods
 }
 
 Table match_foods {
@@ -618,17 +619,17 @@ Ref: recipe_parts.recipeId > recipes.id
 
 Ref: recipe_instructions.recipeId > recipes.id
 
+Ref: recipe_ingredients.matchId > matches.id
+
 Ref: recipe_ingredients.foodId > foods.id
 
 Ref: recipe_ingredients.partId > recipe_parts.id
 
 Ref: recipe_ingredients.recipeId > recipes.id
 
-Ref: matches.recipeIngredientId > recipe_ingredients.id
-
 Ref: matches.selectedFoodMatchId - match_foods.id
 
-Ref: match_foods.matchId - matches.id
+Ref: match_foods.matchId > matches.id
 
 Ref: match_foods.foodId > foods.id
 

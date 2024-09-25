@@ -118,7 +118,17 @@ async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, i
         });
         currentPartId = part.id;
       } else {
-        // Create the RecipeIngredient
+        // Find or create a Match based on the ingredient text
+        const match = await prisma.match.upsert({
+          where: { ingredientText: ingredient.ingredient },
+          update: {},
+          create: {
+            ingredientText: ingredient.ingredient,
+            status: MatchStatus.PENDING_MATCH
+          }
+        });
+
+        // Create the RecipeIngredient and associate it with the Match
         const recipeIngredient = await prisma.recipeIngredient.create({
           data: {
             recipeId,
@@ -130,19 +140,12 @@ async function createRecipeIngredients(prisma: PrismaClient, recipeId: string, i
             unit: ingredient.unit,
             unitText: ingredient.unitText,
             ingredientText: ingredient.ingredient,
-            extraInfo: ingredient.extra
+            extraInfo: ingredient.extra,
+            matchId: match.id
           }
         });
 
-        // Create a new Match entry for the RecipeIngredient
-        await prisma.match.create({
-          data: {
-            recipeIngredientId: recipeIngredient.id,
-            status: MatchStatus.PENDING_MATCH
-          }
-        });
-
-        console.log(`Created RecipeIngredient and Match for: ${ingredient.ingredient}`);
+        console.log(`Created/Updated Match and RecipeIngredient for: ${ingredient.ingredient}`);
       }
     } catch (error) {
       console.error(`Error creating ingredient for recipe ${recipeId}: ${error instanceof Error ? error.message : String(error)}`);

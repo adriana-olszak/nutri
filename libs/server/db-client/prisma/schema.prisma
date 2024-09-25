@@ -414,7 +414,8 @@ model RecipeIngredient {
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
 
-  matches Match[]
+  match   Match?      @relation(fields: [matchId], references: [id])
+  matchId String?     @map("match_id") @db.Uuid
   food    Food?       @relation(fields: [foodId], references: [id])
   part    RecipePart? @relation(fields: [partId], references: [id])
   recipe  Recipe      @relation(fields: [recipeId], references: [id])
@@ -426,18 +427,19 @@ model RecipeIngredient {
 }
 
 model Match {
-  id                  String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  status              MatchStatus         @default(PENDING_MATCH)
-  recipeIngredient    RecipeIngredient    @relation(fields: [recipeIngredientId], references: [id])
-  recipeIngredientId  String              @map("recipe_ingredient_id") @db.Uuid
-  selectedFoodMatch   MatchFood?          @relation("SelectedMatch", fields: [selectedFoodMatchId], references: [id])
-  selectedFoodMatchId String?             @unique @map("selected_food_match_id") @db.Uuid
-  foodMatches         MatchFood[]
-  manualReviews       MatchManualReview[]
-  createdAt           DateTime            @default(now()) @map("created_at")
-  updatedAt           DateTime            @default(now()) @updatedAt @map("updated_at")
+  id                  String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status              MatchStatus @default(PENDING_MATCH)
+  ingredientText      String      @unique @map("ingredient_text")
+  selectedFoodMatchId String?     @unique @map("selected_food_match_id") @db.Uuid
+  createdAt           DateTime    @default(now()) @map("created_at")
+  updatedAt           DateTime    @default(now()) @updatedAt @map("updated_at")
 
-  @@index([recipeIngredientId])
+  recipeIngredients RecipeIngredient[]
+  manualReviews     MatchManualReview[]
+  foodMatches       MatchFood[]
+  selectedFoodMatch MatchFood?          @relation("SelectedMatch", fields: [selectedFoodMatchId], references: [id])
+
+  @@index([ingredientText])
   @@index([status])
   @@map("matches")
 }
@@ -498,7 +500,7 @@ model TableViewDefinition {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   userId     String?      @map("user_id")
-  tableId    String       @map("table_id")
+  tableId    String       @map("tablFmodel Match {e_id")
   tableType  String       @map("table_type")
   name       String
   order      Int
