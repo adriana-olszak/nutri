@@ -20,6 +20,7 @@ import { Patients } from './pages/patients/Patients';
 import { Recipe } from './pages/recipe/Recipe';
 import { Recipes } from './pages/recipes/Recipes';
 import {AssessmentTools} from "./pages/assessment-tools/AssessmentTools";
+import {QuestionnaireCreator} from "./pages/questionnaire-creator/QuestionnaireCreator";
 
 export function App() {
   return (
@@ -36,6 +37,8 @@ export function App() {
           <Route path="/recipes/:recipeId" element={<Recipe />} />
           <Route path="/patients" element={<Patients />} />
           <Route path="/tools" element={<AssessmentTools />} />
+          <Route path="/surveys/:surveyId" element={<QuestionnaireCreator />} />
+
           <Route path="/workflows" element={<Patients />} />
           <Route path="/settings" element={<Recipe />} />
           <Route path="/profile" element={<Profile />} />

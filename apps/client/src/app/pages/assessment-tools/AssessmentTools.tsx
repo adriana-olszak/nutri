@@ -1,78 +1,47 @@
-import React, { useState } from 'react';
-import { Eye, Code, PenIcon } from 'lucide-react';
-import { FormPreview } from './components/FormPreview';
-import { FormBuilder } from './components/form-builder';
-import { Section } from './components/form-builder/types';
-import { Button } from '@nutri/client-ui';
-import { cn } from '@nutri/client-utils';
+import React, {useRef, useState} from 'react';
 
-export const AssessmentTools: React.FC = () => {
-  const [formContent, setFormContent] = useState<Section[]>([]);
-  const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'json'>('edit');
+import {useStores} from "../../hooks/useStore";
+import {observer} from "mobx-react-lite";
+import {Button, Table} from "@nutri/client-ui";
+import {Plus} from "lucide-react";
+import {getQuestionnaireColumnsConfig} from "./components/table/columns";
+import {TableViewStore} from "@nutri/store/tableViews/TableView.store";
 
+export const AssessmentTools: React.FC = observer(() => {
+  const tableRef = useRef<HTMLDivElement | null>(null);
+  const store = useStores();
+  const tableView = store.tableViews.getById('3') as TableViewStore;
+  const surveys = store.surveys;
+  const col = getQuestionnaireColumnsConfig(tableView.value);
+  console.log(surveys?.toArray())
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg">
-      <div className='flex justify-between'>
-        <h1 className="text-2xl font-bold mb-4 text-gray-800">
-          Questionnaire Builder
-        </h1>
+    <div>
+      <div className="mx-auto px-4 py-3 stretch">
+        <header className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold text-gray-800 mb-2">Questionnaire Central</h1>
+            <p className="text-gray-600 text-sm">Craft, Customize, Conquer: Your Gateway to Personalized Nutrition
+              Insights</p>
+          </div>
+          <div>
+            <Button onClick={() => surveys.createSurvey()}>
+              <Plus size={16} className="mr-1"/>
+              Create Questionnaire
+            </Button>
+          </div>
+        </header>
 
 
-        <div className="mb-4 flex justify-end">
-          <Button
-            onClick={() => setViewMode('edit')}
-            className={cn('rounded-r-none', {
-              'bg-gray-100': viewMode === 'edit',
-            })}
-            leftIcon={<PenIcon size={12}/>}
-            colorScheme='blue'
-          >
-            Edit
-          </Button>
-          <Button
-            onClick={() => setViewMode('preview')}
-            className={cn('rounded-none border-r-0 border-l-0', {
-              'bg-gray-100': viewMode === 'preview',
-            })}
-            leftIcon={<Eye size={12}/>}
-            colorScheme='blue'
-          >
-            Preview
-          </Button>
-          <Button
-            onClick={() => setViewMode('json')}
-            className={cn('rounded-l-none', {
-              'bg-gray-100': viewMode === 'json',
-            })}
-            leftIcon={<Code size={12}/>}
-            colorScheme='blue'
-          >
-            JSON
-          </Button>
+        <div className="bg-gray-50 rounded-lg overflow-hidden">
+          <Table<any>
+            columns={col}
+            data={surveys?.toArray() ?? []}
+            tableRef={tableRef}
+            enableRowSelection
+          />
         </div>
 
       </div>
-
-
-      {viewMode === 'edit' && (
-        <FormBuilder
-          onSetFormContent={setFormContent}
-          formContent={formContent}
-        />
-      )}
-
-      {viewMode === 'preview' && <FormPreview formContent={formContent}/>}
-
-      {viewMode === 'json' && (
-        <div className="mt-8">
-          <h3 className="text-2xl font-semibold mb-4 text-gray-700">
-            Form Structure
-          </h3>
-          <pre className="bg-gray-100 p-4 rounded-lg overflow-auto text-sm">
-            {JSON.stringify(formContent, null, 2)}
-          </pre>
-        </div>
-      )}
     </div>
   );
-};
+});

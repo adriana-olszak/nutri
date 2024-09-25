@@ -74,7 +74,6 @@ export function makeAutoSyncableGroup<T extends Record<string, unknown>>(
     data.forEach((item) => {
       const id = getItemId(item);
       if (this.value.has(id)) {
-        console.log('exists')
         this.value.get(id)?.load(item);
 
         return;

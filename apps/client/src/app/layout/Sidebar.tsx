@@ -32,7 +32,7 @@ const Sidebar = ({ className, width }: React.HTMLAttributes<HTMLDivElement> & {w
           className="flex items-center gap-2 font-semibold"
         >
           <Banana className="h-6 w-6" />
-          <span className="">BalancedBite</span>
+          <span className="">NutriQ</span>
         </Button>
       </div>
       <nav className="flex flex-col gap-1 h-full">

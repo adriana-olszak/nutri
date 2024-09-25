@@ -227,22 +227,6 @@ export class TableViewStore implements Store<TableViewDef> {
   };
 }
 
-type PAYLOAD = { input: any };
-const UPDATE_TABLE_VIEW_DEF = gql`
-  mutation updateTableViewDef($input: TableViewDefUpdateInput!) {
-    tableViewDef_Update(input: $input) {
-      id
-    }
-  }
-`;
-
-const UPDATE_TABLE_VIEW_DEF_SHARED = gql`
-  mutation updateTableViewDefShared($input: TableViewDefUpdateInput!) {
-    tableViewDef_UpdateShared(input: $input) {
-      id
-    }
-  }
-`;
 
 export const getDefaultValue = () => ({
   tableId: TableIdType.ALL_RECIPES,

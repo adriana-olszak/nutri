@@ -72,7 +72,7 @@ export const LoginLayout = ({ children }: { children: ReactNode }) => {
         <div className="absolute inset-0  opacity-90" />
         <div className="relative p-10 z-20 flex items-center text-lg font-medium">
           <Banana className="mr-1" />
-          BalancedBite
+          NutriQ
         </div>
         <div className="p-10 relative z-20 mt-auto">
           <blockquote className="space-y-2">
@@ -91,8 +91,8 @@ export const LoginLayout = ({ children }: { children: ReactNode }) => {
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
               {location.pathname === '/login'
-                ? 'Welcome back to BalancedBite'
-                : 'Join BalancedBite Today'}
+                ? 'Welcome back to NutriQ'
+                : 'Join NutriQ Today'}
             </h1>
             <p className="text-sm text-muted-foreground">
               {location.pathname === '/login'

@@ -177,8 +177,87 @@ export const mock = {
         "isShared": false,
         "createdAt": "2024-06-15T10:00:00Z",
         "updatedAt": "2024-06-15T10:00:00Z"
+      },
+      {
+        "id": "3",
+        "name": "All Questionnaires",
+        "tableType": "QUESTIONNAIRES",
+        "tableId": "ALL_QUESTIONNAIRES",
+        "order": 1,
+        "icon": "ClipboardList",
+        "filters": "{}",
+        "sorting": "",
+        "columns": [
+          {
+            "columnId": "name",
+            "columnType": "NAME",
+            "name": "Name",
+            "width": 250,
+            "visible": true,
+            "filter": null
+          },
+          {
+            "columnId": "tags",
+            "columnType": "TAGS",
+            "name": "Tags",
+            "width": 200,
+            "visible": true,
+            "filter": null
+          },
+          {
+            "columnId": "questionCount",
+            "columnType": "QUESTION_COUNT",
+            "name": "Questions",
+            "width": 100,
+            "visible": true,
+            "filter": null
+          },
+          {
+            "columnId": "createdDate",
+            "columnType": "CREATED_DATE",
+            "name": "Created",
+            "width": 150,
+            "visible": true,
+            "filter": null
+          },
+          {
+            "columnId": "lastModifiedDate",
+            "columnType": "LAST_MODIFIED_DATE",
+            "name": "Last Modified",
+            "width": 150,
+            "visible": true,
+            "filter": null
+          },
+          {
+            "columnId": "author",
+            "columnType": "AUTHOR",
+            "name": "Author",
+            "width": 150,
+            "visible": true,
+            "filter": null
+          },
+          {
+            "columnId": "status",
+            "columnType": "STATUS",
+            "name": "Status",
+            "width": 100,
+            "visible": true,
+            "filter": null
+          },
+          {
+            "columnId": "usedCount",
+            "columnType": "USED_COUNT",
+            "name": "Times Used",
+            "width": 100,
+            "visible": true,
+            "filter": null
+          }
+        ],
+        "isPreset": true,
+        "isShared": false,
+        "createdAt": "2024-06-15T10:00:00Z",
+        "updatedAt": "2024-06-15T10:00:00Z"
       }
-
     ]
   }
 }

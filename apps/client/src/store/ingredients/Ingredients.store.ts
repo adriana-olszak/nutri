@@ -50,7 +50,6 @@ export class IngredientsStore implements GroupStore<Food> {
         page: 1,
         perPage: 200,
       });
-      console.log('i', res);
       // this.load(res?.tableViews);
       runInAction(() => {
         this.isBootstrapped = true;

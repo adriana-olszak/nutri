@@ -8,6 +8,7 @@ import { TableViewsStore } from '@nutri/store/tableViews/TableViews.store';
 import {RecipeStore} from "@nutri/store/recipes/Recipe.store";
 import {RecipesStore} from "@nutri/store/recipes/Recipes.store";
 import {IngredientsStore} from "@nutri/store/ingredients/Ingredients.store";
+import {SurveysStore} from "@nutri/store/surveys/Surveys.store";
 
 localforage.config({
   driver: localforage.INDEXEDDB,
@@ -29,6 +30,7 @@ export class RootStore {
   tableViews: TableViewsStore;
   recipes: RecipesStore;
   ingredients: IngredientsStore;
+  surveys: SurveysStore;
 
   constructor(private transport: Transport, isAuthenticated: boolean) {
     makeAutoObservable(this);
@@ -38,6 +40,7 @@ export class RootStore {
     this.tableViews = new TableViewsStore(this, transport);
     this.recipes = new RecipesStore(this, transport);
     this.ingredients = new IngredientsStore(this, transport);
+    this.surveys = new SurveysStore(this, transport);
     console.log(isAuthenticated)
     when(
       () => this.isAuthenticated,
@@ -52,6 +55,7 @@ export class RootStore {
       this.tableViews.bootstrap(),
       this.recipes.bootstrap(),
       this.ingredients.bootstrap(),
+      this.surveys.bootstrap(),
     ]);
   }
 
