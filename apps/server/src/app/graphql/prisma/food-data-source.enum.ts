@@ -4,7 +4,8 @@ export enum FoodDataSource {
     USDA = "USDA",
     EUROFIR = "EUROFIR",
     CIQUAL = "CIQUAL",
-    USER_INPUT = "USER_INPUT"
+    USER_INPUT = "USER_INPUT",
+    CANADA = "CANADA"
 }
 
 

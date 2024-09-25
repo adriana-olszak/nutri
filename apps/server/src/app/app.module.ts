@@ -9,6 +9,7 @@ import { FoodModule } from './modules/food/food.module';
 import { QuestionnaireModule } from './modules/questionnaire/questionnaire.module';
 import { NutritionModule } from './modules/nutrition/nutrition.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { ManualReviewModule } from './modules/manual-review/manual-review.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { NotificationModule } from './modules/notification/notification.module';
     RecipeModule,
     FoodModule,
     QuestionnaireModule,
-    NutritionModule
+    NutritionModule,
+    ManualReviewModule
   ]
 })
 export class AppModule {

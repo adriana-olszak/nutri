@@ -8,8 +8,6 @@ import { PaginationArgs } from '../../../graphql/args/pagination.args';
 import { FoodNutrient } from '../../../graphql/models/food-nutrient.model';
 import { Food } from '../../../graphql/models/food.model';
 import { FoodPortion } from '../../../graphql/models/food-portion.model';
-import { FoodCategory } from '../../../graphql/models/food-category.model';
-import { BrandedFood } from '../../../graphql/models/branded-food.model';
 import { FoodOrderByInput } from '../../../graphql/inputs/food-order-by.input';
 import { FoodWhereInput } from '../../../graphql/inputs/food-where.input';
 
@@ -84,16 +82,6 @@ export class FoodResolver {
   @ResolveField(() => [FoodPortion])
   async portions(@Parent() food: Partial<Food>) {
     return this.foodDataLoader.batchFoodPortions.load(food.id);
-  }
-
-  @ResolveField(() => BrandedFood, { nullable: true })
-  async brandedFood(@Parent() food: Partial<Food>) {
-    return this.foodDataLoader.batchBrandedFoods.load(food.id);
-  }
-
-  @ResolveField(() => [FoodCategory])
-  async categories(@Parent() food: Partial<Food>) {
-    return this.foodDataLoader.batchFoodCategories.load(food.id);
   }
 
   @ResolveField(() => String, { nullable: true })
