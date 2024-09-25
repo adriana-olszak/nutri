@@ -30,10 +30,10 @@ import {
   getFilteredRowModel,
 } from '@tanstack/react-table';
 
-import {Carrot} from "lucide-react";
-import {cn} from "@nutri/client-utils";
-import {Checkbox, Tooltip} from "../index";
-import {CheckboxProps} from "@radix-ui/react-checkbox";
+import { Carrot } from 'lucide-react';
+import { cn } from '@nutri/client-utils';
+import { Checkbox, Tooltip } from '../index';
+import { CheckboxProps } from '@radix-ui/react-checkbox';
 
 declare module '@tanstack/table-core' {
   // REASON: TData & TValue are not used in this interface but need to be defined
@@ -76,32 +76,32 @@ interface TableProps<T extends object> {
 }
 
 export const Table = <T extends object>({
-                                          data,
-                                          columns,
-                                          tableRef,
-                                          getRowId,
-                                          isLoading,
-                                          onFetchMore,
-                                          canFetchMore,
-                                          totalItems = 40,
-                                          onSortingChange,
-                                          sorting: _sorting,
-                                          selection: _selection,
-                                          renderTableActions,
-                                          enableRowSelection,
-                                          enableTableActions,
-                                          fullRowSelection,
-                                          rowHeight = 33,
-                                          contentHeight,
-                                          borderColor,
-                                          manualFiltering,
-                                          onSelectionChange,
-                                          onFocusedRowChange,
-                                          onFullRowSelection,
-                                          onSelectedIndexChange,
-                                          enableKeyboardShortcuts,
-                                          enableColumnResizing = false,
-                                        }: TableProps<T>) => {
+  data,
+  columns,
+  tableRef,
+  getRowId,
+  isLoading,
+  onFetchMore,
+  canFetchMore,
+  totalItems = 40,
+  onSortingChange,
+  sorting: _sorting,
+  selection: _selection,
+  renderTableActions,
+  enableRowSelection,
+  enableTableActions,
+  fullRowSelection,
+  rowHeight = 33,
+  contentHeight,
+  borderColor,
+  manualFiltering,
+  onSelectionChange,
+  onFocusedRowChange,
+  onFullRowSelection,
+  onSelectedIndexChange,
+  enableKeyboardShortcuts,
+  enableColumnResizing = false,
+}: TableProps<T>) => {
   const scrollElementRef = useRef<HTMLDivElement>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [selection, setSelection] = useState<RowSelectionState>({});
@@ -226,8 +226,6 @@ export const Table = <T extends object>({
     },
   );
 
-
-
   useEffect(() => {
     setFocusedRowIndex((prev) => (prev === null ? prev : 0));
   }, [totalItems]);
@@ -282,7 +280,7 @@ export const Table = <T extends object>({
       >
         <THeader
           style={{ minWidth: THeaderMinW }}
-          className='top-0 sticky group/header'
+          className="top-0 sticky group/header"
         >
           {table.getHeaderGroups().map((headerGroup) => {
             return (
@@ -305,7 +303,7 @@ export const Table = <T extends object>({
                               key={`checkbox-header-select-all`}
                               isChecked={table.getIsAllRowsSelected()}
                               onChange={() => table.toggleAllRowsSelected()}
-                              className='group-hover/header:visible group-hover/header:opacity-100'
+                              className="group-hover/header:visible group-hover/header:opacity-100"
                             />
                           </div>
                         </Tooltip>
@@ -330,9 +328,9 @@ export const Table = <T extends object>({
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
                         {header.column.getCanResize() &&
                           enableColumnResizing && (
                             <div
@@ -346,7 +344,7 @@ export const Table = <T extends object>({
                                 },
                               )}
                             >
-                              <div className='h-full w-[2px]  bg-gray-300' />
+                              <div className="h-full w-[2px]  bg-gray-300" />
                             </div>
                           )}
                       </THeaderCell>
@@ -392,17 +390,17 @@ interface TableBodyProps<T extends object> {
 }
 
 const TableBody = <T extends object>({
-                                       table,
-                                       isLoading,
-                                       totalItems,
-                                       rowVirtualizer,
-                                       focusedRowIndex,
-                                       fullRowSelection,
-                                       setSelectedIndex,
-                                       onFullRowSelection,
-                                       setFocusedRowIndex,
-                                       enableRowSelection,
-                                     }: TableBodyProps<T>) => {
+  table,
+  isLoading,
+  totalItems,
+  rowVirtualizer,
+  focusedRowIndex,
+  fullRowSelection,
+  setSelectedIndex,
+  onFullRowSelection,
+  setFocusedRowIndex,
+  enableRowSelection,
+}: TableBodyProps<T>) => {
   const { rows } = table.getRowModel();
   const virtualRows = rowVirtualizer.getVirtualItems();
   const skeletonRow = useMemo(
@@ -411,7 +409,7 @@ const TableBody = <T extends object>({
   );
 
   return (
-    <TBody className='w-full'>
+    <TBody className="w-full">
       {!virtualRows.length && !isLoading && <NoResults />}
       {virtualRows.map((virtualRow) => {
         const row = rows[virtualRow.index];
@@ -470,14 +468,14 @@ const TableBody = <T extends object>({
             onClick={
               fullRowSelection
                 ? (s) => {
-                  row?.getToggleSelectedHandler()(s);
+                    row?.getToggleSelectedHandler()(s);
 
-                  /// @ts-expect-error improve this later
-                  const rowId = (row.original as unknown)?.id;
+                    /// @ts-expect-error improve this later
+                    const rowId = (row.original as unknown)?.id;
 
-                  onFullRowSelection?.(rowId);
-                  setFocusedRowIndex(row?.index);
-                }
+                    onFullRowSelection?.(rowId);
+                    setFocusedRowIndex(row?.index);
+                  }
                 : undefined
             }
           >
@@ -496,8 +494,8 @@ const TableBody = <T extends object>({
                       key={`checkbox-${virtualRow.index}`}
                       disabled={!row || !row?.getCanSelect()}
                       isFocused={row?.index === focusedRowIndex}
-                      className='group-hover:visible group-hover:opacity-100'
-                      onChange={(isChecked:boolean) => {
+                      className="group-hover:visible group-hover:opacity-100"
+                      onChange={(isChecked: boolean) => {
                         row?.getToggleSelectedHandler()(isChecked);
                         setSelectedIndex(virtualRow.index);
                       }}
@@ -526,9 +524,9 @@ const TableBody = <T extends object>({
                   >
                     {row
                       ? flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )
                       : cell.column.columnDef?.skeleton?.()}
                   </TCell>
                 );
@@ -722,7 +720,7 @@ const THeader = forwardRef<HTMLDivElement, GenericProps>(
 const THeaderGroup = forwardRef<HTMLDivElement, GenericProps>(
   ({ className, children, ...props }, ref) => {
     return (
-      <div ref={ref} className='flex flex-1' {...props}>
+      <div ref={ref} className="flex flex-1" {...props}>
         {children}
       </div>
     );
@@ -750,15 +748,15 @@ const TActions = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     return (
       <div
         ref={ref}
-        className='flex items-center justify-center left-[50%] bottom-[32px] absolute'
+        className="flex items-center justify-center left-[50%] bottom-[32px] absolute"
         {...props}
       />
     );
   },
 );
 
-const NoResults = ({ message }: {message?: string }) => {
-  const defaultMessage = "Looks like your results went on a diet too!";
+const NoResults = ({ message }: { message?: string }) => {
+  const defaultMessage = 'Looks like your results went on a diet too!';
 
   return (
     <div className="pt-12 mx-auto text-center">
@@ -771,16 +769,16 @@ const NoResults = ({ message }: {message?: string }) => {
 };
 
 const MemoizedCheckbox = ({
-                            className,
-                            disabled,
-                            isChecked,
-                            isFocused,
-                            onChange,
-                          }: CheckboxProps & { isFocused?: boolean }) => {
+  className,
+  disabled,
+  isChecked,
+  isFocused,
+  onChange,
+}: CheckboxProps & { isFocused?: boolean }) => {
   return (
     <Checkbox
-      size='sm'
-      iconSize='sm'
+      size="sm"
+      iconSize="sm"
       disabled={disabled}
       onChange={onChange}
       isChecked={isChecked}

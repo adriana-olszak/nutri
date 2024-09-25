@@ -72,7 +72,6 @@ export function makeAutoSyncable<T extends Record<string, unknown>>(
     data: typeof instance.value,
   ) {
     Object.assign(this.value, this.init ? this.init(data) : data);
-    console.log('HERE TEST')
     try {
       const id = getId(data);
       console.log(id)
@@ -103,7 +102,6 @@ export function makeAutoSyncable<T extends Record<string, unknown>>(
     const next = updater(this.value);
     const rhs = toJS(next);
     const diff = getDiff(lhs, rhs, true);
-
     const operation: Operation = {
       id: this.version,
       diff,
@@ -150,6 +148,7 @@ makeAutoSyncable.load = function <T>() {
 };
 
 makeAutoSyncable.update = function <T>() {
+  console.log('test')
   return function (updater: (prev: T) => T, options?: UpdateOptions) {};
 };
 

@@ -12,7 +12,7 @@ import {
 } from '@nutri/store/main/group';
 import { GroupOperation } from '@nutri/store/main/types';
 import { mock } from './mock';
-import {Recipe, RecipeWhereInput} from "@nutri/client-gql";
+import { Recipe, RecipeWhereInput } from '@nutri/client-gql';
 
 export class RecipesStore implements GroupStore<Recipe> {
   value: Map<string, Store<Recipe>> = new Map();
@@ -45,32 +45,24 @@ export class RecipesStore implements GroupStore<Recipe> {
     //
     // return;
 
-
     try {
       this.isLoading = true;
 
-      const res =
-        await this.transport.client.PaginatedRecipes(
-          {
-            page: 1,
-            perPage: 100
-          }
-        );
-
-      console.log('res',res)
-
+      const res = await this.transport.client.PaginatedRecipes({
+        page: 1,
+        perPage: 100,
+      });
 
       this.load(res?.paginatedRecipes?.data);
       runInAction(() => {
         this.isBootstrapped = true;
-        this.totalElements = res.paginatedRecipes.meta.total
-        this.currentPage = res.paginatedRecipes.meta.currentPage
-
+        this.totalElements = res.paginatedRecipes.meta.total;
+        this.currentPage = res.paginatedRecipes.meta.currentPage;
       });
     } catch (e) {
       runInAction(() => {
         this.error = (e as Error)?.message;
-        console.log(e)
+        console.log(e);
       });
     } finally {
       runInAction(() => {
@@ -98,9 +90,3 @@ export class RecipesStore implements GroupStore<Recipe> {
 
   archive = async (id: string, options?: { onSuccess?: () => void }) => {};
 }
-
-type TABLE_VIEW_DEFS_QUERY_RESULT = { tableViews: RecipeWhereInput };
-const RECIPES_QUERY = gql`
-
-
-`;
