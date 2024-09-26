@@ -1,48 +1,79 @@
+import { UseGuards } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { TableViewDefinitionService } from './table-view-definition.service';
 import { CreateTableViewDefinitionInput } from '../../graphql/inputs/create-table-view-definition.input';
 import { UpdateTableViewDefinitionInput } from '../../graphql/inputs/update-table-view-definition.input';
-import { PaginationArgs } from '../../graphql/args/pagination.args';
-import { TableViewDefinitionPaginated } from '../../graphql/models/table-view-definition-paginated.model';
 
 import { TableViewDefinition } from '../../graphql/models/table-view-definition.model';
-import {
-  TableViewDefinitionOrderByWithRelationInput
-} from '../../graphql/inputs/table-view-definition-order-by-with-relation.input';
+import { ActionResponseModel } from '../../graphql/models/action-response.model';
+import { CurrentUser, RequestUserDto, RolesGuard } from '@nutri/server-auth';
+import { FilterService } from './filters.service';
 
+@UseGuards(RolesGuard())
 @Resolver(() => TableViewDefinition)
 export class TableViewDefinitionResolver {
-  constructor(private readonly tableViewDefinitionService: TableViewDefinitionService) {
+  constructor(private readonly tableViewDefinitionService: TableViewDefinitionService, private readonly filterService: FilterService) {
   }
 
   @Mutation(() => TableViewDefinition)
-  createTableViewDefinition(@Args('input') createTableViewDefinitionInput: CreateTableViewDefinitionInput) {
-    return this.tableViewDefinitionService.create(createTableViewDefinitionInput);
+  async createTableViewDefinition(@Args('input') createTableViewDefinitionInput: CreateTableViewDefinitionInput,
+                                  @CurrentUser() reqUser: RequestUserDto,
+  ) {
+    const tableViewDefinition = await this.tableViewDefinitionService.create({
+      ...createTableViewDefinitionInput,
+      userId: reqUser.id,
+    });
+
+    tableViewDefinition.possibleFilters = this.filterService.getPossibleFilters(tableViewDefinition.tableId);
+
+    return tableViewDefinition;
   }
 
-  @Query(() => TableViewDefinitionPaginated, { name: 'paginatedTableViewDefinitions' })
-  async paginatedFindAll(@Args({ nullable: true }) options?: PaginationArgs,
-                         @Args('sortInput', { nullable: true }) sortInput?: TableViewDefinitionOrderByWithRelationInput,
+  @Query(() => [TableViewDefinition], { name: 'tableViewDefinitions' })
+  async findAll(
+    @CurrentUser() reqUser: RequestUserDto,
   ) {
-    return this.tableViewDefinitionService.paginatedFindAll(options, sortInput);
+    const tableViewDefinitions = await this.tableViewDefinitionService.findAll(reqUser.id);
+
+    return tableViewDefinitions.map(definition => ({
+      ...definition,
+      possibleFilters: this.filterService.getPossibleFilters(definition.tableId),
+    }));
   }
 
 
   @Query(() => TableViewDefinition, { name: 'tableViewDefinition' })
-  findOne(@Args('id', { type: () => ID }) id: string) {
-    return this.tableViewDefinitionService.findOne({ id });
+  async findOne(@Args('id', { type: () => ID }) id: string,
+                @CurrentUser() reqUser: RequestUserDto,
+  ) {
+    const tableViewDefinition = await this.tableViewDefinitionService.findOne({ id, userId: reqUser.id });
+    tableViewDefinition.possibleFilters = this.filterService.getPossibleFilters(tableViewDefinition.tableId);
+
+    return tableViewDefinition;
   }
 
   @Mutation(() => TableViewDefinition)
-  updateTableViewDefinition(@Args('updateTableViewDefinitionInput') updateTableViewDefinitionInput: UpdateTableViewDefinitionInput) {
-    return this.tableViewDefinitionService.update({
+  async updateTableViewDefinition(@Args('updateTableViewDefinitionInput') updateTableViewDefinitionInput: UpdateTableViewDefinitionInput,
+                                  @CurrentUser() reqUser: RequestUserDto,
+  ) {
+    const tableViewDefinition = await this.tableViewDefinitionService.update({
       where: { id: updateTableViewDefinitionInput.id },
-      data: updateTableViewDefinitionInput
+      data: {
+        ...updateTableViewDefinitionInput,
+        userId: reqUser.id,
+      },
     });
+
+    tableViewDefinition.possibleFilters = this.filterService.getPossibleFilters(tableViewDefinition.tableId);
+
+    return tableViewDefinition;
   }
 
-  @Mutation(() => TableViewDefinition)
-  removeTableViewDefinition(@Args('id', { type: () => ID }) id: string) {
-    return this.tableViewDefinitionService.remove({ id });
+  @Mutation(() => ActionResponseModel)
+  async archiveTableViewDefinition(@Args('id', { type: () => ID }) id: string) {
+    const result = await this.tableViewDefinitionService.archive(id);
+    return {
+      accepted: result,
+    };
   }
 }

@@ -4,6 +4,13 @@ import { MatchManualReview } from '../../graphql/models/match-manual-review.mode
 import { Match } from '../../graphql/models/match.model';
 import { PaginateOptions, PaginatedResult, createPaginator } from 'prisma-pagination';
 import { ReviewStatus } from '../../graphql/prisma/review-status.enum';
+import {
+  ManualReviewMatchesFilterInput,
+} from '../../graphql/filters/manual-review-matches/manual-review-matches-filter.input';
+import { buildWhereClause } from '../../graphql/filters/common/build-where-clause';
+import {
+  manualReviewMatchesPropertyMetadata,
+} from '../../graphql/filters/manual-review-matches/manual-review-matches-filter-metadata';
 
 @Injectable()
 export class ManualReviewService {
@@ -125,12 +132,13 @@ export class ManualReviewService {
       perPage: 10,
     },
     sortInput?: Prisma.MatchOrderByWithRelationInput,
-    filterInput?: Prisma.MatchWhereInput,
+    filterInput?: ManualReviewMatchesFilterInput,
   ): Promise<PaginatedResult<Match>> {
+    const where = buildWhereClause(filterInput, manualReviewMatchesPropertyMetadata);
     const paginate = createPaginator(options);
     return paginate<Match, Prisma.MatchFindManyArgs>(
       this.prisma.match,
-      { orderBy: sortInput, where: filterInput },
+      { orderBy: sortInput, where },
     );
   }
 

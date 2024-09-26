@@ -6,9 +6,11 @@ import { MatchFood } from '../../../graphql/models/match-food.model';
 import { MatchManualReview } from '../../../graphql/models/match-manual-review.model';
 import { PaginationArgs } from '../../../graphql/args/pagination.args';
 import { MatchOrderByInput } from '../../../graphql/inputs/match-order-by.input';
-import { MatchWhereInput } from '../../../graphql/inputs/match-where.input';
 import { Prisma } from '@prisma/client';
 import { MatchPaginatedModel } from '../../../graphql/models/match-paginated.model';
+import {
+  ManualReviewMatchesFilterInput
+} from '../../../graphql/filters/manual-review-matches/manual-review-matches-filter.input';
 
 @Resolver(() => Match)
 export class MatchResolver {
@@ -26,11 +28,11 @@ export class MatchResolver {
   @Query(() => MatchPaginatedModel, { name: 'paginatedMatches' })
   async paginatedFindAll(@Args({ nullable: true }) options?: PaginationArgs,
                          @Args('sortInput', { nullable: true }) sortInput?: MatchOrderByInput,
-                         @Args('filterInput', { nullable: true }) filterInput?: MatchWhereInput,
+                         @Args('filterInput', { nullable: true }) filterInput?: ManualReviewMatchesFilterInput,
   ) {
     return this.manualReviewService.paginatedFindAllMatches(options,
       sortInput,
-      filterInput as Prisma.MatchWhereInput);
+      filterInput);
   }
 
   @Query(() => [Match])

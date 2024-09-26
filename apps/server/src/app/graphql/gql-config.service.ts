@@ -1,7 +1,7 @@
 import { ApolloServerPlugin } from '@apollo/server';
 import {
   ApolloServerPluginLandingPageLocalDefault,
-  ApolloServerPluginLandingPageProductionDefault
+  ApolloServerPluginLandingPageProductionDefault,
 } from '@apollo/server/plugin/landingPage/default';
 import { ApolloDriverConfig } from '@nestjs/apollo';
 import { Injectable } from '@nestjs/common';
@@ -39,8 +39,8 @@ export class GqlConfigService implements GqlOptionsFactory {
             onConnect: (context: any) => {
               const { connectionParams, extra } = context;
               extra.token = connectionParams.token;
-            }
-          }
+            },
+          },
         }
         : undefined,
       context: (ctx: any): IContext => {
@@ -48,7 +48,7 @@ export class GqlConfigService implements GqlOptionsFactory {
         if (ctx.extra) return { req: ctx.extra };
         // Queries, Mutations
         else return ctx;
-      }
+      },
     };
   }
 }

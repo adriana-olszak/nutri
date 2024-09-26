@@ -3,49 +3,66 @@ import { ObjectType } from '@nestjs/graphql';
 import { ID } from '@nestjs/graphql';
 import { Int } from '@nestjs/graphql';
 import { ColumnView } from './column-view.model';
+import { TableIdTypeEnum } from '../enums/table-id-type.enum';
+import { TableViewTypeEnum } from '../enums/table-view-type.enum';
 
 @ObjectType()
 export class TableViewDefinition {
 
-    @Field(() => ID, {nullable:false})
-    id!: string;
+  @Field(() => ID)
+  id!: string;
 
-    @Field(() => Date, {nullable:false})
-    createdAt!: Date;
+  @Field(() => Date)
+  createdAt!: Date;
 
-    @Field(() => Date, {nullable:false})
-    updatedAt!: Date;
+  @Field(() => Date)
+  updatedAt!: Date;
 
-    @Field(() => String, {nullable:true})
-    userId!: string | null;
+  @Field(() => String, { nullable: true })
+  userId!: string | null;
 
-    @Field(() => String, {nullable:false})
-    tableId!: string;
+  @Field(() => TableIdTypeEnum)
+  tableId!: TableIdTypeEnum;
 
-    @Field(() => String, {nullable:false})
-    tableType!: string;
+  @Field(() => TableViewTypeEnum)
+  tableType!: TableViewTypeEnum;
 
-    @Field(() => String, {nullable:false})
-    name!: string;
+  @Field(() => String)
+  name!: string;
 
-    @Field(() => Int, {nullable:false})
-    order!: number;
+  @Field(() => Int)
+  order!: number;
 
-    @Field(() => String, {nullable:true})
-    icon!: string | null;
+  @Field(() => String, { nullable: true })
+  icon!: string | null;
 
-    @Field(() => String, {nullable:true})
-    filters!: string | null;
+  @Field(() => String, { nullable: true })
+  filters!: string | null;
 
-    @Field(() => String, {nullable:true})
-    sorting!: string | null;
+  @Field(() => String, { nullable: true })
+  sorting!: string | null;
 
-    @Field(() => Boolean, {nullable:false,defaultValue:false})
-    isPreset!: boolean;
+  @Field(() => Boolean, { nullable: false, defaultValue: false })
+  isPreset!: boolean;
 
-    @Field(() => Boolean, {nullable:false,defaultValue:false})
-    isShared!: boolean;
+  @Field(() => Boolean, { nullable: false, defaultValue: false })
+  isShared!: boolean;
 
-    @Field(() => [ColumnView], {nullable:true})
-    columnView?: Array<ColumnView>;
+  @Field(() => [ColumnView], { nullable: false })
+  columnView: Array<ColumnView>;
+
+  @Field(() => [FilterPropertyMetadata], { nullable: false })
+  possibleFilters: Array<FilterPropertyMetadata>;
+}
+
+@ObjectType()
+export class FilterPropertyMetadata {
+  @Field()
+  name: string;
+
+  @Field()
+  type: string;
+
+  @Field(() => [String])
+  operators: string[];
 }

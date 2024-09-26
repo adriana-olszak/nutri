@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@nutri/server-db-client';
-import { PaginateOptions, PaginatedResult, createPaginator } from 'prisma-pagination';
 import { TableViewDefinition } from '../../graphql/models/table-view-definition.model';
+import { createDefaultTableViewDefinitions } from './default-table-view-definition';
+import { mapPrismaToGraphQLTableViewDefinition } from './mapper';
 
 @Injectable()
 export class TableViewDefinitionService {
@@ -10,33 +11,51 @@ export class TableViewDefinitionService {
   }
 
   async create(data: Prisma.TableViewDefinitionCreateInput): Promise<TableViewDefinition> {
-    return this.prisma.tableViewDefinition.create({
-      data
+    const res = await this.prisma.tableViewDefinition.create({
+      data,
+      include: {
+        columnView: true,
+      },
     });
+
+    return mapPrismaToGraphQLTableViewDefinition(res);
   }
 
-  paginatedFindAll(
-    options: PaginateOptions = {
-      page: 1,
-      perPage: 10
-    },
-    sortInput?: Prisma.RecipeOrderByWithRelationInput,
-    filterInput?: Prisma.TableViewDefinitionWhereInput
-  ): Promise<PaginatedResult<TableViewDefinition>> {
-    const paginate = createPaginator(options);
-    return paginate<TableViewDefinition, Prisma.TableViewDefinitionFindManyArgs>(
-      this.prisma.recipe,
-      { orderBy: sortInput, where: filterInput }
-    );
-  }
+  async findAll(userId: string): Promise<TableViewDefinition[]> {
+    const existingDefinitions = await this.prisma.tableViewDefinition.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        columnView: true,
+      },
+    });
 
+    if (!existingDefinitions.length) {
+      const defaultDefinitions = createDefaultTableViewDefinitions(userId);
+
+      const definitions: TableViewDefinition[] = [];
+      for (const definition of defaultDefinitions) {
+        definitions.push(await this.create(definition));
+      }
+
+      return definitions;
+    }
+
+    return existingDefinitions.map(mapPrismaToGraphQLTableViewDefinition);
+  }
 
   async findOne(
-    tableViewDefinitionWhereUniqueInput: Prisma.TableViewDefinitionWhereUniqueInput
+    tableViewDefinitionWhereUniqueInput: Prisma.TableViewDefinitionWhereUniqueInput,
   ): Promise<TableViewDefinition | null> {
-    return this.prisma.tableViewDefinition.findUnique({
-      where: tableViewDefinitionWhereUniqueInput
+    const res = await this.prisma.tableViewDefinition.findUnique({
+      where: tableViewDefinitionWhereUniqueInput,
+      include: {
+        columnView: true,
+      },
     });
+
+    return mapPrismaToGraphQLTableViewDefinition(res);
   }
 
   async update(params: {
@@ -44,15 +63,25 @@ export class TableViewDefinitionService {
     data: Prisma.TableViewDefinitionUpdateInput;
   }): Promise<TableViewDefinition> {
     const { where, data } = params;
-    return this.prisma.tableViewDefinition.update({
+    const res = await this.prisma.tableViewDefinition.update({
       data,
-      where
+      where,
+      include: {
+        columnView: true,
+      },
     });
+
+    return mapPrismaToGraphQLTableViewDefinition(res);
+
   }
 
-  async remove(where: Prisma.TableViewDefinitionWhereUniqueInput): Promise<TableViewDefinition> {
-    return this.prisma.tableViewDefinition.delete({
-      where
+  async archive(id: string): Promise<boolean> {
+    const result = await this.prisma.tableViewDefinition.delete({
+      where: {
+        id,
+      },
     });
+
+    return !!result;
   }
 }

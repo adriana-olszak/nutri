@@ -1,15 +1,13 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ColumnViewTypeEnum } from '../enums/column-view-type.enum';
 
 @ObjectType()
 export class ColumnView {
-  @Field(() => String)
-  id: string;
-
   @Field(() => Int)
   columnId: number;
 
-  @Field(() => String)
-  columnType: string;
+  @Field(() => ColumnViewTypeEnum)
+  columnType: ColumnViewTypeEnum;
 
   @Field(() => Int)
   width: number;
@@ -22,7 +20,4 @@ export class ColumnView {
 
   @Field(() => String, { nullable: true })
   filter?: string;
-
-  @Field(() => String)
-  tableViewDefinitionId: string;
 }

@@ -395,7 +395,7 @@ Table table_view_definitions {
   sorting String
   isPreset Boolean [not null, default: false]
   isShared Boolean [not null, default: false]
-  ColumnView table_view_column_views [not null]
+  columnView table_view_column_views [not null]
 }
 
 Table table_view_column_views {
@@ -637,7 +637,7 @@ Ref: match_manual_reviews.matchId > matches.id
 
 Ref: match_manual_reviews.reviewerId > users.id
 
-Ref: table_view_column_views.tableViewDefinitionId > table_view_definitions.id
+Ref: table_view_column_views.tableViewDefinitionId > table_view_definitions.id [delete: Cascade]
 
 Ref: polls.tenantId > tenants.id
 

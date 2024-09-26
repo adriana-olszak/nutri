@@ -10,13 +10,14 @@ import { QuestionnaireModule } from './modules/questionnaire/questionnaire.modul
 import { NutritionModule } from './modules/nutrition/nutrition.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { ManualReviewModule } from './modules/manual-review/manual-review.module';
+import { TableViewDefinitionModule } from './modules/table-view-definition/table-view-definition.module';
 
 @Module({
   imports: [
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => config.throttle
+      useFactory: (config: ConfigService) => config.throttle,
     }),
     NotificationModule,
     GraphqlModule,
@@ -24,8 +25,9 @@ import { ManualReviewModule } from './modules/manual-review/manual-review.module
     FoodModule,
     QuestionnaireModule,
     NutritionModule,
-    ManualReviewModule
-  ]
+    ManualReviewModule,
+    TableViewDefinitionModule,
+  ],
 })
 export class AppModule {
 }

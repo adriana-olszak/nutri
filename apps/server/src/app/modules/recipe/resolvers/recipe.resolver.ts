@@ -5,7 +5,6 @@ import { RecipeService } from '../recipe.service';
 import { RecipeDataLoader } from '../recipe.data-loader';
 import { Recipe } from '../../../graphql/models/recipe.model';
 import { RecipeOrderByWithRelationInput } from '../../../graphql/inputs/recipe-order-by-with-relation.input';
-import { RecipeWhereInput } from '../../../graphql/inputs/recipe-where.input';
 import { CreateOneRecipeArgs } from '../../../graphql/args/create-one-recipe.args';
 import { UpdateOneRecipeArgs } from '../../../graphql/args/update-one-recipe.args';
 import { RecipePart } from '../../../graphql/models/recipe-part.model';
@@ -14,6 +13,7 @@ import { RecipeCategory } from '../../../graphql/models/recipe-category.model';
 import { RecipeImage } from '../../../graphql/models/recipe-image.model';
 import { Season } from '../../../graphql/models/season.model';
 import { Tag } from '../../../graphql/models/tag.model';
+import { RecipeFilterInput } from '../../../graphql/filters/recipes/recipe-filter.input';
 
 @Resolver(() => Recipe)
 export class RecipeResolver {
@@ -31,12 +31,12 @@ export class RecipeResolver {
   @Query(() => RecipePaginatedModel, { name: 'paginatedRecipes' })
   async paginatedFindAll(@Args({ nullable: true }) options?: PaginationArgs,
                          @Args('sortInput', { nullable: true }) sortInput?: RecipeOrderByWithRelationInput,
-                         @Args('filterInput', { nullable: true }) filterInput?: RecipeWhereInput
+                         @Args('filterInput', { nullable: true }) filterInput?: RecipeFilterInput
   ) {
     return this.recipesService.paginatedFindAll(
       options,
       sortInput,
-      filterInput);
+      );
   }
 
   @Mutation(() => Recipe)

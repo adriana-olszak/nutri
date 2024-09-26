@@ -509,7 +509,7 @@ model TableViewDefinition {
   sorting    String?
   isPreset   Boolean      @default(false) @map("is_preset")
   isShared   Boolean      @default(false) @map("is_shared")
-  ColumnView ColumnView[]
+  columnView ColumnView[]
 
   @@index([userId])
   @@index([tableType])
@@ -528,7 +528,7 @@ model ColumnView {
   createdAt             DateTime @default(now()) @map("created_at")
   updatedAt             DateTime @default(now()) @updatedAt @map("updated_at")
 
-  tableViewDefinition TableViewDefinition @relation(fields: [tableViewDefinitionId], references: [id])
+  tableViewDefinition TableViewDefinition @relation(fields: [tableViewDefinitionId], references: [id], onDelete: Cascade)
 
   @@index([tableViewDefinitionId])
   @@map("table_view_column_views")
