@@ -1,0 +1,81 @@
+import { useState, useEffect } from 'react';
+
+import { ComparisonOperator } from '@nutri/client-gql';
+import { Button, Input, Popover, PopoverContent, PopoverTrigger } from '@nutri/client-ui';
+import { handleOperatorName } from '@nutri/client-ui/filters/utils';
+
+interface ValueFilterProps {
+  filterName: string;
+  filterValue: string;
+  operatorValue: string;
+  onChangeFilterValue: (value: string) => void;
+}
+
+export const TextFilter = ({
+                             filterName,
+                             operatorValue,
+                             onChangeFilterValue,
+                             filterValue,
+                           }: ValueFilterProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState(filterValue);
+
+  useEffect(() => {
+    if (!filterValue) {
+      if (filterName) {
+        setTimeout(() => {
+          setIsOpen(true);
+        }, 100);
+      }
+    }
+  }, [filterName]);
+
+  if (
+    operatorValue === ComparisonOperator.IsEmpty ||
+    operatorValue === ComparisonOperator.IsNotEmpty
+  )
+    return;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+
+    setInputValue(newValue);
+    onChangeFilterValue(newValue);
+  };
+
+  return (
+    <Popover
+      modal={true}
+      open={isOpen}
+      onOpenChange={(value) => setIsOpen(value)}
+    >
+      <PopoverTrigger asChild>
+        <Button
+          size="xs"
+          colorScheme="grayModern"
+          onClick={() => setIsOpen(!isOpen)}
+          className="rounded-none text-gray-700 bg-white font-normal "
+        >
+          <span className=" max-w-[160px] text-ellipsis whitespace-nowrap overflow-hidden">
+            {filterValue ? filterValue : '...'}
+          </span>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        side="bottom"
+        align="start"
+        className="py-1 min-w-[254px]"
+      >
+        <Input
+          size="sm"
+          variant="unstyled"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder={`${filterName} ${handleOperatorName(
+            operatorValue as ComparisonOperator,
+          )}`}
+        />
+      </PopoverContent>
+    </Popover>
+  );
+};

@@ -1,0 +1,6 @@
+mutation ApproveMatch($reviewId: ID!, $matchFoodId: ID!) {
+  approveMatch(reviewId: $reviewId, matchFoodId: $matchFoodId) {
+    id
+    status
+  }
+}

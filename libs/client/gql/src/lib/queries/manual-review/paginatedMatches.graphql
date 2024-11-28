@@ -1,0 +1,17 @@
+query PaginatedMatches($page: Int, $perPage: Int, $filterInput: ManualReviewMatchesFilterInput) {
+  paginatedMatches(page: $page, perPage: $perPage, filterInput: $filterInput) {
+    data {
+      id
+      status
+      ingredientText
+      selectedFoodMatchId
+      updatedAt
+      createdAt
+    }
+    meta {
+      lastPage
+      total
+      currentPage
+    }
+  }
+}

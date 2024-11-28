@@ -13,7 +13,7 @@ import {IconButton} from "@nutri/client-ui/icon-button";
 
 
 
-export const Recipe = observer(({id}:{id: string}) => {
+export const RecipeDetail = observer(({id}:{id: string}) => {
   const store = useStores();
   const data = store.recipes.value.get(id ?? '')?.value ;
   console.log('data',data)

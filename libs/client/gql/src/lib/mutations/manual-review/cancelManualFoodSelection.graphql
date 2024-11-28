@@ -1,0 +1,6 @@
+mutation CancelManualFoodSelection($reviewId: ID!) {
+  cancelManualFoodSelection(reviewId: $reviewId) {
+    id
+    reviewStatus
+  }
+}

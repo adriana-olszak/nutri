@@ -1,21 +1,20 @@
 import { TableIdTypeEnum } from '../../graphql/enums/table-id-type.enum';
 import { TableViewTypeEnum } from '../../graphql/enums/table-view-type.enum';
 import { ColumnViewTypeEnum } from '../../graphql/enums/column-view-type.enum';
-import { Prisma } from '@nutri/server-db-client';
+import { CreateTableViewDefinitionInput } from '../../graphql/inputs/create-table-view-definition.input';
 
-export function createDefaultTableViewDefinitions(userId: string): Prisma.TableViewDefinitionCreateInput[] {
+export function createDefaultTableViewDefinitions(): CreateTableViewDefinitionInput[] {
   return [
-    createRecipesTableViewDefinition(userId),
-    createManualReviewMatchesTableViewDefinition(userId),
+    createRecipesTableViewDefinition(),
+    createManualReviewMatchesTableViewDefinition(),
+    createPatientsTableViewDefinition(),
+    createPollsTableViewDefinition(),
   ];
 }
 
-function createManualReviewMatchesTableViewDefinition(userId: string): Prisma.TableViewDefinitionCreateInput {
+function createManualReviewMatchesTableViewDefinition(): CreateTableViewDefinitionInput {
   return {
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    userId,
-    tableId: TableIdTypeEnum.MANUAL_REVIEW_MATCHES,
+    tableId: TableIdTypeEnum.MANUAL_REVIEWS_MATCHES,
     tableType: TableViewTypeEnum.MANUAL_REVIEWS,
     name: 'Manual Review Matches',
     order: 4,
@@ -24,60 +23,53 @@ function createManualReviewMatchesTableViewDefinition(userId: string): Prisma.Ta
     sorting: '',
     isPreset: true,
     isShared: false,
-    columnView: {
-      createMany: {
-        data: [
-          {
-            columnId: 1,
-            columnType: ColumnViewTypeEnum.MATCHES_INGREDIENT_TEXT,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-          {
-            columnId: 2,
-            columnType: ColumnViewTypeEnum.MATCHES_SELECTED_FOOD_MATCH_ID,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-          {
-            columnId: 3,
-            columnType: ColumnViewTypeEnum.MATCHES_STATUS,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-          {
-            columnId: 4,
-            columnType: ColumnViewTypeEnum.MATCHES_UPDATED_AT,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-          {
-            columnId: 5,
-            columnType: ColumnViewTypeEnum.MATCHES_CREATED_AT,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-        ],
+    columnView: [
+      {
+        columnId: 1,
+        columnType: ColumnViewTypeEnum.MATCHES_INGREDIENT_TEXT,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
       },
-    },
+      {
+        columnId: 2,
+        columnType: ColumnViewTypeEnum.MATCHES_SELECTED_FOOD_MATCH_ID,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 3,
+        columnType: ColumnViewTypeEnum.MATCHES_STATUS,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 4,
+        columnType: ColumnViewTypeEnum.MATCHES_UPDATED_AT,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 5,
+        columnType: ColumnViewTypeEnum.MATCHES_CREATED_AT,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+    ],
   };
 }
 
-function createRecipesTableViewDefinition(userId: string): Prisma.TableViewDefinitionCreateInput {
+function createRecipesTableViewDefinition(): CreateTableViewDefinitionInput {
   return {
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    userId,
     tableId: TableIdTypeEnum.RECIPES,
     tableType: TableViewTypeEnum.RECIPES,
     name: 'Recipes',
@@ -87,76 +79,263 @@ function createRecipesTableViewDefinition(userId: string): Prisma.TableViewDefin
     sorting: '',
     isPreset: true,
     isShared: false,
-    columnView: {
-      createMany: {
-        data: [
-          {
-            columnId: 1,
-            columnType: ColumnViewTypeEnum.RECIPES_TITLE,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-          {
-            columnId: 2,
-            columnType: ColumnViewTypeEnum.RECIPES_DESCRIPTION,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-          {
-            columnId: 3,
-            columnType: ColumnViewTypeEnum.RECIPES_SERVINGS_MIN,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-          {
-            columnId: 4,
-            columnType: ColumnViewTypeEnum.RECIPES_SERVINGS_MAX,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-          {
-            columnId: 5,
-            columnType: ColumnViewTypeEnum.RECIPES_SERVINGS_TEXT,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-          {
-            columnId: 6,
-            columnType: ColumnViewTypeEnum.RECIPES_SOURCE_URL,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-          {
-            columnId: 7,
-            columnType: ColumnViewTypeEnum.RECIPES_CREATED_AT,
-            width: 100,
-            visible: true,
-            name: '',
-            filter: '',
-          },
-          {
-            columnId: 8,
-            columnType: ColumnViewTypeEnum.MATCHES_CREATED_AT,
-            width: 100,
-            visible: false,
-            name: '',
-            filter: '',
-          },
-
-        ],
+    columnView: [
+      {
+        columnId: 1,
+        columnType: ColumnViewTypeEnum.RECIPES_TITLE,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
       },
-    },
+      {
+        columnId: 2,
+        columnType: ColumnViewTypeEnum.RECIPES_DESCRIPTION,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 3,
+        columnType: ColumnViewTypeEnum.RECIPES_COOKING_TIME,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 4,
+        columnType: ColumnViewTypeEnum.RECIPES_PREP_TIME,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 5,
+        columnType: ColumnViewTypeEnum.RECIPES_SERVINGS_MIN,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 6,
+        columnType: ColumnViewTypeEnum.RECIPES_SERVINGS_MAX,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 7,
+        columnType: ColumnViewTypeEnum.RECIPES_SERVINGS_TEXT,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 8,
+        columnType: ColumnViewTypeEnum.RECIPES_SOURCE_URL,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 9,
+        columnType: ColumnViewTypeEnum.RECIPES_CREATED_AT,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 10,
+        columnType: ColumnViewTypeEnum.RECIPES_UPDATED_AT,
+        width: 100,
+        visible: false,
+        name: '',
+        filter: '',
+      },
+    ],
+  };
+}
+
+function createPatientsTableViewDefinition(): CreateTableViewDefinitionInput {
+  return {
+    tableId: TableIdTypeEnum.PATIENTS,
+    tableType: TableViewTypeEnum.PATIENTS,
+    name: 'Patients',
+    order: 4,
+    icon: 'Patients',
+    filters: '',
+    sorting: '',
+    isPreset: true,
+    isShared: false,
+    columnView: [
+      {
+        columnId: 1,
+        columnType: ColumnViewTypeEnum.PATIENTS_NAME,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 2,
+        columnType: ColumnViewTypeEnum.PATIENTS_AGE,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 3,
+        columnType: ColumnViewTypeEnum.PATIENTS_HEIGHT,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 4,
+        columnType: ColumnViewTypeEnum.PATIENTS_WEIGHT,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 5,
+        columnType: ColumnViewTypeEnum.PATIENTS_BMI,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 6,
+        columnType: ColumnViewTypeEnum.PATIENTS_FITNESS_LEVEL,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 7,
+        columnType: ColumnViewTypeEnum.PATIENTS_DIETARY_PREFERENCES,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 8,
+        columnType: ColumnViewTypeEnum.PATIENTS_DIETARY_RESTRICTIONS,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 9,
+        columnType: ColumnViewTypeEnum.PATIENTS_HEALTH_PROBLEMS,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 10,
+        columnType: ColumnViewTypeEnum.PATIENTS_ALLERGIES,
+        width: 100,
+        visible: false,
+        name: '',
+        filter: '',
+      },
+    ],
+  };
+}
+
+function createPollsTableViewDefinition(): CreateTableViewDefinitionInput {
+  return {
+    tableId: TableIdTypeEnum.POLLS,
+    tableType: TableViewTypeEnum.POLLS,
+    name: 'Patients',
+    order: 4,
+    icon: 'Patients',
+    filters: '',
+    sorting: '',
+    isPreset: true,
+    isShared: false,
+    columnView: [
+      {
+        columnId: 1,
+        columnType: ColumnViewTypeEnum.POLLS_NAME,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 2,
+        columnType: ColumnViewTypeEnum.POLLS_TAGS,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 3,
+        columnType: ColumnViewTypeEnum.POLLS_QUESTION_COUNT,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 4,
+        columnType: ColumnViewTypeEnum.POLLS_CREATED_DATE,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 5,
+        columnType: ColumnViewTypeEnum.POLLS_LAST_MODIFIED_DATE,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 6,
+        columnType: ColumnViewTypeEnum.POLLS_AUTHOR,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 7,
+        columnType: ColumnViewTypeEnum.POLLS_STATUS,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+      {
+        columnId: 8,
+        columnType: ColumnViewTypeEnum.POLLS_USED_COUNT,
+        width: 100,
+        visible: true,
+        name: '',
+        filter: '',
+      },
+    ],
   };
 }

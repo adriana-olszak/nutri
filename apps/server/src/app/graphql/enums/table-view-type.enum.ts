@@ -2,9 +2,12 @@ import { registerEnumType } from "@nestjs/graphql";
 
 export enum TableViewTypeEnum {
   MANUAL_REVIEWS = "MANUAL_REVIEWS",
-  QUESTIONNAIRES = "QUESTIONNAIRES",
+  POLLS = "POLLS",
+  PATIENTS = "PATIENTS",
   RECIPES = "RECIPES",
-  FOODS = "FOODS",
+  INGREDIENTS = "INGREDIENTS",
+  MEAL_PLANS = "MEAL_PLANS",
+  SHOPPING_LISTS = "SHOPPING_LISTS",
 }
 
 registerEnumType(TableViewTypeEnum, {

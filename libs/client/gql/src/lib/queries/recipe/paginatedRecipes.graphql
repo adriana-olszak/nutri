@@ -1,5 +1,5 @@
-query PaginatedRecipes($page: Int, $perPage: Int) {
-  paginatedRecipes(page: $page, perPage: $perPage) {
+query PaginatedRecipes($page: Int, $perPage: Int, $filterInput: RecipeFilterInput) {
+  paginatedRecipes(page: $page, perPage: $perPage, filterInput: $filterInput) {
     data {
       cookingTime
       prepTime
@@ -54,6 +54,8 @@ query PaginatedRecipes($page: Int, $perPage: Int) {
       servingsText
       sourceUrl
       title
+      createdAt
+      updatedAt
     }
     meta {
       lastPage

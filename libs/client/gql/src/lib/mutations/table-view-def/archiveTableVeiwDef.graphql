@@ -1,0 +1,5 @@
+mutation ArchiveTableViewDefinition($archiveTableViewDefinitionId: ID!) {
+  archiveTableViewDefinition(id: $archiveTableViewDefinitionId) {
+    accepted
+  }
+}

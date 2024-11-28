@@ -1,8 +1,16 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { ComparisonOperator } from './comparison-operator.enum';
+
+import { ComparisonOperator, IBaseFilterItem, IBaseFilter } from '@nutri/common-interfaces';
+
+import { registerEnumType } from '@nestjs/graphql';
+
+registerEnumType(ComparisonOperator, {
+  name: 'ComparisonOperator',
+});
+
 
 @InputType()
-export class BaseFilterItem {
+export class BaseFilterItem  implements  IBaseFilterItem {
   @Field(() => String)
   property!: string;
 
@@ -20,7 +28,7 @@ export class BaseFilterItem {
 }
 
 @InputType()
-export class BaseFilter {
+export class BaseFilter  implements  IBaseFilter{
   @Field(() => BaseFilter, { nullable: true })
   NOT?: BaseFilter;
 

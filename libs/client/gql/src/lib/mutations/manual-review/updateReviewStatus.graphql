@@ -1,0 +1,6 @@
+mutation UpdateReviewStatus($reviewId: ID!, $status: ReviewStatus!) {
+  updateReviewStatus(reviewId: $reviewId, status: $status) {
+    id
+    reviewStatus
+  }
+}

@@ -10,7 +10,6 @@ interface LinkCellProps {
 export const LinkCell = ({ title, href }: LinkCellProps) => {
   const navigate = useNavigate();
   const linkRef = useRef<HTMLParagraphElement>(null);
-  console.log(title)
 
   const handleNavigate = () => {
     navigate(href);

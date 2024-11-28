@@ -1,0 +1,6 @@
+mutation InitiateManualFoodSelection($reviewId: ID!) {
+  initiateManualFoodSelection(reviewId: $reviewId) {
+    id
+    reviewStatus
+  }
+}

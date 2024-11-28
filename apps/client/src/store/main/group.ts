@@ -1,40 +1,11 @@
 import { Channel } from 'phoenix';
 import { match } from 'ts-pattern';
-import { when, runInAction } from 'mobx';
-import { rdiffResult } from 'recursive-diff';
+import { runInAction } from 'mobx';
 
+import { RootStore } from '../root';
 import { Transport } from './transport';
+import { Store, StoreConstructor } from './store';
 import { GroupOperation, GroupSyncPacket } from './types';
-import {RootStore} from "@nutri/store/root";
-
-type UpdateOptions = {
-  mutate?: boolean;
-  syncMutate?: boolean;
-};
-export type Operation = { id: number; ref?: string; diff: rdiffResult[] };
-
-export interface Store<T> {
-  value: T;
-  get id();
-  version: number;
-  root: RootStore;
-  channel?: Channel;
-  subscribe(): void;
-  init?(data: T): T;
-  isLoading: boolean;
-  set id(id: string);
-  error: string | null;
-  history: Operation[];
-  transport: Transport;
-  load(data: T): Promise<void>;
-  invalidate: () => Promise<void>;
-  update(updater: (prev: T) => T, options?: UpdateOptions): void;
-}
-
-export type StoreConstructor<T> = new (
-  root: RootStore,
-  transport: Transport,
-) => Store<T>;
 
 export interface GroupStore<T> {
   version: number;
@@ -69,10 +40,11 @@ export function makeAutoSyncableGroup<T extends Record<string, unknown>>(
     channelName,
     getItemId = (data) => data?.id as string,
   } = options;
-  function load(this: GroupStore<T>, data: T[]) {
 
+  function load(this: GroupStore<T>, data: T[]) {
     data.forEach((item) => {
       const id = getItemId(item);
+
       if (this.value.has(id)) {
         this.value.get(id)?.load(item);
 

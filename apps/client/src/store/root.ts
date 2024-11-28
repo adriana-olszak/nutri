@@ -4,11 +4,11 @@ import { configurePersistable } from 'mobx-persist-store';
 
 import { UIStore } from './ui/UI.store';
 import { Transport } from './main/transport';
-import { TableViewsStore } from '@nutri/store/tableViews/TableViews.store';
-import {RecipeStore} from "@nutri/store/recipes/Recipe.store";
 import {RecipesStore} from "@nutri/store/recipes/Recipes.store";
 import {IngredientsStore} from "@nutri/store/ingredients/Ingredients.store";
 import {SurveysStore} from "@nutri/store/surveys/Surveys.store";
+import { MatchesStore } from '@nutri/store/manual-reviews/Matches.store';
+import { TableViewsStore } from '@nutri/store/tableViews/TableViews.store';
 
 localforage.config({
   driver: localforage.INDEXEDDB,
@@ -31,6 +31,8 @@ export class RootStore {
   recipes: RecipesStore;
   ingredients: IngredientsStore;
   surveys: SurveysStore;
+  matches: MatchesStore;
+  // manualReviews: ManualReviewsStore;
 
   constructor(private transport: Transport, isAuthenticated: boolean) {
     makeAutoObservable(this);
@@ -41,6 +43,8 @@ export class RootStore {
     this.recipes = new RecipesStore(this, transport);
     this.ingredients = new IngredientsStore(this, transport);
     this.surveys = new SurveysStore(this, transport);
+    this.matches = new MatchesStore(this, transport);
+    // this.manualReviews = new ManualReviewsStore(this, transport);
     console.log(isAuthenticated)
     when(
       () => this.isAuthenticated,
@@ -56,6 +60,7 @@ export class RootStore {
       this.recipes.bootstrap(),
       this.ingredients.bootstrap(),
       this.surveys.bootstrap(),
+      this.matches.bootstrap(),
     ]);
   }
 

@@ -1,8 +1,8 @@
 import { makeAutoObservable } from 'mobx';
 import { RootStore } from '@nutri/store/root';
 import { Transport } from '@nutri/store/main/transport';
-import {GroupStore, makeAutoSyncableGroup, Store} from '@nutri/store/main/group';
-import { makeAutoSyncable } from '@nutri/store/main/store';
+import {GroupStore, makeAutoSyncableGroup} from '@nutri/store/main/group';
+import { makeAutoSyncable, Store } from '@nutri/store/main/store';
 import { Survey } from './types';
 import { SurveyStore, getDefaultValue as getDefaultSurvey } from './Survey.store';
 import {mock} from "@nutri/store/surveys/mock";

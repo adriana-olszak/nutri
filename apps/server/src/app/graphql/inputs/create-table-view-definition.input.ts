@@ -25,7 +25,7 @@ export class CreateTableViewDefinitionInput {
   sorting?: string;
 
   @Field(() => [CreateColumnViewInput])
-  columns: CreateColumnViewInput[];
+  columnView: CreateColumnViewInput[];
 
   @Field(() => Boolean)
   isPreset: boolean;

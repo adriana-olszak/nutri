@@ -1,4 +1,4 @@
-import { ComparisonOperator } from './comparison-operator.enum';
+import { ComparisonOperator } from '@nutri/common-interfaces';
 
 export enum PropertyType {
   String = 'String',

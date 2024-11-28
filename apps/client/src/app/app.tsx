@@ -21,6 +21,7 @@ import { Recipe } from './pages/recipe/Recipe';
 import { Recipes } from './pages/recipes/Recipes';
 import {AssessmentTools} from "./pages/assessment-tools/AssessmentTools";
 import {QuestionnaireCreator} from "./pages/questionnaire-creator/QuestionnaireCreator";
+import { Matches } from './pages/manual-reviews/Matches';
 
 export function App() {
   return (
@@ -36,6 +37,8 @@ export function App() {
           <Route path="/recipes" element={<Recipes />} />
           <Route path="/recipes/:recipeId" element={<Recipe />} />
           <Route path="/patients" element={<Patients />} />
+          <Route path="/manual-reviews/matches" element={<Matches />} />
+          {/*<Route path="/manual-reviews/matches/:matchId" element={<Match />} />*/}
           <Route path="/tools" element={<AssessmentTools />} />
           <Route path="/surveys/:surveyId" element={<QuestionnaireCreator />} />
 

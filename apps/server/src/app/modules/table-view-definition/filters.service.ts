@@ -8,7 +8,8 @@ import {
 } from '../../graphql/filters/common/filter-property-metadata';
 import { RecipeFilterProperty } from '../../graphql/filters/recipes/recipe-filter-property.enum';
 import { recipePropertyMetadata } from '../../graphql/filters/recipes/recipe-filter-metadata';
-import { ComparisonOperator } from '../../graphql/filters/common/comparison-operator.enum';
+
+import { ComparisonOperator } from '@nutri/common-interfaces';
 
 @Injectable()
 export class FilterService {

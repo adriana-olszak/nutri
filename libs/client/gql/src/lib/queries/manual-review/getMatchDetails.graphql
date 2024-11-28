@@ -1,0 +1,20 @@
+query GetMatchDetails($matchId: ID!) {
+  getMatchDetails(matchId: $matchId) {
+    id
+    status
+    foodMatches {
+      id
+      confidence
+      matchType
+      food {
+        id
+        description
+      }
+    }
+    manualReviews {
+      id
+      reviewStatus
+      notes
+    }
+  }
+}

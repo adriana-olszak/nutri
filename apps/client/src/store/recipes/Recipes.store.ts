@@ -1,18 +1,16 @@
 import { Channel } from 'phoenix';
-import { gql } from 'graphql-request';
 import { runInAction, makeAutoObservable } from 'mobx';
 
-import { getDefaultValue, RecipeStore } from './Recipe.store';
+import { RecipeStore } from './Recipe.store';
 import { Transport } from '../main/transport';
 import { RootStore } from '../root';
 import {
   GroupStore,
   makeAutoSyncableGroup,
-  Store,
 } from '@nutri/store/main/group';
 import { GroupOperation } from '@nutri/store/main/types';
-import { mock } from './mock';
-import { Recipe, RecipeWhereInput } from '@nutri/client-gql';
+import { Recipe } from '@nutri/client-gql';
+import { Store } from '@nutri/store/main/store';
 
 export class RecipesStore implements GroupStore<Recipe> {
   value: Map<string, Store<Recipe>> = new Map();
@@ -26,7 +24,6 @@ export class RecipesStore implements GroupStore<Recipe> {
   load = makeAutoSyncableGroup.load<Recipe>();
   history: GroupOperation[] = [];
   totalElements: number = 0;
-  lastPage: number = 0;
   currentPage: number = 0;
 
   constructor(public root: RootStore, public transport: Transport) {
@@ -39,12 +36,6 @@ export class RecipesStore implements GroupStore<Recipe> {
   }
 
   async bootstrap() {
-    // if(this.isBootstrapped) return
-    // this.load(mock.data.Recipes);
-    // this.isBootstrapped = true;
-    //
-    // return;
-
     try {
       this.isLoading = true;
 
@@ -71,7 +62,8 @@ export class RecipesStore implements GroupStore<Recipe> {
     }
   }
 
-  async invalidate() {}
+  async invalidate() {
+  }
 
   getById(id: string) {
     return this.value.get(id);
@@ -86,7 +78,9 @@ export class RecipesStore implements GroupStore<Recipe> {
   createFavorite = async (
     favoritePresetId: string,
     options?: { onSuccess?: (serverId: string) => void },
-  ) => {};
+  ) => {
+  };
 
-  archive = async (id: string, options?: { onSuccess?: () => void }) => {};
+  archive = async (id: string, options?: { onSuccess?: () => void }) => {
+  };
 }

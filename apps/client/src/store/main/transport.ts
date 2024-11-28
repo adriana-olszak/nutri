@@ -83,7 +83,6 @@ export class Transport {
         return action();
       });
     };
-    console.log(this.graphqlClient)
     return getSdk(this.graphqlClient, customFetcher);
   }
 

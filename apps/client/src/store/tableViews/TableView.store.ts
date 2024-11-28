@@ -1,28 +1,34 @@
-import omit from 'lodash';
 import { Channel } from 'phoenix';
 import { P, match } from 'ts-pattern';
-import { gql } from 'graphql-request';
-import { makeAutoObservable } from 'mobx';
-import { TableIdType, TableType, TableViewDef } from './types';
+import { runInAction, makeAutoObservable } from 'mobx';
+import set from 'lodash/set';
+import omit from 'lodash/omit';
+import { TableIdType, TableViewDefinition as TableViewDef, TableViewType } from '@nutri/client-gql';
+import { makeAutoSyncable, Store } from '@nutri/store/main/store';
 import { Transport } from '@nutri/store/main/transport';
 import { RootStore } from '@nutri/store/root';
-import { GroupStore, Operation, Store } from '@nutri/store/main/group';
-import { makeAutoSyncable } from '@nutri/store/main/store';
+import { Operation } from '@nutri/store/main/types';
+import debounce from 'lodash/debounce';
+import { ComparisonOperator, IBaseFilter, IBaseFilterItem } from '@nutri/common-interfaces';
 
-export class TableViewStore implements Store<TableViewDef> {
+export type ExtendedFilterItem = IBaseFilterItem & { active?: boolean }
+
+export class TableViewDefStore implements Store<TableViewDef> {
   value: TableViewDef = getDefaultValue();
   version = 0;
-  history: Operation[] = [];
   isLoading = false;
+  history: Operation[] = [];
   error: string | null = null;
   channel: Channel | undefined;
   subscribe = makeAutoSyncable.subscribe;
-
   load = makeAutoSyncable.load<TableViewDef>();
   update = makeAutoSyncable.update<TableViewDef>();
+  private readonly debouncedSave: () => void;
 
   constructor(public root: RootStore, public transport: Transport) {
+    makeAutoSyncable(this, { channelName: 'TableViewDef', mutator: this.save });
     makeAutoObservable(this);
+    this.debouncedSave = debounce(this.save, 500);
   }
 
   set id(id: string) {
@@ -30,28 +36,28 @@ export class TableViewStore implements Store<TableViewDef> {
   }
 
   reorderColumn(sourceColumnId: number, targetColumnId: number) {
-    // this.update((value) => {
-    //   const fromIndex = value.cell.findIndex(
-    //     (c) => c.columnId === sourceColumnId,
-    //   );
-    //   const toIndex = value.cell.findIndex(
-    //     (c) => c.columnId === targetColumnId,
-    //   );
-    //   const column = value.cell[fromIndex];
-    //
-    //   value.cell.splice(fromIndex, 1);
-    //   value.cell.splice(toIndex, 0, column);
-    //
-    //   return value;
-    // });
+    this.update((value) => {
+      const fromIndex = value.columnView.findIndex(
+        (c) => c.columnId === sourceColumnId,
+      );
+      const toIndex = value.columnView.findIndex(
+        (c) => c.columnId === targetColumnId,
+      );
+      const column = value.columnView[fromIndex];
+
+      value.columnView.splice(fromIndex, 1);
+      value.columnView.splice(toIndex, 0, column);
+
+      return value;
+    });
   }
 
   orderColumnsByVisibility() {
     const prevLastVisibleIndex = [
-      ...this.value.columns.map((c) => c.visible),
+      ...this.value.columnView.map((c) => c.visible),
     ].lastIndexOf(true);
 
-    const orderedColumns = this.value.columns.sort((a, b) => {
+    const orderedColumns = this.value.columnView.sort((a, b) => {
       if (a.visible === b.visible) return 0;
       if (a.visible) return -1;
 
@@ -64,40 +70,53 @@ export class TableViewStore implements Store<TableViewDef> {
 
     if (prevLastVisibleIndex === currentLastVisibleIndex) return;
 
-    // this.update((value) => {
-    //   value.cell.sort((a, b) => {
-    //     if (a.visible === b.visible) return 0;
-    //     if (a.visible) return -1;
-    //
-    //     return 1;
-    //   });
-    //
-    //   return value;
-    // });
+    this.update((value) => {
+      value.columnView.sort((a, b) => {
+        if (a.visible === b.visible) return 0;
+        if (a.visible) return -1;
+
+        return 1;
+      });
+
+      return value;
+    });
   }
 
   setColumnName(columnId: number, name: string) {
-    // this.update(
-    //   (value) => {
-    //     const columnIdx = value.cell.findIndex(
-    //       (c) => c.columnId === columnId,
-    //     );
-    //
-    //     value.cell[columnIdx].name = name;
-    //
-    //     return value;
-    //   },
-    //   { mutate: false },
-    // );
+    this.update(
+      (value) => {
+        const columnIdx = value.columnView.findIndex(
+          (c) => c.columnId === columnId,
+        );
+
+        value.columnView[columnIdx].name = name;
+
+        return value;
+      },
+      { mutate: false },
+    );
   }
 
-  async invalidate() {}
+  setColumnSize(columnType: string, size: number) {
+    runInAction(() => {
+      const columnIdx = this.value.columnView.findIndex(
+        (c) => c.columnType === columnType,
+      );
+
+      if (columnIdx !== -1) {
+        this.value.columnView[columnIdx].width = size;
+      }
+    });
+
+    this.debouncedSave();
+  }
+
+  async invalidate() {
+  }
 
   async save() {
-    const mutation = UPDATE_TABLE_VIEW_DEF;
-
-    const payload: PAYLOAD = {
-      input: omit(
+    const payload = {
+      updateTableViewDefinitionInput: omit(
         this.value,
         'updatedAt',
         'createdAt',
@@ -110,7 +129,7 @@ export class TableViewStore implements Store<TableViewDef> {
 
     try {
       this.isLoading = true;
-      await this.transport.graphqlClient.request(mutation, payload);
+      await this.transport.client.UpdateTableViewDefinition(payload);
     } catch (e) {
       this.error = (e as Error)?.message;
     } finally {
@@ -118,7 +137,11 @@ export class TableViewStore implements Store<TableViewDef> {
     }
   }
 
-  getFilters() {
+  getPossibleFilters() {
+    return this.value.possibleFilters;
+  }
+
+  getFilters(): IBaseFilter<ExtendedFilterItem> | null {
     try {
       return match(this.value.filters)
         .with(P.string.includes('AND'), (data) => JSON.parse(data))
@@ -137,100 +160,148 @@ export class TableViewStore implements Store<TableViewDef> {
       ?.filter;
   }
 
-  // appendFilter(filter: FilterItem) {
-  //   this.update((value) => {
-  //     let draft = this.getFilters() as Filter;
-  //
-  //     if (
-  //       draft &&
-  //       draft?.AND?.findIndex((f) => f.filter?.property === filter.property) !==
-  //       -1
-  //     ) {
-  //       return value;
-  //     }
-  //
-  //     if (draft) {
-  //       (draft as Filter).AND?.push({ filter });
-  //     } else {
-  //       draft = { AND: [{ filter }] };
-  //     }
-  //
-  //     value.filters = JSON.stringify(draft);
-  //
-  //     return value;
-  //   });
-  // }
+  appendFilter(filter: ExtendedFilterItem) {
+    this.update((value) => {
+      let draft = this.getFilters();
 
-  // removeFilter(id: string) {
-  //   this.update((value) => {
-  //     const draft = this.getFilters();
-  //
-  //     if (draft) {
-  //       draft.AND = (draft.AND as Filter[])?.filter(
-  //         (f) => f.filter?.property !== id,
-  //       );
-  //       value.filters = JSON.stringify(draft);
-  //     }
-  //
-  //     return value;
-  //   });
-  // }
-  //
-  // toggleFilter(filter: FilterItem) {
-  //   this.update((value) => {
-  //     const draft = this.getFilters();
-  //
-  //     if (draft) {
-  //       const foundFilter = (draft.AND as Filter[])?.find(
-  //         (f) => f.filter?.property === filter.property,
-  //       )?.filter;
-  //
-  //       if (foundFilter) {
-  //         set(foundFilter, 'active', !filter?.active);
-  //         value.filters = JSON.stringify(draft);
-  //       } else {
-  //         this.appendFilter({ ...filter, active: true });
-  //       }
-  //     }
-  //
-  //     return value;
-  //   });
-  // }
-  //
-  // setFilter(filter: FilterItem) {
-  //   this.update((value) => {
-  //     const draft = this.getFilters();
-  //
-  //     if (!draft) {
-  //       this.appendFilter({ ...filter, active: true });
-  //
-  //       return value;
-  //     }
-  //
-  //     const foundIndex = (draft.AND as Filter[])?.findIndex(
-  //       (f) => f.filter?.property === filter.property,
-  //     );
-  //
-  //     if (foundIndex !== -1) {
-  //       draft.AND[foundIndex].filter = filter;
-  //       value.filters = JSON.stringify(draft);
-  //     } else {
-  //       this.appendFilter({ ...filter, active: true });
-  //     }
-  //
-  //     return value;
-  //   });
-  // }
+      if (
+        draft &&
+        draft?.AND?.findIndex((f) => f.filter?.property === filter.property) !==
+        -1
+      ) {
+        return value;
+      }
+
+      if (draft) {
+        (draft as IBaseFilter<ExtendedFilterItem>).AND?.push({ filter });
+      } else {
+        draft = { AND: [{ filter }] };
+      }
+
+      value.filters = JSON.stringify(draft);
+
+      return value;
+    });
+  }
+
+  removeFilter(id: string) {
+    this.update((value) => {
+      const draft = this.getFilters();
+
+      if (draft) {
+        draft.AND = (draft.AND)?.filter(
+          (f) => f.filter?.property !== id,
+        );
+        value.filters = JSON.stringify(draft);
+      }
+
+      return value;
+    });
+  }
+
+  removeFilters() {
+    this.update((value) => {
+      value.filters = JSON.stringify({ AND: [] });
+
+      return value;
+    });
+  }
+
+  toggleFilter(filter: ExtendedFilterItem) {
+    this.update((value) => {
+      const draft = this.getFilters();
+
+      if (draft) {
+        const foundFilter = (draft.AND)?.find(
+          (f) => f.filter?.property === filter.property,
+        )?.filter;
+
+        if (foundFilter) {
+          set(foundFilter, 'active', !filter?.active);
+          value.filters = JSON.stringify(draft);
+        } else {
+          this.appendFilter({ ...filter, active: true });
+        }
+      }
+
+      return value;
+    });
+  }
+
+  setFilter(filter: ExtendedFilterItem) {
+    this.update((value) => {
+      const draft = this.getFilters();
+
+      if (!draft) {
+        this.appendFilter({ ...filter, active: true });
+
+        return value;
+      }
+
+      if (!draft.AND) {
+        return value;
+      }
+      const foundIndex = (draft.AND)?.findIndex(
+        (f) => f.filter?.property === filter.property,
+      );
+
+      if (foundIndex !== -1) {
+        draft.AND[foundIndex].filter = filter;
+        value.filters = JSON.stringify(draft);
+      } else {
+        this.appendFilter({ ...filter, active: true });
+      }
+
+      return value;
+    });
+  }
+
+  setPropertyFilter(property: string, operation: ComparisonOperator) {
+    this.update((value) => {
+      const draft = this.getFilters();
+
+      if (!draft) {
+        this.appendFilter({
+          property,
+          active: false,
+          value: '',
+          operation
+        });
+
+        return value;
+      }
+      if (!draft.AND) {
+        return value;
+      }
+
+      const foundIndex = draft.AND.findIndex(
+        (f) => f.filter?.property === property,
+      );
+
+      if (foundIndex !== -1) {
+        draft.AND[foundIndex].filter = { property, active: false, operation, value: '' };
+        value.filters = JSON.stringify(draft);
+      } else {
+        this.appendFilter({
+          property,
+          active: false,
+          value: '',
+          operation
+        });
+      }
+
+      return value;
+    });
+  }
 
   getPayloadToCopy = () => {
     return omit(this.value, 'id', 'createdAt', 'updatedAt');
   };
 }
 
-
-export const getDefaultValue = () => ({
-  tableId: TableIdType.ALL_RECIPES,
-  columns: [],
+export const getDefaultValue = (): TableViewDef => ({
+  tableId: TableIdType.Recipes,
+  columnView: [],
   createdAt: '',
   filters: '',
   icon: '',
@@ -241,5 +312,6 @@ export const getDefaultValue = () => ({
   updatedAt: '',
   isPreset: false,
   isShared: false,
-  tableType: TableType.RECIPES,
+  tableType: TableViewType.Recipes,
+  possibleFilters: [],
 });

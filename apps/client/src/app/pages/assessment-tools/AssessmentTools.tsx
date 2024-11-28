@@ -1,19 +1,22 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 
-import {useStores} from "../../hooks/useStore";
-import {observer} from "mobx-react-lite";
-import {Button, Table} from "@nutri/client-ui";
-import {Plus} from "lucide-react";
-import {getQuestionnaireColumnsConfig} from "./components/table/columns";
-import {TableViewStore} from "@nutri/store/tableViews/TableView.store";
+import { useStores } from '../../hooks/useStore';
+import { observer } from 'mobx-react-lite';
+import { Button, Table } from '@nutri/client-ui';
+import { Plus } from 'lucide-react';
+import { getQuestionnaireColumnsConfig } from './components/table/columns';
 
 export const AssessmentTools: React.FC = observer(() => {
-  const tableRef = useRef<HTMLDivElement | null>(null);
+  const tableRef = useRef<any>(null);
   const store = useStores();
-  const tableView = store.tableViews.getById('3') as TableViewStore;
+  const tableView = store.tableViews.getById('3');
+
+  if (!tableView) {
+    return null;
+  }
   const surveys = store.surveys;
   const col = getQuestionnaireColumnsConfig(tableView.value);
-  console.log(surveys?.toArray())
+  console.log(surveys?.toArray());
   return (
     <div>
       <div className="mx-auto px-4 py-3 stretch">
@@ -25,7 +28,7 @@ export const AssessmentTools: React.FC = observer(() => {
           </div>
           <div>
             <Button onClick={() => surveys.createSurvey()}>
-              <Plus size={16} className="mr-1"/>
+              <Plus size={16} className="mr-1" />
               Create Questionnaire
             </Button>
           </div>

@@ -1,0 +1,29 @@
+query TableViewDefinitions {
+  tableViewDefinitions {
+    id
+    name
+    tableType
+    tableId
+    order
+    icon
+    filters
+    sorting
+    columnView {
+      columnId
+      columnType
+      name
+      width
+      visible
+      filter
+    }
+    isPreset
+    isShared
+    createdAt
+    updatedAt
+    possibleFilters {
+      name
+      type
+      operators
+    }
+  }
+}

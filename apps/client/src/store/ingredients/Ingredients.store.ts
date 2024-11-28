@@ -1,8 +1,7 @@
 import { Channel } from 'phoenix';
-import { gql } from 'graphql-request';
 import { runInAction, makeAutoObservable } from 'mobx';
 
-import { getDefaultValue, IngredientStore } from './Ingredient.store';
+import { IngredientStore } from './Ingredient.store';
 import { Transport } from '../main/transport';
 import { RootStore } from '../root';
 import {
@@ -11,7 +10,6 @@ import {
   Store,
 } from '@nutri/store/main/group';
 import { GroupOperation } from '@nutri/store/main/types';
-import { mock } from './mock';
 import { Food } from '@nutri/client-gql';
 
 export class IngredientsStore implements GroupStore<Food> {

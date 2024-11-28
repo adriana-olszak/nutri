@@ -1,0 +1,6 @@
+mutation CompleteManualFoodSelection($reviewId: ID!, $foodId: ID!) {
+  completeManualFoodSelection(reviewId: $reviewId, foodId: $foodId) {
+    id
+    status
+  }
+}

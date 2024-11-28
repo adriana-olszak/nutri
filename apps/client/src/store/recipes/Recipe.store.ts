@@ -1,25 +1,21 @@
-import omit from 'lodash';
 import { Channel } from 'phoenix';
-import { P, match } from 'ts-pattern';
-import { gql } from 'graphql-request';
 import { makeAutoObservable } from 'mobx';
-import { TableIdType, TableType, TableViewDef } from './types';
 import { Transport } from '@nutri/store/main/transport';
 import { RootStore } from '@nutri/store/root';
-import { GroupStore, Operation, Store } from '@nutri/store/main/group';
-import { makeAutoSyncable } from '@nutri/store/main/store';
+import { makeAutoSyncable, Store } from '@nutri/store/main/store';
+import { Operation } from '@nutri/store/main/types';
+import { Recipe } from '@nutri/client-gql';
 
-export class RecipeStore implements Store<TableViewDef> {
-  value: TableViewDef = getDefaultValue();
+export class RecipeStore implements Store<Recipe> {
+  value: Recipe = getDefaultValue();
   version = 0;
   history: Operation[] = [];
   isLoading = false;
   error: string | null = null;
   channel: Channel | undefined;
   subscribe = makeAutoSyncable.subscribe;
-
-  load = makeAutoSyncable.load<TableViewDef>();
-  update = makeAutoSyncable.update<TableViewDef>();
+  load = makeAutoSyncable.load<Recipe>();
+  update = makeAutoSyncable.update<Recipe>();
 
   constructor(public root: RootStore, public transport: Transport) {
     makeAutoObservable(this);
@@ -28,6 +24,7 @@ export class RecipeStore implements Store<TableViewDef> {
   set id(id: string) {
     this.value.id = id;
   }
+
   get id() {
     return this.value.id;
   }
@@ -49,96 +46,9 @@ export class RecipeStore implements Store<TableViewDef> {
     // });
   }
 
-  orderColumnsByVisibility() {
-    const prevLastVisibleIndex = [
-      ...this.value.columns.map((c) => c.visible),
-    ].lastIndexOf(true);
-
-    const orderedColumns = this.value.columns.sort((a, b) => {
-      if (a.visible === b.visible) return 0;
-      if (a.visible) return -1;
-
-      return 1;
-    });
-
-    const currentLastVisibleIndex = orderedColumns
-      .map((c) => c.visible)
-      .lastIndexOf(true);
-
-    if (prevLastVisibleIndex === currentLastVisibleIndex) return;
-
-    // this.update((value) => {
-    //   value.cell.sort((a, b) => {
-    //     if (a.visible === b.visible) return 0;
-    //     if (a.visible) return -1;
-    //
-    //     return 1;
-    //   });
-    //
-    //   return value;
-    // });
+  async invalidate() {
   }
 
-  setColumnName(columnId: number, name: string) {
-    // this.update(
-    //   (value) => {
-    //     const columnIdx = value.cell.findIndex(
-    //       (c) => c.columnId === columnId,
-    //     );
-    //
-    //     value.cell[columnIdx].name = name;
-    //
-    //     return value;
-    //   },
-    //   { mutate: false },
-    // );
-  }
-
-  async invalidate() {}
-
-  async save() {
-    const mutation = UPDATE_TABLE_VIEW_DEF;
-
-    const payload: PAYLOAD = {
-      input: omit(
-        this.value,
-        'updatedAt',
-        'createdAt',
-        'tableType',
-        'tableId',
-        'isPreset',
-        'isShared',
-      ),
-    };
-
-    try {
-      this.isLoading = true;
-      await this.transport.graphqlClient.request(mutation, payload);
-    } catch (e) {
-      this.error = (e as Error)?.message;
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
-  getFilters() {
-    try {
-      return match(this.value.filters)
-        .with(P.string.includes('AND'), (data) => JSON.parse(data))
-        .otherwise(() => null);
-    } catch (err) {
-      console.error('Error parsing filters', err);
-
-      return null;
-    }
-  }
-
-  getFilter(id: string) {
-    const filters = this.getFilters();
-
-    return (filters?.AND)?.find((f) => f.filter?.property === id)
-      ?.filter;
-  }
 
   // appendFilter(filter: FilterItem) {
   //   this.update((value) => {
@@ -225,23 +135,11 @@ export class RecipeStore implements Store<TableViewDef> {
   //   });
   // }
 
-  getPayloadToCopy = () => {
-    return omit(this.value, 'id', 'createdAt', 'updatedAt');
-  };
 }
 
-export const getDefaultValue = () => ({
-  tableId: TableIdType.ALL_RECIPES,
-  columns: [],
-  createdAt: '',
-  filters: '',
-  icon: '',
+export const getDefaultValue = (): Recipe => ({
+  createdAt: undefined,
   id: '',
-  name: '',
-  order: 0,
-  sorting: '',
-  updatedAt: '',
-  isPreset: false,
-  isShared: false,
-  tableType: TableType.RECIPES,
+  title: '',
+  updatedAt: undefined,
 });

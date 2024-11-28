@@ -1,0 +1,5 @@
+mutation CreateTableViewDefinition($input: CreateTableViewDefinitionInput!) {
+  createTableViewDefinition(input: $input) {
+    id
+  }
+}

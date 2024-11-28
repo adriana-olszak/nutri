@@ -23,6 +23,7 @@
       "@nutri/client-ui/*": ["libs/client/ui/src/lib/*"],
       "@nutri/client-utils": ["libs/client/utils/src/index.ts"],
       "@nutri/common-consts": ["libs/common/consts/src/index.ts"],
+      "@nutri/common-interfaces": ["libs/common/interfaces/src/index.ts"],
       "@nutri/data-import": ["libs/data-import/src/index.ts"],
       "@nutri/data-import-usda": ["libs/data-import-usda/src/index.ts"],
       "@nutri/emails": ["libs/emails/src/index.ts"],

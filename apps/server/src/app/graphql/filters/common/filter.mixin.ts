@@ -1,6 +1,7 @@
 import { Field, GqlTypeReference, InputType, registerEnumType } from '@nestjs/graphql';
 import { BaseFilter, BaseFilterItem } from './base-filter.type';
-import { ComparisonOperator } from './comparison-operator.enum';
+
+import { ComparisonOperator } from '@nutri/common-interfaces';
 
 export function FilterInput<T extends string>(
   filterPropertyEnum: GqlTypeReference,

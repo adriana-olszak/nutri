@@ -1,55 +1,45 @@
 import { Channel } from 'phoenix';
-import { gql } from 'graphql-request';
 import { runInAction, makeAutoObservable } from 'mobx';
 
-import { getDefaultValue, TableViewStore } from './TableView.store';
-import { Transport } from '../main/transport';
-import { RootStore } from '../root';
-import { TableViewDef } from '@nutri/store/tableViews/types';
-import {
-  GroupStore,
-  makeAutoSyncableGroup,
-  Store,
-} from '@nutri/store/main/group';
+
+import { GroupStore, makeAutoSyncableGroup } from '@nutri/store/main/group';
+import { getDefaultValue, TableViewDefStore } from '@nutri/store/tableViews/TableView.store';
 import { GroupOperation } from '@nutri/store/main/types';
-import { mock } from './mock';
+import { RootStore } from '@nutri/store/root';
+import { Transport } from '@nutri/store/main/transport';
+import { TableIdType, TableViewDefinition as TableViewDef, TableViewType } from '@nutri/client-gql';
+
 export class TableViewsStore implements GroupStore<TableViewDef> {
-  value: Map<string, Store<TableViewDef>> = new Map();
+  value: Map<string, TableViewDefStore> = new Map();
   isLoading = false;
   channel?: Channel;
-  version: number = 0;
+  version = 0;
+  history: GroupOperation[] = [];
   isBootstrapped = false;
   error: string | null = null;
   sync = makeAutoSyncableGroup.sync;
   subscribe = makeAutoSyncableGroup.subscribe;
   load = makeAutoSyncableGroup.load<TableViewDef>();
-  history: GroupOperation[] = [];
 
   constructor(public root: RootStore, public transport: Transport) {
     makeAutoSyncableGroup(this, {
       channelName: 'TableViewDefs',
-      ItemStore: TableViewStore,
+      ItemStore: TableViewDefStore,
       getItemId: (item) => item.id,
     });
     makeAutoObservable(this);
   }
 
   async bootstrap() {
-    if(this.isBootstrapped) return
-    // @ts-expect-error temporarily ignore
-    // this.isBootstrapped = true;
-    //
-    // return;
+    if (this.isBootstrapped) return;
 
     try {
       this.isLoading = true;
 
-      // const res =
-      //   await this.transport.client.TableViewDefinitions()
-      // console.log(res)
-      this.load(mock.data.tableViewDefs);
+      const { tableViewDefinitions } =
+        await this.transport.client.TableViewDefinitions();
 
-      // this.load(res?.tableViewDefinitions);
+      this.load(tableViewDefinitions);
       runInAction(() => {
         this.isBootstrapped = true;
       });
@@ -64,22 +54,168 @@ export class TableViewsStore implements GroupStore<TableViewDef> {
     }
   }
 
-  async invalidate() {}
+  async invalidate() {
+    try {
+      this.isLoading = true;
 
-  getById(id: string) {
-    return this.value.get(id);
+      const { tableViewDefinitions } = await this.transport.client.TableViewDefinitions();
+
+      this.load(tableViewDefinitions);
+    } catch (err) {
+      runInAction(() => {
+        this.error = (err as Error)?.message;
+      });
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
   }
 
-  toArray() {
+  getById(id: string) {
+    const tableViewDefStore = this.value.get(id);
+
+    if (!tableViewDefStore && this.isBootstrapped) {
+      const defaultPresetId = this.defaultPreset;
+
+      if (defaultPresetId) {
+        const defaultTableViewDefStore = this.value.get(defaultPresetId);
+
+        if (defaultTableViewDefStore) {
+          runInAction(() => {
+            const url = new URL(window.location.href);
+
+            url.searchParams.set('preset', defaultPresetId);
+            window.history.replaceState(null, '', url.toString());
+          });
+
+          return defaultTableViewDefStore;
+        }
+      }
+    }
+
+    return tableViewDefStore;
+  }
+
+  toArray(): TableViewDefStore[] {
     return Array.from(this.value)?.flatMap(
-      ([, tableViewStore]) => tableViewStore,
+      ([, tableViewDefStore]) => tableViewDefStore,
     );
   }
 
-  createFavorite = async (
-    favoritePresetId: string,
-    options?: { onSuccess?: (serverId: string) => void },
-  ) => {};
+  get defaultPreset() {
+    return this?.toArray().find(
+      (t) => t.value.tableId === TableIdType.Recipes && t.value.isPreset,
+    )?.value.id;
+  }
 
-  archive = async (id: string, options?: { onSuccess?: () => void }) => {};
+
+  presetByType(tableType: TableViewType) {
+    return this?.toArray().find(
+      (t) => t.value.tableType === tableType && t.value.isPreset,
+    )?.value.id;
+  }
+
+  createFavorite = async (
+    {
+      id,
+      isShared,
+      name,
+    }: {
+      id: string;
+      name?: string;
+      isShared: boolean;
+    },
+    options?: { onSuccess?: (serverId: string) => void },
+  ) => {
+    const favoritePreset = this.getById(id)?.getPayloadToCopy();
+
+    const newTableViewDef = new TableViewDefStore(this.root, this.transport);
+
+    newTableViewDef.value = {
+      ...getDefaultValue(),
+      ...favoritePreset,
+      name: name
+        ? name
+        : `Copy of ${
+          favoritePreset?.name
+        }`,
+      isPreset: false,
+      isShared,
+    };
+
+    const { id: _id, createdAt, updatedAt, ...payload } = newTableViewDef.value;
+
+    const tempId = newTableViewDef.id;
+    let serverId = '';
+
+    this.value.set(tempId, newTableViewDef);
+    this.isLoading = true;
+
+    try {
+      const { createTableViewDefinition } = await this.transport.client.CreateTableViewDefinition({
+        input: {
+          ...payload,
+        },
+      });
+
+      runInAction(() => {
+        serverId = createTableViewDefinition.id;
+        newTableViewDef.value.id = serverId;
+
+        this.value.set(serverId, newTableViewDef);
+        this.value.delete(tempId);
+
+        this.sync({
+          action: 'APPEND',
+          ids: [serverId],
+        });
+      });
+    } catch (err) {
+      runInAction(() => {
+        this.error = (err as Error).message;
+      });
+    } finally {
+      this.isLoading = false;
+
+      if (serverId) {
+        setTimeout(() => {
+          this.invalidate();
+          options?.onSuccess?.(serverId);
+        }, 100);
+      }
+    }
+  };
+
+  archive = async (id: string, options?: { onSuccess?: () => void }) => {
+    this.isLoading = true;
+
+    const viewName = this.getById(id)?.value.name;
+
+    try {
+      const { archiveTableViewDefinition } = await this.transport.client.ArchiveTableViewDefinition({
+        archiveTableViewDefinitionId: id,
+      });
+
+      if (archiveTableViewDefinition.accepted) {
+        runInAction(() => {
+          this.value.delete(id);
+
+          this.sync({
+            action: 'DELETE',
+            ids: [id],
+          });
+        });
+
+      }
+    } catch (err) {
+      runInAction(() => {
+        this.error = (err as Error).message;
+
+      });
+    } finally {
+      this.isLoading = false;
+      options?.onSuccess?.();
+    }
+  };
 }

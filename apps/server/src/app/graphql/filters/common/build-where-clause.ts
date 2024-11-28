@@ -1,5 +1,6 @@
 import { FilterPropertyMetadata, PropertyType, OPERATORS_BY_TYPE } from './filter-property-metadata';
-import { ComparisonOperator } from './comparison-operator.enum';
+
+import { ComparisonOperator } from '@nutri/common-interfaces';
 
 export function buildWhereClause<T extends string>(
   filter: any,

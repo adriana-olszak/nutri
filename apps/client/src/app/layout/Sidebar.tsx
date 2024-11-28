@@ -1,27 +1,55 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { cn } from '@nutri/client-utils';
-import {Home, User, BookOpen, Banana, UsersRound, Cog, Workflow, FileEdit} from 'lucide-react';
+import { Home, User, BookOpen, Banana, UsersRound, Cog, Workflow, FileEdit } from 'lucide-react';
 import {
   Button,
 } from '@nutri/client-ui';
 import { LogoutButton } from '@nutri/client-auth';
+import { useTableViewsStore } from '../hooks/useStore';
+import { TableViewType } from '@nutri/client-gql';
 
-const Sidebar = ({ className, width }: React.HTMLAttributes<HTMLDivElement> & {width: string}) => {
+type Link = { path: string, label: string, tableType?: TableViewType, icon: any }
+
+const Sidebar = ({ className, width }: React.HTMLAttributes<HTMLDivElement> & { width: string }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const tableViews = useTableViewsStore();
 
-  const sidebarLinks = [
+  const sidebarLinks: Link[] = [
     { path: '/dashboard', label: 'Dashboard', icon: Home },
-    { path: '/recipes', label: 'Recipes', icon: BookOpen },
-    { path: '/patients', label: 'Patients', icon: UsersRound },
+    { path: '/recipes', label: 'Recipes', icon: BookOpen, tableType: TableViewType.Recipes },
+    { path: '/patients', label: 'Patients', icon: UsersRound, tableType: TableViewType.Patients },
     { path: '/tools', label: 'Assessment Tools', icon: FileEdit },
     { path: '/workflows', label: 'Patient Flows', icon: Workflow },
+    {
+      path: '/manual-reviews/matches',
+      label: 'Manual Review',
+      icon: Workflow,
+      tableType: TableViewType.ManualReviews,
+    },
   ];
   const sidebarBottomSectionLinks = [
     { path: '/profile', label: 'My Profile', icon: User },
     { path: '/settings', label: 'Settings', icon: Cog },
   ];
+
+  const handleNavigate = ({ path, tableType }: Link) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    const currentPreset = newSearchParams.get('preset');
+
+    const defaultPreset = tableType && tableViews.presetByType(tableType);
+    console.log(' >>>>>>>>>@>  (defaultPreset)', defaultPreset);
+    console.log(' >>>>>>>>>@>  (tableType)', tableType);
+
+
+    if (defaultPreset && defaultPreset !== currentPreset) {
+      newSearchParams.set('preset', defaultPreset);
+    }
+
+    navigate({ pathname: path, search: newSearchParams.toString() });
+  };
 
   return (
     <div className={cn('flex h-full max-h-screen flex-col gap-2', className)}>
@@ -45,9 +73,9 @@ const Sidebar = ({ className, width }: React.HTMLAttributes<HTMLDivElement> & {w
               className={cn(
                 'flex items-center justify-start gap-3 rounded-none border-l-4 border-transparent',
                 isActive &&
-                  'bg-gray-50 text-primary border-primary-600',
+                'bg-gray-50 text-primary border-primary-600',
               )}
-              onClick={() => navigate(link.path)}
+              onClick={() => handleNavigate(link)}
             >
               <link.icon
                 className={cn(

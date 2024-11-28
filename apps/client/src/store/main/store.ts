@@ -2,9 +2,9 @@ import { Channel } from 'phoenix';
 import { toJS, runInAction } from 'mobx';
 import { getDiff, applyDiff } from 'recursive-diff';
 
+import { RootStore } from '../root';
 import { Transport } from './transport';
 import { Operation, SyncPacket } from './types';
-import {RootStore} from "@nutri/store/root";
 
 type UpdateOptions = {
   mutate?: boolean;
@@ -74,7 +74,6 @@ export function makeAutoSyncable<T extends Record<string, unknown>>(
     Object.assign(this.value, this.init ? this.init(data) : data);
     try {
       const id = getId(data);
-      console.log(id)
       // const connection = await this.transport.join(
       //   channelName,
       //   id,
@@ -148,7 +147,6 @@ makeAutoSyncable.load = function <T>() {
 };
 
 makeAutoSyncable.update = function <T>() {
-  console.log('test')
   return function (updater: (prev: T) => T, options?: UpdateOptions) {};
 };
 

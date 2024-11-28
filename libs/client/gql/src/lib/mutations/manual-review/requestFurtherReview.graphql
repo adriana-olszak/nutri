@@ -1,0 +1,7 @@
+mutation RequestFurtherReview($reviewId: ID!, $reason: String!) {
+  requestFurtherReview(reviewId: $reviewId, reason: $reason) {
+    id
+    reviewStatus
+    notes
+  }
+}

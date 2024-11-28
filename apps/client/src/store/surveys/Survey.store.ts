@@ -2,21 +2,22 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { Channel } from 'phoenix';
 import { RootStore } from '@nutri/store/root';
 import { Transport } from '@nutri/store/main/transport';
-import { Operation, Store } from '@nutri/store/main/group';
-import { makeAutoSyncable } from '@nutri/store/main/store';
+import { makeAutoSyncable, Store } from '@nutri/store/main/store';
 import { Survey, Section, Question } from './types';
 import { Error } from "@apollo/server/src/plugin/schemaReporting/generated/operations";
 import { v4 as uuidv4 } from 'uuid';
-import { toJS } from 'mobx';
-import { getDiff } from 'recursive-diff';
+import { Operation } from '@nutri/store/main/types';
 
 export class SurveyStore implements Store<Survey> {
   value: Survey = getDefaultValue();
   version = 0;
+  history: Operation[] = [];
   isLoading = false;
   error: string | null = null;
   channel: Channel | undefined;
-  history: Operation[] = [];
+  subscribe = makeAutoSyncable.subscribe;
+  load = makeAutoSyncable.load<Survey>();
+  update = makeAutoSyncable.update<Survey>();
 
   constructor(public root: RootStore, public transport: Transport) {
     makeAutoObservable(this);
@@ -48,35 +49,6 @@ export class SurveyStore implements Store<Survey> {
       this.error = (e as Error)?.message;
     } finally {
       this.isLoading = false;
-    }
-  }
-
-  update(updater: (prev: Survey) => Survey, options: { mutate?: boolean; syncMutate?: boolean } = {}) {
-    const lhs = toJS(this.value);
-    const next = updater(toJS(this.value));
-    const diff = getDiff(lhs, next);
-
-    const operation: Operation = {
-      id: this.version,
-      diff,
-      ref: this.transport.refId,
-    };
-
-    runInAction(() => {
-      this.history.push(operation);
-      this.value = next;
-    });
-
-    if (options.syncMutate) {
-      this.channel?.push('sync_packet', { payload: { operation } })
-        .receive('ok', ({ version }: { version: number }) => {
-          this.version = version;
-        });
-    }
-
-    // If mutate is true, you might want to call this.save() here
-    if (options.mutate) {
-      this.save();
     }
   }
 

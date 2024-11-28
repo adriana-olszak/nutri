@@ -5,12 +5,10 @@ import {
   createColumnHelper,
   HeaderContext,
 } from '@tanstack/react-table';
-import { Filter, ArrowUpDown } from 'lucide-react';
-import { getTHeadProps, Input, Skeleton, THead } from '@nutri/client-ui';
-import { DialogTrigger } from '@radix-ui/react-dialog';
-import {PatientColumnType, RecipeColumnType} from '@nutri/store/tableViews/types';
-import {Patient} from "./type";
-import {EditableCell, LinkCell} from "../../components/cell";
+import { getTHeadProps, Input, THead } from '@nutri/client-ui';
+import { Patient } from './type';
+import { EditableCell, LinkCell } from '../../components/cell';
+import { ColumnViewType } from '@nutri/client-gql';
 
 type ColumnDatum = ColumnDef<ColumnDatum, any>;
 
@@ -24,7 +22,7 @@ const StyledInput = ({ value, row }) => {
   return (
     <Input
       value={newVal}
-      variant='outline'
+      variant="outline"
       onChange={(e) => setValue(e.target.value)}
       className="overflow-hidden overflow-ellipsis hover:overflow-visible focus:overflow-visible border-transparent hover:border-gray-400 focus:border-blue-500 outline-none focus-visible:ring-0 focus-visible:outline-transparent"
     />
@@ -32,18 +30,18 @@ const StyledInput = ({ value, row }) => {
 };
 
 export const patientColumns = {
-  [PatientColumnType.PATIENTS_NAME]: {
+  [ColumnViewType.PatientsName]: {
     accessorKey: 'name',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'Name'} title={'Name'} {...getTHeadProps(props)} />
     ),
     cell: ({ getValue, row }) => {
-      return <LinkCell title={getValue()} href={`${row.original.id}`}/>
+      return <LinkCell title={getValue()} href={`${row.original.id}`} />;
     },
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [PatientColumnType.PATIENTS_AGE]: {
+  [ColumnViewType.PatientsAge]: {
     accessorKey: 'age',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'Age'} title={'Age'} {...getTHeadProps(props)} />
@@ -52,7 +50,7 @@ export const patientColumns = {
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [PatientColumnType.PATIENTS_HEIGHT]: {
+  [ColumnViewType.PatientsHeight]: {
     accessorKey: 'height',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'Height'} title={'Height (cm)'} {...getTHeadProps(props)} />
@@ -62,7 +60,7 @@ export const patientColumns = {
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [PatientColumnType.PATIENTS_WEIGHT]: {
+  [ColumnViewType.PatientsWeight]: {
     accessorKey: 'weight',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'Weight'} title={'Weight (kg)'} {...getTHeadProps(props)} />
@@ -72,7 +70,7 @@ export const patientColumns = {
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [PatientColumnType.PATIENTS_BMI]: {
+  [ColumnViewType.PatientsBmi]: {
     accessorKey: 'bmi',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'BMI'} title={'BMI'} {...getTHeadProps(props)} />
@@ -81,7 +79,7 @@ export const patientColumns = {
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [PatientColumnType.PATIENTS_FITNESS_LEVEL]: {
+  [ColumnViewType.PatientsFitnessLevel]: {
     accessorKey: 'fitnessLevel',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'FitnessLevel'} title={'Fitness Level'} {...getTHeadProps(props)} />
@@ -90,7 +88,7 @@ export const patientColumns = {
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [PatientColumnType.PATIENTS_DIETARY_PREFERENCES]: {
+  [ColumnViewType.PatientsDietaryPreferences]: {
     accessorKey: 'dietaryPreferences',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'DietaryPreferences'} title={'Dietary Preferences'} {...getTHeadProps(props)} />
@@ -100,7 +98,7 @@ export const patientColumns = {
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [PatientColumnType.PATIENTS_DIETARY_RESTRICTIONS]: {
+  [ColumnViewType.PatientsDietaryRestrictions]: {
     accessorKey: 'dietaryRestrictions',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'DietaryRestrictions'} title={'Dietary Restrictions'} {...getTHeadProps(props)} />
@@ -109,7 +107,7 @@ export const patientColumns = {
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [PatientColumnType.PATIENTS_HEALTH_PROBLEMS]: {
+  [ColumnViewType.PatientsHealthProblems]: {
     accessorKey: 'diagnosedHealthProblems',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'HealthProblems'} title={'Health Problems'} {...getTHeadProps(props)} />
@@ -118,7 +116,7 @@ export const patientColumns = {
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [PatientColumnType.PATIENTS_ALLERGIES]: {
+  [ColumnViewType.PatientsAllergies]: {
     accessorKey: 'allergies',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'Allergies'} title={'Allergies'} {...getTHeadProps(props)} />
@@ -128,7 +126,6 @@ export const patientColumns = {
     enableColumnFilter: true,
   },
 };
-
 
 
 export function getColumnConfig<Datum>(
@@ -155,6 +152,7 @@ export function getColumnConfig<Datum>(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }, [] as ColumnDef<Datum, any>[]);
 }
+
 // Function to get column configuration for patients table
 export const getPatientColumnsConfig = (tableViewDef?: Array<any>[0]) =>
   getColumnConfig<Patient>(patientColumns, tableViewDef);

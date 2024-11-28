@@ -19,6 +19,11 @@ export type Scalars = {
   JSON: { input: any; output: any; }
 };
 
+export type ActionResponseModel = {
+  __typename?: 'ActionResponseModel';
+  accepted: Scalars['Boolean']['output'];
+};
+
 export type Answer = {
   __typename?: 'Answer';
   id: Scalars['ID']['output'];
@@ -100,15 +105,90 @@ export type BoolFilter = {
   not?: InputMaybe<NestedBoolFilter>;
 };
 
-export type BrandedFood = {
-  __typename?: 'BrandedFood';
-  brandOwner: Scalars['String']['output'];
-  gtinUpc?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  ingredientsLabel?: Maybe<Scalars['String']['output']>;
-  nutritionLabel?: Maybe<NutritionLabel>;
-  servingSize?: Maybe<Scalars['Float']['output']>;
-  servingUnit?: Maybe<Scalars['String']['output']>;
+export type ColumnView = {
+  __typename?: 'ColumnView';
+  columnId: Scalars['Int']['output'];
+  columnType: ColumnViewType;
+  filter?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  visible: Scalars['Boolean']['output'];
+  width: Scalars['Int']['output'];
+};
+
+export enum ColumnViewType {
+  MatchesActions = 'MATCHES_ACTIONS',
+  MatchesCreatedAt = 'MATCHES_CREATED_AT',
+  MatchesIngredientText = 'MATCHES_INGREDIENT_TEXT',
+  MatchesSelectedFoodMatchId = 'MATCHES_SELECTED_FOOD_MATCH_ID',
+  MatchesStatus = 'MATCHES_STATUS',
+  MatchesUpdatedAt = 'MATCHES_UPDATED_AT',
+  PatientsAge = 'PATIENTS_AGE',
+  PatientsAllergies = 'PATIENTS_ALLERGIES',
+  PatientsBmi = 'PATIENTS_BMI',
+  PatientsDietaryPreferences = 'PATIENTS_DIETARY_PREFERENCES',
+  PatientsDietaryRestrictions = 'PATIENTS_DIETARY_RESTRICTIONS',
+  PatientsFitnessLevel = 'PATIENTS_FITNESS_LEVEL',
+  PatientsHealthProblems = 'PATIENTS_HEALTH_PROBLEMS',
+  PatientsHeight = 'PATIENTS_HEIGHT',
+  PatientsName = 'PATIENTS_NAME',
+  PatientsWeight = 'PATIENTS_WEIGHT',
+  PollsAuthor = 'POLLS_AUTHOR',
+  PollsCreatedDate = 'POLLS_CREATED_DATE',
+  PollsLastModifiedDate = 'POLLS_LAST_MODIFIED_DATE',
+  PollsName = 'POLLS_NAME',
+  PollsQuestionCount = 'POLLS_QUESTION_COUNT',
+  PollsStatus = 'POLLS_STATUS',
+  PollsTags = 'POLLS_TAGS',
+  PollsUsedCount = 'POLLS_USED_COUNT',
+  RecipesCookingTime = 'RECIPES_COOKING_TIME',
+  RecipesCreatedAt = 'RECIPES_CREATED_AT',
+  RecipesDescription = 'RECIPES_DESCRIPTION',
+  RecipesPrepTime = 'RECIPES_PREP_TIME',
+  RecipesServingsMax = 'RECIPES_SERVINGS_MAX',
+  RecipesServingsMin = 'RECIPES_SERVINGS_MIN',
+  RecipesServingsText = 'RECIPES_SERVINGS_TEXT',
+  RecipesSourceUrl = 'RECIPES_SOURCE_URL',
+  RecipesTitle = 'RECIPES_TITLE',
+  RecipesUpdatedAt = 'RECIPES_UPDATED_AT'
+}
+
+export enum ComparisonOperator {
+  Between = 'BETWEEN',
+  Contains = 'CONTAINS',
+  Eq = 'EQ',
+  Gt = 'GT',
+  Gte = 'GTE',
+  In = 'IN',
+  IsEmpty = 'IS_EMPTY',
+  IsNoneOf = 'IS_NONE_OF',
+  IsNotEmpty = 'IS_NOT_EMPTY',
+  IsNull = 'IS_NULL',
+  Lt = 'LT',
+  Lte = 'LTE',
+  NotContains = 'NOT_CONTAINS',
+  StartsWith = 'STARTS_WITH'
+}
+
+export type CreateColumnViewInput = {
+  columnId: Scalars['Int']['input'];
+  columnType: Scalars['String']['input'];
+  filter?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  visible: Scalars['Boolean']['input'];
+  width: Scalars['Int']['input'];
+};
+
+export type CreateTableViewDefinitionInput = {
+  columnView: Array<CreateColumnViewInput>;
+  filters?: InputMaybe<Scalars['String']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
+  isPreset: Scalars['Boolean']['input'];
+  isShared: Scalars['Boolean']['input'];
+  name: Scalars['String']['input'];
+  order: Scalars['Int']['input'];
+  sorting?: InputMaybe<Scalars['String']['input']>;
+  tableId: Scalars['String']['input'];
+  tableType: Scalars['String']['input'];
 };
 
 export type DateTimeFilter = {
@@ -122,10 +202,16 @@ export type DateTimeFilter = {
   notIn?: InputMaybe<Array<Scalars['DateTime']['input']>>;
 };
 
+export type FilterPropertyMetadata = {
+  __typename?: 'FilterPropertyMetadata';
+  name: Scalars['String']['output'];
+  operators: Array<Scalars['String']['output']>;
+  type: Scalars['String']['output'];
+};
+
 export type Food = {
   __typename?: 'Food';
-  brandedFood?: Maybe<BrandedFood>;
-  categories?: Maybe<Array<FoodCategory>>;
+  category?: Maybe<FoodCategory>;
   createdAt: Scalars['DateTime']['output'];
   description: Scalars['String']['output'];
   id: Scalars['ID']['output'];
@@ -188,10 +274,9 @@ export type FoodPaginatedModel = {
 
 export type FoodPortion = {
   __typename?: 'FoodPortion';
-  amount: Scalars['Float']['output'];
+  conversionFactor: Scalars['Float']['output'];
   gramWeight: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
-  measureUnitName: Scalars['String']['output'];
   portionDescription?: Maybe<Scalars['String']['output']>;
 };
 
@@ -228,19 +313,132 @@ export type IntFieldUpdateOperationsInput = {
   set?: InputMaybe<Scalars['Int']['input']>;
 };
 
-export type IntNullableFilter = {
-  equals?: InputMaybe<Scalars['Int']['input']>;
-  gt?: InputMaybe<Scalars['Int']['input']>;
-  gte?: InputMaybe<Scalars['Int']['input']>;
-  in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  lt?: InputMaybe<Scalars['Int']['input']>;
-  lte?: InputMaybe<Scalars['Int']['input']>;
-  not?: InputMaybe<NestedIntNullableFilter>;
-  notIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+export type ManualReviewMatchesFilterInput = {
+  AND?: InputMaybe<Array<ManualReviewMatchesFilterInputAbstract>>;
+  NOT?: InputMaybe<ManualReviewMatchesFilterInputAbstract>;
+  OR?: InputMaybe<Array<ManualReviewMatchesFilterInputAbstract>>;
+  filter?: InputMaybe<ManualReviewMatchesFilterItem>;
 };
+
+export type ManualReviewMatchesFilterInputAbstract = {
+  AND?: InputMaybe<Array<ManualReviewMatchesFilterInputAbstract>>;
+  NOT?: InputMaybe<ManualReviewMatchesFilterInputAbstract>;
+  OR?: InputMaybe<Array<ManualReviewMatchesFilterInputAbstract>>;
+  filter?: InputMaybe<ManualReviewMatchesFilterItem>;
+};
+
+export type ManualReviewMatchesFilterItem = {
+  caseSensitive?: InputMaybe<Scalars['Boolean']['input']>;
+  includeEmpty?: InputMaybe<Scalars['Boolean']['input']>;
+  operation: ComparisonOperator;
+  property: ManualReviewMatchesFilterItemPropertyType;
+  /** The value to filter by. Type depends on the property. */
+  value: Scalars['String']['input'];
+};
+
+export enum ManualReviewMatchesFilterItemPropertyType {
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  UpdatedAt = 'updatedAt'
+}
+
+export type Match = {
+  __typename?: 'Match';
+  createdAt: Scalars['DateTime']['output'];
+  foodMatches?: Maybe<Array<MatchFood>>;
+  id: Scalars['ID']['output'];
+  ingredientText: Scalars['String']['output'];
+  manualReviews?: Maybe<Array<MatchManualReview>>;
+  recipeIngredient: RecipeIngredient;
+  selectedFoodMatch?: Maybe<MatchFood>;
+  selectedFoodMatchId?: Maybe<Scalars['String']['output']>;
+  status: MatchStatus;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type MatchFood = {
+  __typename?: 'MatchFood';
+  algorithmData?: Maybe<Scalars['JSON']['output']>;
+  algorithmVersion?: Maybe<Scalars['String']['output']>;
+  confidence?: Maybe<Scalars['Float']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  food: Food;
+  foodId: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  matchId: Scalars['String']['output'];
+  matchQuality?: Maybe<MatchQuality>;
+  matchType: MatchType;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type MatchManualReview = {
+  __typename?: 'MatchManualReview';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  match: Match;
+  matchId: Scalars['String']['output'];
+  notes?: Maybe<Scalars['String']['output']>;
+  reviewStatus: ReviewStatus;
+  reviewer?: Maybe<User>;
+  reviewerId?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type MatchMeta = {
+  __typename?: 'MatchMeta';
+  currentPage: Scalars['Int']['output'];
+  lastPage: Scalars['Int']['output'];
+  next?: Maybe<Scalars['Int']['output']>;
+  perPage: Scalars['Int']['output'];
+  prev?: Maybe<Scalars['Int']['output']>;
+  total: Scalars['Int']['output'];
+};
+
+export type MatchOrderByInput = {
+  createdAt?: InputMaybe<SortOrder>;
+  id?: InputMaybe<SortOrder>;
+  ingredientText?: InputMaybe<SortOrder>;
+  selectedFoodMatchId?: InputMaybe<SortOrderInput>;
+  status?: InputMaybe<SortOrder>;
+  updatedAt?: InputMaybe<SortOrder>;
+};
+
+export type MatchPaginatedModel = {
+  __typename?: 'MatchPaginatedModel';
+  data: Array<Match>;
+  meta: MatchMeta;
+};
+
+export enum MatchQuality {
+  Exact = 'EXACT',
+  High = 'HIGH',
+  Low = 'LOW',
+  Medium = 'MEDIUM',
+  Poor = 'POOR'
+}
+
+export enum MatchStatus {
+  Approved = 'APPROVED',
+  AutoApproved = 'AUTO_APPROVED',
+  AutoMatchingFailed = 'AUTO_MATCHING_FAILED',
+  AutoMatchingInProgress = 'AUTO_MATCHING_IN_PROGRESS',
+  InReview = 'IN_REVIEW',
+  NeedsRematch = 'NEEDS_REMATCH',
+  PendingMatch = 'PENDING_MATCH',
+  PendingReview = 'PENDING_REVIEW',
+  Rejected = 'REJECTED'
+}
+
+export enum MatchType {
+  Automatic = 'AUTOMATIC',
+  Manual = 'MANUAL'
+}
 
 export type Mutation = {
   __typename?: 'Mutation';
+  approveMatch: Match;
+  archiveTableViewDefinition: ActionResponseModel;
   authLogin: AuthSessionModel;
   authLogout: Scalars['Boolean']['output'];
   authPasswordChange: Scalars['Boolean']['output'];
@@ -248,22 +446,42 @@ export type Mutation = {
   authPasswordResetRequest: Scalars['Boolean']['output'];
   authRefreshToken: AuthRefreshTokenModel;
   authRegister: AuthSessionModel;
+  cancelManualFoodSelection: MatchManualReview;
   complete: Submission;
+  completeManualFoodSelection: Match;
   createQuestion: Question;
   createQuestionnaire: Questionnaire;
   createRecipe: Recipe;
   createSection: Section;
   createSubmission: Submission;
+  createTableViewDefinition: TableViewDefinition;
   deleteQuestion: Question;
   deleteSection: Section;
+  initiateManualFoodSelection: MatchManualReview;
+  initiateManualReview: MatchManualReview;
+  rejectMatch: Match;
   removeRecipe: Recipe;
+  requestFurtherReview: MatchManualReview;
   softDeleteQuestionnaire: Questionnaire;
   submitAllAnswers: Submission;
   submitAnswer: Answer;
   updateQuestion: Question;
   updateQuestionnaire: Questionnaire;
   updateRecipe: Recipe;
+  updateReviewStatus: MatchManualReview;
   updateSection: Section;
+  updateTableViewDefinition: TableViewDefinition;
+};
+
+
+export type MutationApproveMatchArgs = {
+  matchFoodId: Scalars['ID']['input'];
+  reviewId: Scalars['ID']['input'];
+};
+
+
+export type MutationArchiveTableViewDefinitionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -292,8 +510,19 @@ export type MutationAuthRegisterArgs = {
 };
 
 
+export type MutationCancelManualFoodSelectionArgs = {
+  reviewId: Scalars['ID']['input'];
+};
+
+
 export type MutationCompleteArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type MutationCompleteManualFoodSelectionArgs = {
+  foodId: Scalars['ID']['input'];
+  reviewId: Scalars['ID']['input'];
 };
 
 
@@ -323,6 +552,11 @@ export type MutationCreateSubmissionArgs = {
 };
 
 
+export type MutationCreateTableViewDefinitionArgs = {
+  input: CreateTableViewDefinitionInput;
+};
+
+
 export type MutationDeleteQuestionArgs = {
   id: Scalars['ID']['input'];
 };
@@ -333,8 +567,30 @@ export type MutationDeleteSectionArgs = {
 };
 
 
+export type MutationInitiateManualFoodSelectionArgs = {
+  reviewId: Scalars['ID']['input'];
+};
+
+
+export type MutationInitiateManualReviewArgs = {
+  matchId: Scalars['ID']['input'];
+};
+
+
+export type MutationRejectMatchArgs = {
+  reason?: InputMaybe<Scalars['String']['input']>;
+  reviewId: Scalars['ID']['input'];
+};
+
+
 export type MutationRemoveRecipeArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationRequestFurtherReviewArgs = {
+  reason: Scalars['String']['input'];
+  reviewId: Scalars['ID']['input'];
 };
 
 
@@ -372,9 +628,20 @@ export type MutationUpdateRecipeArgs = {
 };
 
 
+export type MutationUpdateReviewStatusArgs = {
+  reviewId: Scalars['ID']['input'];
+  status: ReviewStatus;
+};
+
+
 export type MutationUpdateSectionArgs = {
   id: Scalars['ID']['input'];
   input: SectionUpdateInput;
+};
+
+
+export type MutationUpdateTableViewDefinitionArgs = {
+  updateTableViewDefinitionInput: UpdateTableViewDefinitionInput;
 };
 
 export type NestedBoolFilter = {
@@ -391,17 +658,6 @@ export type NestedDateTimeFilter = {
   lte?: InputMaybe<Scalars['DateTime']['input']>;
   not?: InputMaybe<NestedDateTimeFilter>;
   notIn?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-};
-
-export type NestedIntNullableFilter = {
-  equals?: InputMaybe<Scalars['Int']['input']>;
-  gt?: InputMaybe<Scalars['Int']['input']>;
-  gte?: InputMaybe<Scalars['Int']['input']>;
-  in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  lt?: InputMaybe<Scalars['Int']['input']>;
-  lte?: InputMaybe<Scalars['Int']['input']>;
-  not?: InputMaybe<NestedIntNullableFilter>;
-  notIn?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 export type NestedStringFilter = {
@@ -441,30 +697,6 @@ export enum NullsOrder {
   Last = 'last'
 }
 
-export type NutritionLabel = {
-  __typename?: 'NutritionLabel';
-  addedSugars?: Maybe<Scalars['Float']['output']>;
-  calcium?: Maybe<Scalars['Float']['output']>;
-  calories?: Maybe<Scalars['Float']['output']>;
-  cholesterol?: Maybe<Scalars['Float']['output']>;
-  dietaryFiber?: Maybe<Scalars['Float']['output']>;
-  householdServingFullText?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  iron?: Maybe<Scalars['Float']['output']>;
-  potassium?: Maybe<Scalars['Float']['output']>;
-  protein?: Maybe<Scalars['Float']['output']>;
-  saturatedFat?: Maybe<Scalars['Float']['output']>;
-  servingsPerContainer?: Maybe<Scalars['Float']['output']>;
-  sodium?: Maybe<Scalars['Float']['output']>;
-  totalCarbohydrate?: Maybe<Scalars['Float']['output']>;
-  totalFat?: Maybe<Scalars['Float']['output']>;
-  totalSugars?: Maybe<Scalars['Float']['output']>;
-  transFat?: Maybe<Scalars['Float']['output']>;
-  vitaminA?: Maybe<Scalars['Float']['output']>;
-  vitaminC?: Maybe<Scalars['Float']['output']>;
-  vitaminD?: Maybe<Scalars['Float']['output']>;
-};
-
 export type NutritionalValue = {
   __typename?: 'NutritionalValue';
   addedSugars?: Maybe<Scalars['Float']['output']>;
@@ -492,7 +724,12 @@ export type Query = {
   accountInfo: AuthAccountInfoModel;
   food?: Maybe<Food>;
   foodAutosuggest: Array<FoodSearchResult>;
+  getAutoApprovedMatches: Array<Match>;
+  getMatchDetails: Match;
+  getReviewDetails: MatchManualReview;
+  getReviewHistory: Array<MatchManualReview>;
   paginatedFoods: FoodPaginatedModel;
+  paginatedMatches: MatchPaginatedModel;
   paginatedQuestionnaires: QuestionnairePaginatedModel;
   paginatedRecipes: RecipePaginatedModel;
   question: Question;
@@ -500,6 +737,8 @@ export type Query = {
   recipe: Recipe;
   section: Section;
   submission: Submission;
+  tableViewDefinition: TableViewDefinition;
+  tableViewDefinitions: Array<TableViewDefinition>;
 };
 
 
@@ -514,11 +753,40 @@ export type QueryFoodAutosuggestArgs = {
 };
 
 
+export type QueryGetAutoApprovedMatchesArgs = {
+  limit?: Scalars['Float']['input'];
+  offset?: Scalars['Float']['input'];
+};
+
+
+export type QueryGetMatchDetailsArgs = {
+  matchId: Scalars['ID']['input'];
+};
+
+
+export type QueryGetReviewDetailsArgs = {
+  reviewId: Scalars['ID']['input'];
+};
+
+
+export type QueryGetReviewHistoryArgs = {
+  matchId: Scalars['ID']['input'];
+};
+
+
 export type QueryPaginatedFoodsArgs = {
   filterInput?: InputMaybe<FoodWhereInput>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
   sortInput?: InputMaybe<FoodOrderByInput>;
+};
+
+
+export type QueryPaginatedMatchesArgs = {
+  filterInput?: InputMaybe<ManualReviewMatchesFilterInput>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+  sortInput?: InputMaybe<MatchOrderByInput>;
 };
 
 
@@ -531,7 +799,7 @@ export type QueryPaginatedQuestionnairesArgs = {
 
 
 export type QueryPaginatedRecipesArgs = {
-  filterInput?: InputMaybe<RecipeWhereInput>;
+  filterInput?: InputMaybe<RecipeFilterInput>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
   sortInput?: InputMaybe<RecipeOrderByWithRelationInput>;
@@ -560,6 +828,11 @@ export type QuerySectionArgs = {
 
 export type QuerySubmissionArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryTableViewDefinitionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export enum QueryMode {
@@ -714,19 +987,6 @@ export type RecipeCategory = {
   name: Scalars['String']['output'];
 };
 
-export type RecipeCategoryListRelationFilter = {
-  every?: InputMaybe<RecipeCategoryWhereInput>;
-  none?: InputMaybe<RecipeCategoryWhereInput>;
-  some?: InputMaybe<RecipeCategoryWhereInput>;
-};
-
-export type RecipeCategoryWhereInput = {
-  AND?: InputMaybe<Array<RecipeCategoryWhereInput>>;
-  NOT?: InputMaybe<Array<RecipeCategoryWhereInput>>;
-  OR?: InputMaybe<Array<RecipeCategoryWhereInput>>;
-  name?: InputMaybe<StringFilter>;
-};
-
 export type RecipeCategoryWhereUniqueInput = {
   name?: InputMaybe<Scalars['String']['input']>;
 };
@@ -748,6 +1008,41 @@ export type RecipeCreateInput = {
   tags?: InputMaybe<Array<TagCreateWithoutRecipesInput>>;
   title: Scalars['String']['input'];
 };
+
+export type RecipeFilterInput = {
+  AND?: InputMaybe<Array<RecipeFilterInputAbstract>>;
+  NOT?: InputMaybe<RecipeFilterInputAbstract>;
+  OR?: InputMaybe<Array<RecipeFilterInputAbstract>>;
+  filter?: InputMaybe<RecipeFilterItem>;
+};
+
+export type RecipeFilterInputAbstract = {
+  AND?: InputMaybe<Array<RecipeFilterInputAbstract>>;
+  NOT?: InputMaybe<RecipeFilterInputAbstract>;
+  OR?: InputMaybe<Array<RecipeFilterInputAbstract>>;
+  filter?: InputMaybe<RecipeFilterItem>;
+};
+
+export type RecipeFilterItem = {
+  caseSensitive?: InputMaybe<Scalars['Boolean']['input']>;
+  includeEmpty?: InputMaybe<Scalars['Boolean']['input']>;
+  operation: ComparisonOperator;
+  property: RecipeFilterItemPropertyType;
+  /** The value to filter by. Type depends on the property. */
+  value: Scalars['String']['input'];
+};
+
+export enum RecipeFilterItemPropertyType {
+  CookingTime = 'cookingTime',
+  CreatedAt = 'createdAt',
+  Description = 'description',
+  Id = 'id',
+  PrepTime = 'prepTime',
+  ServingsMax = 'servingsMax',
+  ServingsMin = 'servingsMin',
+  Title = 'title',
+  UpdatedAt = 'updatedAt'
+}
 
 export type RecipeImage = {
   __typename?: 'RecipeImage';
@@ -879,44 +1174,24 @@ export type RecipeUpdateInput = {
   title: Scalars['String']['input'];
 };
 
-export type RecipeWhereInput = {
-  AND?: InputMaybe<Array<RecipeWhereInput>>;
-  NOT?: InputMaybe<Array<RecipeWhereInput>>;
-  OR?: InputMaybe<Array<RecipeWhereInput>>;
-  categories?: InputMaybe<RecipeCategoryListRelationFilter>;
-  cookingTime?: InputMaybe<StringNullableFilter>;
-  createdAt?: InputMaybe<DateTimeFilter>;
-  description?: InputMaybe<StringNullableFilter>;
-  id?: InputMaybe<StringFilter>;
-  prepTime?: InputMaybe<StringNullableFilter>;
-  seasons?: InputMaybe<SeasonListRelationFilter>;
-  servingsMax?: InputMaybe<IntNullableFilter>;
-  servingsMin?: InputMaybe<IntNullableFilter>;
-  servingsText?: InputMaybe<StringNullableFilter>;
-  sourceId?: InputMaybe<StringNullableFilter>;
-  sourceUrl?: InputMaybe<StringNullableFilter>;
-  tags?: InputMaybe<TagListRelationFilter>;
-  title?: InputMaybe<StringFilter>;
-  updatedAt?: InputMaybe<DateTimeFilter>;
-};
+export enum ReviewStatus {
+  Approved = 'APPROVED',
+  InProgress = 'IN_PROGRESS',
+  ManualSelection = 'MANUAL_SELECTION',
+  NeedsFurtherReview = 'NEEDS_FURTHER_REVIEW',
+  Pending = 'PENDING',
+  Rejected = 'REJECTED'
+}
+
+export enum Roles {
+  Superadmin = 'SUPERADMIN',
+  User = 'USER'
+}
 
 export type Season = {
   __typename?: 'Season';
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
-};
-
-export type SeasonListRelationFilter = {
-  every?: InputMaybe<SeasonWhereInput>;
-  none?: InputMaybe<SeasonWhereInput>;
-  some?: InputMaybe<SeasonWhereInput>;
-};
-
-export type SeasonWhereInput = {
-  AND?: InputMaybe<Array<SeasonWhereInput>>;
-  NOT?: InputMaybe<Array<SeasonWhereInput>>;
-  OR?: InputMaybe<Array<SeasonWhereInput>>;
-  name?: InputMaybe<StringFilter>;
 };
 
 export type SeasonWhereUniqueInput = {
@@ -1011,6 +1286,48 @@ export type SubmissionCreateInput = {
   userId: Scalars['String']['input'];
 };
 
+export enum TableIdType {
+  FavoriteRecipes = 'FAVORITE_RECIPES',
+  Ingredients = 'INGREDIENTS',
+  ManualReviewsFoodMatches = 'MANUAL_REVIEWS_FOOD_MATCHES',
+  ManualReviewsMatches = 'MANUAL_REVIEWS_MATCHES',
+  MealPlans = 'MEAL_PLANS',
+  Patients = 'PATIENTS',
+  Polls = 'POLLS',
+  RecentlyAddedRecipes = 'RECENTLY_ADDED_RECIPES',
+  Recipes = 'RECIPES',
+  ShoppingLists = 'SHOPPING_LISTS'
+}
+
+export type TableViewDefinition = {
+  __typename?: 'TableViewDefinition';
+  columnView: Array<ColumnView>;
+  createdAt: Scalars['DateTime']['output'];
+  filters?: Maybe<Scalars['String']['output']>;
+  icon?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  isPreset: Scalars['Boolean']['output'];
+  isShared: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  order: Scalars['Int']['output'];
+  possibleFilters: Array<FilterPropertyMetadata>;
+  sorting?: Maybe<Scalars['String']['output']>;
+  tableId: TableIdType;
+  tableType: TableViewType;
+  updatedAt: Scalars['DateTime']['output'];
+  userId?: Maybe<Scalars['String']['output']>;
+};
+
+export enum TableViewType {
+  Ingredients = 'INGREDIENTS',
+  ManualReviews = 'MANUAL_REVIEWS',
+  MealPlans = 'MEAL_PLANS',
+  Patients = 'PATIENTS',
+  Polls = 'POLLS',
+  Recipes = 'RECIPES',
+  ShoppingLists = 'SHOPPING_LISTS'
+}
+
 export type Tag = {
   __typename?: 'Tag';
   id: Scalars['ID']['output'];
@@ -1021,23 +1338,43 @@ export type TagCreateWithoutRecipesInput = {
   name: Scalars['String']['input'];
 };
 
-export type TagListRelationFilter = {
-  every?: InputMaybe<TagWhereInput>;
-  none?: InputMaybe<TagWhereInput>;
-  some?: InputMaybe<TagWhereInput>;
-};
-
-export type TagWhereInput = {
-  AND?: InputMaybe<Array<TagWhereInput>>;
-  NOT?: InputMaybe<Array<TagWhereInput>>;
-  OR?: InputMaybe<Array<TagWhereInput>>;
-  name?: InputMaybe<StringFilter>;
-};
-
 export type Tenant = {
   __typename?: 'Tenant';
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+};
+
+export type UpdateColumnViewInput = {
+  columnId?: InputMaybe<Scalars['Int']['input']>;
+  columnType?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  visible?: InputMaybe<Scalars['Boolean']['input']>;
+  width?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type UpdateTableViewDefinitionInput = {
+  columns?: InputMaybe<Array<UpdateColumnViewInput>>;
+  filters?: InputMaybe<Scalars['String']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  isPreset?: InputMaybe<Scalars['Boolean']['input']>;
+  isShared?: InputMaybe<Scalars['Boolean']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
+  sorting?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type User = {
+  __typename?: 'User';
+  createdAt: Scalars['DateTime']['output'];
+  email: Scalars['String']['output'];
+  googleId?: Maybe<Scalars['String']['output']>;
+  googleProfile?: Maybe<Scalars['JSON']['output']>;
+  id: Scalars['ID']['output'];
+  password?: Maybe<Scalars['String']['output']>;
+  roles?: Maybe<Array<Roles>>;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type AuthLoginMutationVariables = Exact<{
@@ -1085,6 +1422,88 @@ export type AuthRegisterMutationVariables = Exact<{
 
 export type AuthRegisterMutation = { __typename?: 'Mutation', authRegister: { __typename?: 'AuthSessionModel', userId: string, accessToken: string, accessTokenExpiresAt: any, roles: Array<string> } };
 
+export type ApproveMatchMutationVariables = Exact<{
+  reviewId: Scalars['ID']['input'];
+  matchFoodId: Scalars['ID']['input'];
+}>;
+
+
+export type ApproveMatchMutation = { __typename?: 'Mutation', approveMatch: { __typename?: 'Match', id: string, status: MatchStatus } };
+
+export type CancelManualFoodSelectionMutationVariables = Exact<{
+  reviewId: Scalars['ID']['input'];
+}>;
+
+
+export type CancelManualFoodSelectionMutation = { __typename?: 'Mutation', cancelManualFoodSelection: { __typename?: 'MatchManualReview', id: string, reviewStatus: ReviewStatus } };
+
+export type CompleteManualFoodSelectionMutationVariables = Exact<{
+  reviewId: Scalars['ID']['input'];
+  foodId: Scalars['ID']['input'];
+}>;
+
+
+export type CompleteManualFoodSelectionMutation = { __typename?: 'Mutation', completeManualFoodSelection: { __typename?: 'Match', id: string, status: MatchStatus } };
+
+export type InitiateManualFoodSelectionMutationVariables = Exact<{
+  reviewId: Scalars['ID']['input'];
+}>;
+
+
+export type InitiateManualFoodSelectionMutation = { __typename?: 'Mutation', initiateManualFoodSelection: { __typename?: 'MatchManualReview', id: string, reviewStatus: ReviewStatus } };
+
+export type InitiateManualReviewMutationVariables = Exact<{
+  matchId: Scalars['ID']['input'];
+}>;
+
+
+export type InitiateManualReviewMutation = { __typename?: 'Mutation', initiateManualReview: { __typename?: 'MatchManualReview', id: string, reviewStatus: ReviewStatus, match: { __typename?: 'Match', id: string, status: MatchStatus } } };
+
+export type RejectMatchMutationVariables = Exact<{
+  reviewId: Scalars['ID']['input'];
+  reason?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type RejectMatchMutation = { __typename?: 'Mutation', rejectMatch: { __typename?: 'Match', id: string, status: MatchStatus } };
+
+export type RequestFurtherReviewMutationVariables = Exact<{
+  reviewId: Scalars['ID']['input'];
+  reason: Scalars['String']['input'];
+}>;
+
+
+export type RequestFurtherReviewMutation = { __typename?: 'Mutation', requestFurtherReview: { __typename?: 'MatchManualReview', id: string, reviewStatus: ReviewStatus, notes?: string | null } };
+
+export type UpdateReviewStatusMutationVariables = Exact<{
+  reviewId: Scalars['ID']['input'];
+  status: ReviewStatus;
+}>;
+
+
+export type UpdateReviewStatusMutation = { __typename?: 'Mutation', updateReviewStatus: { __typename?: 'MatchManualReview', id: string, reviewStatus: ReviewStatus } };
+
+export type ArchiveTableViewDefinitionMutationVariables = Exact<{
+  archiveTableViewDefinitionId: Scalars['ID']['input'];
+}>;
+
+
+export type ArchiveTableViewDefinitionMutation = { __typename?: 'Mutation', archiveTableViewDefinition: { __typename?: 'ActionResponseModel', accepted: boolean } };
+
+export type CreateTableViewDefinitionMutationVariables = Exact<{
+  input: CreateTableViewDefinitionInput;
+}>;
+
+
+export type CreateTableViewDefinitionMutation = { __typename?: 'Mutation', createTableViewDefinition: { __typename?: 'TableViewDefinition', id: string } };
+
+export type UpdateTableViewDefinitionMutationVariables = Exact<{
+  updateTableViewDefinitionInput: UpdateTableViewDefinitionInput;
+}>;
+
+
+export type UpdateTableViewDefinitionMutation = { __typename?: 'Mutation', updateTableViewDefinition: { __typename?: 'TableViewDefinition', id: string } };
+
 export type AccountInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1098,13 +1517,35 @@ export type FoodAutosuggestQueryVariables = Exact<{
 
 export type FoodAutosuggestQuery = { __typename?: 'Query', foodAutosuggest: Array<{ __typename?: 'FoodSearchResult', description: string, rank: number, food: { __typename?: 'Food', description: string, id: string } }> };
 
-export type PaginatedRecipesQueryVariables = Exact<{
-  page?: InputMaybe<Scalars['Int']['input']>;
-  perPage?: InputMaybe<Scalars['Int']['input']>;
+export type GetMatchDetailsQueryVariables = Exact<{
+  matchId: Scalars['ID']['input'];
 }>;
 
 
-export type PaginatedRecipesQuery = { __typename?: 'Query', paginatedRecipes: { __typename?: 'RecipePaginatedModel', data: Array<{ __typename?: 'Recipe', cookingTime?: string | null, prepTime?: string | null, description?: string | null, id: string, servingsMax?: number | null, servingsMin?: number | null, servingsText?: string | null, sourceUrl?: string | null, title: string, parts?: Array<{ __typename?: 'RecipePart', name: string, ingredients?: Array<{ __typename?: 'RecipeIngredient', id: string, extraInfo?: string | null, ingredientText?: string | null, quantity: number, maxQuantity?: number | null, minQuantity?: number | null, unit: string, unitText?: string | null }> | null }> | null, categories?: Array<{ __typename?: 'RecipeCategory', name: string }> | null, ingredients?: Array<{ __typename?: 'RecipeIngredient', id: string, extraInfo?: string | null, ingredientText?: string | null, quantity: number, maxQuantity?: number | null, minQuantity?: number | null, unit: string, unitText?: string | null }> | null, images?: Array<{ __typename?: 'RecipeImage', altText?: string | null, url: string }> | null, tags?: Array<{ __typename?: 'Tag', name: string }> | null, seasons?: Array<{ __typename?: 'Season', id: string, name: string }> | null, instructions?: Array<{ __typename?: 'RecipeInstructions', content: string, listIndex?: number | null, order: number, type: RecipeInstructionsType }> | null }>, meta: { __typename?: 'RecipeMeta', lastPage: number, total: number, currentPage: number } } };
+export type GetMatchDetailsQuery = { __typename?: 'Query', getMatchDetails: { __typename?: 'Match', id: string, status: MatchStatus, foodMatches?: Array<{ __typename?: 'MatchFood', id: string, confidence?: number | null, matchType: MatchType, food: { __typename?: 'Food', id: string, description: string } }> | null, manualReviews?: Array<{ __typename?: 'MatchManualReview', id: string, reviewStatus: ReviewStatus, notes?: string | null }> | null } };
+
+export type PaginatedMatchesQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+  filterInput?: InputMaybe<ManualReviewMatchesFilterInput>;
+}>;
+
+
+export type PaginatedMatchesQuery = { __typename?: 'Query', paginatedMatches: { __typename?: 'MatchPaginatedModel', data: Array<{ __typename?: 'Match', id: string, status: MatchStatus, ingredientText: string, selectedFoodMatchId?: string | null, updatedAt: any, createdAt: any }>, meta: { __typename?: 'MatchMeta', lastPage: number, total: number, currentPage: number } } };
+
+export type PaginatedRecipesQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+  filterInput?: InputMaybe<RecipeFilterInput>;
+}>;
+
+
+export type PaginatedRecipesQuery = { __typename?: 'Query', paginatedRecipes: { __typename?: 'RecipePaginatedModel', data: Array<{ __typename?: 'Recipe', cookingTime?: string | null, prepTime?: string | null, description?: string | null, id: string, servingsMax?: number | null, servingsMin?: number | null, servingsText?: string | null, sourceUrl?: string | null, title: string, createdAt: any, updatedAt: any, parts?: Array<{ __typename?: 'RecipePart', name: string, ingredients?: Array<{ __typename?: 'RecipeIngredient', id: string, extraInfo?: string | null, ingredientText?: string | null, quantity: number, maxQuantity?: number | null, minQuantity?: number | null, unit: string, unitText?: string | null }> | null }> | null, categories?: Array<{ __typename?: 'RecipeCategory', name: string }> | null, ingredients?: Array<{ __typename?: 'RecipeIngredient', id: string, extraInfo?: string | null, ingredientText?: string | null, quantity: number, maxQuantity?: number | null, minQuantity?: number | null, unit: string, unitText?: string | null }> | null, images?: Array<{ __typename?: 'RecipeImage', altText?: string | null, url: string }> | null, tags?: Array<{ __typename?: 'Tag', name: string }> | null, seasons?: Array<{ __typename?: 'Season', id: string, name: string }> | null, instructions?: Array<{ __typename?: 'RecipeInstructions', content: string, listIndex?: number | null, order: number, type: RecipeInstructionsType }> | null }>, meta: { __typename?: 'RecipeMeta', lastPage: number, total: number, currentPage: number } } };
+
+export type TableViewDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TableViewDefinitionsQuery = { __typename?: 'Query', tableViewDefinitions: Array<{ __typename?: 'TableViewDefinition', id: string, name: string, tableType: TableViewType, tableId: TableIdType, order: number, icon?: string | null, filters?: string | null, sorting?: string | null, isPreset: boolean, isShared: boolean, createdAt: any, updatedAt: any, columnView: Array<{ __typename?: 'ColumnView', columnId: number, columnType: ColumnViewType, name: string, width: number, visible: boolean, filter?: string | null }>, possibleFilters: Array<{ __typename?: 'FilterPropertyMetadata', name: string, type: string, operators: Array<string> }> }> };
 
 
 export const AuthLoginDocument = gql`
@@ -1155,6 +1596,98 @@ export const AuthRegisterDocument = gql`
   }
 }
     `;
+export const ApproveMatchDocument = gql`
+    mutation ApproveMatch($reviewId: ID!, $matchFoodId: ID!) {
+  approveMatch(reviewId: $reviewId, matchFoodId: $matchFoodId) {
+    id
+    status
+  }
+}
+    `;
+export const CancelManualFoodSelectionDocument = gql`
+    mutation CancelManualFoodSelection($reviewId: ID!) {
+  cancelManualFoodSelection(reviewId: $reviewId) {
+    id
+    reviewStatus
+  }
+}
+    `;
+export const CompleteManualFoodSelectionDocument = gql`
+    mutation CompleteManualFoodSelection($reviewId: ID!, $foodId: ID!) {
+  completeManualFoodSelection(reviewId: $reviewId, foodId: $foodId) {
+    id
+    status
+  }
+}
+    `;
+export const InitiateManualFoodSelectionDocument = gql`
+    mutation InitiateManualFoodSelection($reviewId: ID!) {
+  initiateManualFoodSelection(reviewId: $reviewId) {
+    id
+    reviewStatus
+  }
+}
+    `;
+export const InitiateManualReviewDocument = gql`
+    mutation InitiateManualReview($matchId: ID!) {
+  initiateManualReview(matchId: $matchId) {
+    id
+    reviewStatus
+    match {
+      id
+      status
+    }
+  }
+}
+    `;
+export const RejectMatchDocument = gql`
+    mutation RejectMatch($reviewId: ID!, $reason: String) {
+  rejectMatch(reviewId: $reviewId, reason: $reason) {
+    id
+    status
+  }
+}
+    `;
+export const RequestFurtherReviewDocument = gql`
+    mutation RequestFurtherReview($reviewId: ID!, $reason: String!) {
+  requestFurtherReview(reviewId: $reviewId, reason: $reason) {
+    id
+    reviewStatus
+    notes
+  }
+}
+    `;
+export const UpdateReviewStatusDocument = gql`
+    mutation UpdateReviewStatus($reviewId: ID!, $status: ReviewStatus!) {
+  updateReviewStatus(reviewId: $reviewId, status: $status) {
+    id
+    reviewStatus
+  }
+}
+    `;
+export const ArchiveTableViewDefinitionDocument = gql`
+    mutation ArchiveTableViewDefinition($archiveTableViewDefinitionId: ID!) {
+  archiveTableViewDefinition(id: $archiveTableViewDefinitionId) {
+    accepted
+  }
+}
+    `;
+export const CreateTableViewDefinitionDocument = gql`
+    mutation CreateTableViewDefinition($input: CreateTableViewDefinitionInput!) {
+  createTableViewDefinition(input: $input) {
+    id
+  }
+}
+    `;
+export const UpdateTableViewDefinitionDocument = gql`
+    mutation UpdateTableViewDefinition($updateTableViewDefinitionInput: UpdateTableViewDefinitionInput!) {
+  updateTableViewDefinition(
+    updateTableViewDefinitionInput: $updateTableViewDefinitionInput
+  ) {
+    id
+  }
+}
+    `;
 export const AccountInfoDocument = gql`
     query AccountInfo {
   accountInfo {
@@ -1183,9 +1716,50 @@ export const FoodAutosuggestDocument = gql`
   }
 }
     `;
+export const GetMatchDetailsDocument = gql`
+    query GetMatchDetails($matchId: ID!) {
+  getMatchDetails(matchId: $matchId) {
+    id
+    status
+    foodMatches {
+      id
+      confidence
+      matchType
+      food {
+        id
+        description
+      }
+    }
+    manualReviews {
+      id
+      reviewStatus
+      notes
+    }
+  }
+}
+    `;
+export const PaginatedMatchesDocument = gql`
+    query PaginatedMatches($page: Int, $perPage: Int, $filterInput: ManualReviewMatchesFilterInput) {
+  paginatedMatches(page: $page, perPage: $perPage, filterInput: $filterInput) {
+    data {
+      id
+      status
+      ingredientText
+      selectedFoodMatchId
+      updatedAt
+      createdAt
+    }
+    meta {
+      lastPage
+      total
+      currentPage
+    }
+  }
+}
+    `;
 export const PaginatedRecipesDocument = gql`
-    query PaginatedRecipes($page: Int, $perPage: Int) {
-  paginatedRecipes(page: $page, perPage: $perPage) {
+    query PaginatedRecipes($page: Int, $perPage: Int, $filterInput: RecipeFilterInput) {
+  paginatedRecipes(page: $page, perPage: $perPage, filterInput: $filterInput) {
     data {
       cookingTime
       prepTime
@@ -1239,11 +1813,44 @@ export const PaginatedRecipesDocument = gql`
       servingsText
       sourceUrl
       title
+      createdAt
+      updatedAt
     }
     meta {
       lastPage
       total
       currentPage
+    }
+  }
+}
+    `;
+export const TableViewDefinitionsDocument = gql`
+    query TableViewDefinitions {
+  tableViewDefinitions {
+    id
+    name
+    tableType
+    tableId
+    order
+    icon
+    filters
+    sorting
+    columnView {
+      columnId
+      columnType
+      name
+      width
+      visible
+      filter
+    }
+    isPreset
+    isShared
+    createdAt
+    updatedAt
+    possibleFilters {
+      name
+      type
+      operators
     }
   }
 }
@@ -1277,14 +1884,56 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     AuthRegister(variables: AuthRegisterMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<AuthRegisterMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<AuthRegisterMutation>(AuthRegisterDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AuthRegister', 'mutation', variables);
     },
+    ApproveMatch(variables: ApproveMatchMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ApproveMatchMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ApproveMatchMutation>(ApproveMatchDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ApproveMatch', 'mutation', variables);
+    },
+    CancelManualFoodSelection(variables: CancelManualFoodSelectionMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CancelManualFoodSelectionMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CancelManualFoodSelectionMutation>(CancelManualFoodSelectionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CancelManualFoodSelection', 'mutation', variables);
+    },
+    CompleteManualFoodSelection(variables: CompleteManualFoodSelectionMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CompleteManualFoodSelectionMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CompleteManualFoodSelectionMutation>(CompleteManualFoodSelectionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CompleteManualFoodSelection', 'mutation', variables);
+    },
+    InitiateManualFoodSelection(variables: InitiateManualFoodSelectionMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<InitiateManualFoodSelectionMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InitiateManualFoodSelectionMutation>(InitiateManualFoodSelectionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InitiateManualFoodSelection', 'mutation', variables);
+    },
+    InitiateManualReview(variables: InitiateManualReviewMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<InitiateManualReviewMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InitiateManualReviewMutation>(InitiateManualReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'InitiateManualReview', 'mutation', variables);
+    },
+    RejectMatch(variables: RejectMatchMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<RejectMatchMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<RejectMatchMutation>(RejectMatchDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'RejectMatch', 'mutation', variables);
+    },
+    RequestFurtherReview(variables: RequestFurtherReviewMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<RequestFurtherReviewMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<RequestFurtherReviewMutation>(RequestFurtherReviewDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'RequestFurtherReview', 'mutation', variables);
+    },
+    UpdateReviewStatus(variables: UpdateReviewStatusMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdateReviewStatusMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateReviewStatusMutation>(UpdateReviewStatusDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateReviewStatus', 'mutation', variables);
+    },
+    ArchiveTableViewDefinition(variables: ArchiveTableViewDefinitionMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<ArchiveTableViewDefinitionMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ArchiveTableViewDefinitionMutation>(ArchiveTableViewDefinitionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ArchiveTableViewDefinition', 'mutation', variables);
+    },
+    CreateTableViewDefinition(variables: CreateTableViewDefinitionMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<CreateTableViewDefinitionMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateTableViewDefinitionMutation>(CreateTableViewDefinitionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateTableViewDefinition', 'mutation', variables);
+    },
+    UpdateTableViewDefinition(variables: UpdateTableViewDefinitionMutationVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<UpdateTableViewDefinitionMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateTableViewDefinitionMutation>(UpdateTableViewDefinitionDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'UpdateTableViewDefinition', 'mutation', variables);
+    },
     AccountInfo(variables?: AccountInfoQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<AccountInfoQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<AccountInfoQuery>(AccountInfoDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'AccountInfo', 'query', variables);
     },
     FoodAutosuggest(variables: FoodAutosuggestQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<FoodAutosuggestQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FoodAutosuggestQuery>(FoodAutosuggestDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'FoodAutosuggest', 'query', variables);
     },
+    GetMatchDetails(variables: GetMatchDetailsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<GetMatchDetailsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetMatchDetailsQuery>(GetMatchDetailsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetMatchDetails', 'query', variables);
+    },
+    PaginatedMatches(variables?: PaginatedMatchesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<PaginatedMatchesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PaginatedMatchesQuery>(PaginatedMatchesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'PaginatedMatches', 'query', variables);
+    },
     PaginatedRecipes(variables?: PaginatedRecipesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<PaginatedRecipesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<PaginatedRecipesQuery>(PaginatedRecipesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'PaginatedRecipes', 'query', variables);
+    },
+    TableViewDefinitions(variables?: TableViewDefinitionsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<TableViewDefinitionsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<TableViewDefinitionsQuery>(TableViewDefinitionsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'TableViewDefinitions', 'query', variables);
     }
   };
 }

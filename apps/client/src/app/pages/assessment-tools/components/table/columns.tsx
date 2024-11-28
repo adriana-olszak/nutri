@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  Column,
   ColumnDef,
   createColumnHelper,
   HeaderContext,
 } from '@tanstack/react-table';
-import { getTHeadProps, Input, Skeleton, THead } from '@nutri/client-ui';
-import {LinkCell} from "../../../../components/cell";
-import {QuestionnaireColumnType} from "@nutri/store/tableViews/types";
-
+import { getTHeadProps, THead } from '@nutri/client-ui';
+import { LinkCell } from '../../../../components/cell';
+import { ColumnViewType } from '@nutri/client-gql';
 
 
 type Questionnaire = {
@@ -25,19 +23,19 @@ type Questionnaire = {
 
 const columnHelper = createColumnHelper<Questionnaire>();
 
-export const questionnaireColumns: Record<QuestionnaireColumnType, ColumnDef<Questionnaire, any>> = {
-  [QuestionnaireColumnType.NAME]: {
+export const questionnaireColumns: Record<ColumnViewType, ColumnDef<Questionnaire, any>> = {
+  [ColumnViewType.PollsName]: {
     accessorKey: 'value.title',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'title'} title={'Title'} {...getTHeadProps(props)} />
     ),
     cell: ({ getValue, row }) => (
-      <LinkCell title={getValue()} href={`/surveys/${row.original.id}`}/>
+      <LinkCell title={getValue()} href={`/surveys/${row.original.id}`} />
     ),
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [QuestionnaireColumnType.TAGS]: {
+  [ColumnViewType.PollsTags]: {
     accessorKey: 'value.tags',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'Tags'} title={'Tags'} {...getTHeadProps(props)} />
@@ -47,7 +45,7 @@ export const questionnaireColumns: Record<QuestionnaireColumnType, ColumnDef<Que
     enableColumnFilter: true,
   },
 
-  [QuestionnaireColumnType.CREATED_DATE]: {
+  [ColumnViewType.PollsCreatedDate]: {
     accessorKey: 'value.createdAt',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'CreatedDate'} title={'Created'} {...getTHeadProps(props)} />
@@ -56,7 +54,7 @@ export const questionnaireColumns: Record<QuestionnaireColumnType, ColumnDef<Que
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [QuestionnaireColumnType.LAST_MODIFIED_DATE]: {
+  [ColumnViewType.PollsLastModifiedDate]: {
     accessorKey: 'value.updatedAt',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'LastModifiedDate'} title={'Last Modified'} {...getTHeadProps(props)} />
@@ -65,7 +63,7 @@ export const questionnaireColumns: Record<QuestionnaireColumnType, ColumnDef<Que
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [QuestionnaireColumnType.AUTHOR]: {
+  [ColumnViewType.PollsAuthor]: {
     accessorKey: 'author',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'Author'} title={'Author'} {...getTHeadProps(props)} />
@@ -74,7 +72,7 @@ export const questionnaireColumns: Record<QuestionnaireColumnType, ColumnDef<Que
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [QuestionnaireColumnType.STATUS]: {
+  [ColumnViewType.PollsStatus]: {
     accessorKey: 'status',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'Status'} title={'Status'} {...getTHeadProps(props)} />
@@ -83,7 +81,7 @@ export const questionnaireColumns: Record<QuestionnaireColumnType, ColumnDef<Que
     enableSorting: true,
     enableColumnFilter: true,
   },
-  [QuestionnaireColumnType.USED_COUNT]: {
+  [ColumnViewType.PollsUsedCount]: {
     accessorKey: 'usedCount',
     header: (props: HeaderContext<object, unknown>) => (
       <THead id={'UsedCount'} title={'Times Used'} {...getTHeadProps(props)} />

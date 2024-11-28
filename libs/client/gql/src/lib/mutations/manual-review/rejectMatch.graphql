@@ -1,0 +1,6 @@
+mutation RejectMatch($reviewId: ID!, $reason: String) {
+  rejectMatch(reviewId: $reviewId, reason: $reason) {
+    id
+    status
+  }
+}

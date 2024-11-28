@@ -4,15 +4,32 @@ import { PrismaService } from '@nutri/server-db-client';
 import { TableViewDefinition } from '../../graphql/models/table-view-definition.model';
 import { createDefaultTableViewDefinitions } from './default-table-view-definition';
 import { mapPrismaToGraphQLTableViewDefinition } from './mapper';
+import { CreateTableViewDefinitionInput } from '../../graphql/inputs/create-table-view-definition.input';
 
 @Injectable()
 export class TableViewDefinitionService {
   constructor(private prisma: PrismaService) {
   }
 
-  async create(data: Prisma.TableViewDefinitionCreateInput): Promise<TableViewDefinition> {
+  async create(data: CreateTableViewDefinitionInput, userId: string): Promise<TableViewDefinition> {
     const res = await this.prisma.tableViewDefinition.create({
-      data,
+      data: {
+        filters: data.filters,
+        icon: data.icon,
+        isPreset: data.isPreset,
+        isShared: data.isShared,
+        name: data.name,
+        order: data.order,
+        sorting: data.sorting,
+        tableId: data.tableId,
+        tableType: data.tableType,
+        userId,
+        columnView: {
+          createMany: {
+            data: data.columnView,
+          },
+        },
+      },
       include: {
         columnView: true,
       },
@@ -32,11 +49,11 @@ export class TableViewDefinitionService {
     });
 
     if (!existingDefinitions.length) {
-      const defaultDefinitions = createDefaultTableViewDefinitions(userId);
+      const defaultDefinitions = createDefaultTableViewDefinitions();
 
       const definitions: TableViewDefinition[] = [];
       for (const definition of defaultDefinitions) {
-        definitions.push(await this.create(definition));
+        definitions.push(await this.create(definition, userId));
       }
 
       return definitions;

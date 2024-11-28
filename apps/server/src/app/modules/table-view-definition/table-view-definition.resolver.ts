@@ -21,8 +21,7 @@ export class TableViewDefinitionResolver {
   ) {
     const tableViewDefinition = await this.tableViewDefinitionService.create({
       ...createTableViewDefinitionInput,
-      userId: reqUser.id,
-    });
+    }, reqUser.id);
 
     tableViewDefinition.possibleFilters = this.filterService.getPossibleFilters(tableViewDefinition.tableId);
 

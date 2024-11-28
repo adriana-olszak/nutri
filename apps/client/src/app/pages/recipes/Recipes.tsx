@@ -1,24 +1,18 @@
 import React, { useRef, useState } from 'react';
 import {
   Button,
-  Drawer,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
+  Table,
 } from '@nutri/client-ui';
-import {Plus, Table2Icon, Grid2X2Icon, X} from 'lucide-react';
-import { getColumnsConfig, recipeColumns } from './components/columns';
-import { useStores } from '../../hooks/useStore';
-import { TableViewStore } from '@nutri/store/tableViews/TableView.store';
+import { Plus, Table2Icon, Grid2X2Icon, X } from 'lucide-react';
 import './components/grid-view.scss';
 import { observer } from 'mobx-react-lite';
-import { TableView } from './components/TableView';
 import { IconButton } from '@nutri/client-ui/icon-button';
 import { useLocalstorageState } from 'rooks';
 import { cn } from '@nutri/client-utils';
 import { GridView } from './components/GridView';
-import {Recipe as RecipeType} from "@nutri/client-gql";
-import {Recipe } from '../../components/RecipeEdit';
+import { Recipe, Recipe as RecipeType, TableIdType } from '@nutri/client-gql';
+import { RecipeDetail } from '../../components/RecipeEdit';
+import { TableView } from '../../views/table/TableView';
 
 export const Recipes = observer(() => {
   const [activeTab, setActiveTab] = useLocalstorageState<'table' | 'grid'>(
@@ -26,12 +20,7 @@ export const Recipes = observer(() => {
     'table',
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [selectedRecipe, setSelectedRecipe] = useState<RecipeType| null>(null);
-  const tableRef = useRef<HTMLDivElement | null>(null);
-  const store = useStores();
-  const tableView = store.tableViews.getById('1') as TableViewStore;
-  const col = getColumnsConfig(tableView.value);
-  const data = store.recipes.toArray();
+  const [selectedRecipe, setSelectedRecipe] = useState<RecipeType | null>(null);
 
   const openDrawer = (recipe: Recipe) => {
     setSelectedRecipe(recipe);
@@ -67,7 +56,7 @@ export const Recipes = observer(() => {
           <div className="border rounded overflow-hidden flex items-center">
             <IconButton
               aria-label="table view"
-              icon={<Table2Icon className="text-inherit size-4"/>}
+              icon={<Table2Icon className="text-inherit size-4" />}
               variant="ghost"
               className={cn('rounded-none text-gray-700 hover:bg-gray-100', {
                 'text-gray-500': activeTab !== 'table',
@@ -77,7 +66,7 @@ export const Recipes = observer(() => {
             />
             <IconButton
               aria-label="grid view"
-              icon={<Grid2X2Icon className="text-inherit size-4"/>}
+              icon={<Grid2X2Icon className="text-inherit size-4" />}
               variant="ghost"
               className={cn('rounded-none text-gray-700 hover:bg-gray-100', {
                 'text-gray-500': activeTab !== 'grid',
@@ -88,15 +77,17 @@ export const Recipes = observer(() => {
           </div>
 
           <Button variant="outline" colorScheme="lavender" size={'xs'}>
-            <Plus size={18}/>
+            <Plus size={18} />
             Add New Recipe
           </Button>
         </div>
       </header>
 
-      {/*{activeTab === 'table' && <TableView onRecipeClick={openDrawer}/>}*/}
+      {activeTab === 'table' &&
+       <TableView isSidePanelOpen={false}/>
+      }
 
-      {activeTab === 'grid' && <GridView onRecipeClick={openDrawer}/>}
+      {activeTab === 'grid' && <GridView onRecipeClick={openDrawer} />}
 
       <div className="w-screen h-screen flex items-center justify-center">
 
@@ -114,8 +105,7 @@ export const Recipes = observer(() => {
           >
 
 
-            <Recipe id={selectedRecipe?.id || ''} />
-
+            <RecipeDetail id={selectedRecipe?.id || ''} />
 
 
             {/* Add your slide-over content here */}

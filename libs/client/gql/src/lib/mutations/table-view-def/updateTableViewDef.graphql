@@ -1,0 +1,5 @@
+mutation UpdateTableViewDefinition($updateTableViewDefinitionInput: UpdateTableViewDefinitionInput!) {
+  updateTableViewDefinition(updateTableViewDefinitionInput: $updateTableViewDefinitionInput) {
+    id
+  }
+}

@@ -1,0 +1,10 @@
+mutation InitiateManualReview($matchId: ID!) {
+  initiateManualReview(matchId: $matchId) {
+    id
+    reviewStatus
+    match {
+      id
+      status
+    }
+  }
+}
