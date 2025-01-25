@@ -8,14 +8,14 @@ services:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_DB: ${DATABASE_NAME}
       PG_DATA: /var/lib/postgresql/data
-      POSTGRES_INITDB_ARGS: "--wal-segsize=512"
+      POSTGRES_INITDB_ARGS: '--wal-segsize=512'
     ports:
-      - "${DATABASE_PORT}:5432"
+      - '${DATABASE_PORT}:5432'
     volumes:
       - ./deploy/docker-compose/postgres-nutri:/docker-entrypoint-initdb.d
       - pgdata-postgres-nutri:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -43,8 +43,17 @@ services:
   mailhog:
     image: mailhog/mailhog
     ports:
-      - "1025:1025" # SMTP server
-      - "8025:8025" # Web UI
+      - '1025:1025' # SMTP server
+      - '8025:8025' # Web UI
 
+  redis:
+    image: 'bitnami/redis:latest'
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - '${REDIS_PORT}:6379'
+    volumes:
+      - redis-nutri:/bitnami/redis/data
 volumes:
   pgdata-postgres-nutri:
+  redis-nutri:

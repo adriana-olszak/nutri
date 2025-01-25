@@ -5,6 +5,7 @@ import { GraphqlModule } from './graphql/graphql.module';
 import { ConfigModule } from '@nutri/server-config/config.module';
 import { ConfigService } from '@nutri/server-config';
 import { RecipeModule } from './modules/recipe/recipe.module';
+import { QUEUE_NAMES, QueueModule } from '@nutri/server-queue';
 import { FoodModule } from './modules/food/food.module';
 import { QuestionnaireModule } from './modules/questionnaire/questionnaire.module';
 import { NutritionModule } from './modules/nutrition/nutrition.module';
@@ -19,6 +20,7 @@ import { TableViewDefinitionModule } from './modules/table-view-definition/table
       inject: [ConfigService],
       useFactory: (config: ConfigService) => config.throttle,
     }),
+    QueueModule.register(Object.values(QUEUE_NAMES)),
     NotificationModule,
     GraphqlModule,
     RecipeModule,

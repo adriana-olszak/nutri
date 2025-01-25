@@ -63,6 +63,19 @@ class EnvironmentVariables {
 
   @IsString()
   AUTH_JWT_REFRESH_SECRET!: string;
+
+  @IsNumber()
+  @Transform(({ value }) => Number(value))
+  REDIS_PORT!: number;
+
+  @IsString()
+  REDIS_HOST!: string;
+
+  @IsString()
+  REDIS_PASSWORD!: string;
+
+  @IsString()
+  REDIS_USERNAME!: string;
 }
 
 export type ENV_VARS = keyof EnvironmentVariables;

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 // eslint-disable-next-line no-restricted-imports
 import { ConfigService as NestConfigService } from '@nestjs/config';
-import { StrategyOptions as GoogleStrategyOptions } from 'passport-google-oauth20';
 import type { JwtModuleOptions } from '@nestjs/jwt';
+import { StrategyOptions as GoogleStrategyOptions } from 'passport-google-oauth20';
 
-import { Environment, EnvironmentVariablesType } from './env.validation';
 import { EmailConfig } from '@nutri/server-mailer';
 import * as os from 'node:os';
+import { Environment, EnvironmentVariablesType } from './env.validation';
 
 @Injectable()
 export class ConfigService {
@@ -14,7 +14,7 @@ export class ConfigService {
     private readonly configService: NestConfigService<
       EnvironmentVariablesType,
       true
-    >
+    >,
   ) {
   }
 
@@ -60,8 +60,8 @@ export class ConfigService {
       publicKey: this.authJWTAccessPublicKey,
       signOptions: {
         algorithm: 'ES256',
-        expiresIn: this.authJWTAccessExpiration
-      }
+        expiresIn: this.authJWTAccessExpiration,
+      },
     };
   }
 
@@ -73,14 +73,14 @@ export class ConfigService {
       loginConfirmedURL: `${this.clientUrl}/login-confirmed`,
       google: {
         clientID: this.configService.get('OAUTH_GOOGLE_CLIENT_ID', {
-          infer: true
+          infer: true,
         }),
         clientSecret: this.configService.get('OAUTH_GOOGLE_CLIENT_SECRET', {
-          infer: true
+          infer: true,
         }),
         callbackURL: `${this.serverUrl}/auth/google/redirect`,
-        scope: ['email']
-      }
+        scope: ['email'],
+      },
     };
   }
 
@@ -92,8 +92,8 @@ export class ConfigService {
       csrfPrevention: true,
       uploads: {
         maxFileSize: 20_000_000, // 20 MB
-        maxFiles: 5
-      }
+        maxFiles: 5,
+      },
     };
   }
 
@@ -104,8 +104,8 @@ export class ConfigService {
         provider: 'mailhog',
         options: {
           host: isRunningInDocker ? 'mailhog' : '127.0.0.1',
-          port: 1025
-        }
+          port: 1025,
+        },
       };
     }
 
@@ -113,10 +113,35 @@ export class ConfigService {
       provider: 'sendgrid',
       options: {
         apiKey: 'DUMMY_API_KEY',
-        fromEmail: 'example@example.com'
-      }
+        fromEmail: 'example@example.com',
+      },
     };
   }
+
+  get redisConfig() {
+    return {
+      host: this.configService.get('REDIS_HOST', { infer: true }),
+      port: this.configService.get('REDIS_PORT', { infer: true }),
+      password: this.configService.get('REDIS_PASSWORD', { infer: true }),
+      username: this.configService.get('REDIS_USERNAME', { infer: true }),
+      // docker compose redis has TLS disabled
+      ...(['test', 'development'].includes(process.env['NODE_ENV'] as string)
+        ? {}
+        : { tls: {} }),
+    };
+  }
+
+  /**
+   * DO NOT REMOVE
+   *
+   * It is used to bootstrap isolation in integration tests.
+   */
+  get redisBullPrefix() {
+    // do not change. If its different then what we use on environment
+    // it will cause queues and jobs that we have under a given prefix inaccessible
+    return 'bull';
+  }
+
 
   get publicRegistration(): boolean {
     return this.configService.get('PUBLIC_REGISTRATION', { infer: true });
@@ -129,7 +154,7 @@ export class ConfigService {
   get bcrypt() {
     return {
       costFactor: 12,
-      saltSize: 16
+      saltSize: 16,
     };
   }
 
@@ -159,9 +184,17 @@ export class ConfigService {
       throttlers: [
         {
           limit: 10,
-          ttl: 30_000
-        }
-      ]
+          ttl: 30_000,
+        },
+      ],
+    };
+  }
+
+  get modelConfig() {
+    return {
+      version: '1.0.0',
+      defaultLimit: 10,
+      maxLimit: 100,
     };
   }
 
