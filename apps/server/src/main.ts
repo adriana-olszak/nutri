@@ -2,15 +2,15 @@
  * This is not a production server yet!
  * This is only a minimal backend to get started.
  */
-import cookieParser from 'cookie-parser';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 
 
-import { AppModule } from './app/app.module';
 import { ConfigService } from '@nutri/server-config';
 import express from 'express';
+import { AppModule } from './app/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -40,7 +40,7 @@ function setupSwagger(app) {
     .setVersion('0.0.1')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('internal/swagger', app, document);
+  SwaggerModule.setup('swagger', app, document);
 }
 
 bootstrap();

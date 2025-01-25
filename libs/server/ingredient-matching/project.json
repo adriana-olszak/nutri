@@ -1,0 +1,9 @@
+{
+  "name": "server-ingredient-matching",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/server/ingredient-matching/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project server-ingredient-matching --web",
+  "targets": {}
+}

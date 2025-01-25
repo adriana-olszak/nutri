@@ -30,6 +30,7 @@
       "@nutri/server-auth": ["libs/server/auth/src/index.ts"],
       "@nutri/server-config": ["libs/server/config/src/index.ts"],
       "@nutri/server-config/*": ["libs/server/config/src/lib/*"],
+      "@nutri/server-context": ["libs/server/context/src/index.ts"],
       "@nutri/server-data-access-user": [
         "libs/server/data-access-users/src/index.ts"
       ],
@@ -37,12 +38,17 @@
       "@nutri/server-email-renderer": [
         "libs/server/email-renderer/src/index.ts"
       ],
+      "@nutri/server-ingredient-matching": [
+        "libs/server/ingredient-matching/src/index.ts"
+      ],
       "@nutri/server-mailer": ["libs/server/mailer/src/index.ts"],
       "@nutri/server-mailer-renderer": [
         "libs/server/mailer-renderer/src/index.ts"
       ],
       "@nutri/server-metrics": ["libs/server/metrics/src/index.ts"],
+      "@nutri/server-ml": ["libs/server/ml/src/index.ts"],
       "@nutri/server-parse-recipe": ["libs/server/parse-recipe/src/index.ts"],
+      "@nutri/server-queue": ["libs/server/queue/src/index.ts"],
       "@nutri/server-testing": ["libs/server/testing/src/index.ts"],
       "@nutri/server-utils": ["libs/server/utils/src/index.ts"],
       "@nutri/store": ["apps/client/src/store"],
