@@ -1,9 +1,17 @@
 import { StatsDProvider } from './stats-d.provider';
-import { Global, Module } from '@nestjs/common';
+import { DynamicModule, Global, Module } from '@nestjs/common';
+import { ContextModule } from '@nutri/server-context';
+import { StatsDService } from './stats-d.service';
 
 @Global()
-@Module({
-  providers: [StatsDProvider],
-  exports: [StatsDProvider],
-})
-export class MetricsModule {}
+@Module({})
+export class MetricsModule {
+  static forRoot(): DynamicModule {
+    return {
+      module: MetricsModule,
+      imports: [ContextModule],
+      providers: [StatsDProvider, StatsDService],
+      exports: [StatsDProvider, StatsDService],
+    };
+  }
+}

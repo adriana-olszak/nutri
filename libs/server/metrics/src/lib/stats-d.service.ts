@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { StatsD } from 'hot-shots';
 import { ClsService } from 'nestjs-cls';
+import { CLS_KEYS } from '@nutri/server-context';
 
 /**
- * @class AsyncStatsDService
+ * @class StatsDService
  * @description A service for asynchronous StatsD metric reporting with context-aware tagging.
  *
  * This service extends the functionality of the StatsD client by incorporating
@@ -19,8 +20,8 @@ import { ClsService } from 'nestjs-cls';
  * @requires nestjs-cls
  */
 @Injectable()
-export class AsyncStatsDService {
-  private readonly logger = new Logger(AsyncStatsDService.name);
+export class StatsDService {
+  private readonly logger = new Logger(StatsDService.name);
   private readonly enableStdoutLogging: boolean;
 
   constructor(
@@ -178,7 +179,7 @@ export class AsyncStatsDService {
   }
 
   private getContextTags(): { [key: string]: string } {
-    const job = this.asyncContext.get('JOB');
+    const job = this.asyncContext.get(CLS_KEYS.JOB);
     return {
       ...(job
         ? {

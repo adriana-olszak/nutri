@@ -1,30 +1,28 @@
-import { ArgumentInvalidException } from '@app/core/domain/exceptions';
-import { AsyncStatsDService } from '@app/infra/metrics/async-stats-d.service';
-import { AGGREGATED_METRICS } from '@app/infra/metrics/consts';
-import { IJobProcessor } from '@app/infra/queue/background-job-processor.interface';
+import { StatsDService } from './stats-d.service';
+import { AGGREGATED_METRICS } from './consts';
 
 /**
  * Records metrics about the job processing
  *
  * It will get job name, queue name, user_id and job_id
- * from the context using AsyncStatsDService. Those values will be set as tags in the metrics.
+ * from the context using StatsDService. Those values will be set as tags in the metrics.
  */
 export function WithJobMetrics() {
-  return function (
-    _: IJobProcessor,
+  return function(
+    _: { metrics: StatsDService },
     __: string,
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
     descriptor.value = async function withJobMetricsCb(
-      this: IJobProcessor,
+      this: { metrics: StatsDService },
       ...args: any[]
     ) {
-      const metrics: AsyncStatsDService = this.metrics;
+      const metrics: StatsDService = this.metrics;
 
       if (!metrics) {
-        throw new ArgumentInvalidException(
-          'AsyncStatsDService not injected in the class',
+        throw new Error(
+          'StatsDService not injected in the class',
         );
       }
 

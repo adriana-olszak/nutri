@@ -1,29 +1,20 @@
-import { LockContext } from '@app/infra/lock/types';
-import { JOB_NAMES, QUEUE_NAMES } from '@app/infra/queue/consts';
 import { ClsStore } from 'nestjs-cls';
 
 export enum CLS_KEYS {
-  LOCK_CONTEXT = 'LOCK_CONTEXT',
   MODE = 'MODE',
   USER_ID = 'USER_ID',
   JOB = 'JOB',
-  EVENT = 'EVENT',
 }
 
 export interface ContextStore extends ClsStore {
   [CLS_KEYS.MODE]: 'background-job' | 'http-request' | 'event-handler';
   [CLS_KEYS.USER_ID]: string | number;
-  [CLS_KEYS.LOCK_CONTEXT]?: LockContext;
   [CLS_KEYS.JOB]?: {
     id: string;
-    name: JOB_NAMES;
-    queueName: QUEUE_NAMES;
-    attemptsMade: number;
-    data: any;
-  };
-  [CLS_KEYS.EVENT]?: {
-    id: string;
     name: string;
+    queueName: string;
+    attemptsMade: number;
+    data: unknown;
   };
 }
 
