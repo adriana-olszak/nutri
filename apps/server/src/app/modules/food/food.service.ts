@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, PrismaService } from '@nutri/server-db-client';
-import { createPaginator, PaginatedResult, PaginateOptions } from 'prisma-pagination';
+import { PaginateOptions, PaginatedResult, createPaginator } from 'prisma-pagination';
 import { Food } from '../../graphql/models/food.model';
-import { NutritionalValue } from '../../graphql/models/nutritional-value.model';
 
 @Injectable()
 export class FoodService {
@@ -41,7 +40,7 @@ export class FoodService {
                ELSE ts_rank(fv."searchVector", to_tsquery(${formattedName})) + word_similarity(f.description, ${name})
            END as "rank"
     FROM "FoodSearchVector" fv
-    JOIN "Food" f ON f.id = fv."foodId"
+    JOIN "Food" f ON f.id = f v."foodId"
     LEFT JOIN "BrandedFood" bf ON bf."foodId" = f.id
     WHERE fv."searchVector" @@ to_tsquery(${formattedName})
       AND word_similarity(f.description, ${name}) > ${similarityThreshold}

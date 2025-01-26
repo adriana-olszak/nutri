@@ -80,3 +80,17 @@ export interface IIngredientMatchModel {
   matchIngredient(text: string, options?: MatchOptions): Promise<MatchResult>;
   dispose(): Promise<void>;
 }
+
+export interface EmbeddingModelConfig {
+  name: string;
+  dimensions: number;
+  similarityThreshold: number;
+}
+
+export interface EmbeddingSearchOptions {
+  languageCode: string;
+  embeddingType: string;
+  modelName: string;
+  similarityThreshold?: number;
+  limit?: number;
+}

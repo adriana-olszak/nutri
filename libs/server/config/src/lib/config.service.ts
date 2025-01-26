@@ -8,6 +8,15 @@ import { EmailConfig } from '@nutri/server-mailer';
 import * as os from 'node:os';
 import { Environment, EnvironmentVariablesType } from './env.validation';
 
+export interface LLMConfig {
+  model: string;
+  baseUrl: string;
+  apiKey?: string;
+  maxRetries: number;
+  timeout: number;
+}
+
+
 @Injectable()
 export class ConfigService {
   constructor(
@@ -196,6 +205,16 @@ export class ConfigService {
       defaultLimit: 10,
       maxLimit: 100,
     };
+  }
+
+  get llmConfig(): LLMConfig {
+    return {
+      model: 'llama-3.2-3b-instruct',
+      baseUrl: 'http://127.0.0.1:1234',
+      apiKey: undefined,
+      maxRetries: 4,
+      timeout: 1000 * 60 * 5,
+    }
   }
 
   port(): number {

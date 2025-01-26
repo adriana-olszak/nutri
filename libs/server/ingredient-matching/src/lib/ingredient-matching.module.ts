@@ -9,6 +9,7 @@ import { MatchScheduler } from './queue/match.scheduler';
 
 import { DbClientModule } from '@nutri/server-db-client';
 import { MatchController } from './controllers/match.controller';
+import { FoodEmbeddingRepository } from './repositories/food-embedding.repository';
 import { FoodRepository } from './repositories/food.repository';
 import { MatchRepository } from './repositories/match.repository';
 import { MatchResolver } from './resolvers/match.resolver';
@@ -24,6 +25,7 @@ import { IngredientMatchingService } from './services/ingredient-matching.servic
   ],
   providers: [
     IngredientMatchingService,
+    FoodEmbeddingRepository,
     MatchRepository,
     FoodRepository,
     MatchProcessor,

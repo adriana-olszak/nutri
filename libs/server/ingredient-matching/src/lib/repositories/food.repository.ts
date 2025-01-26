@@ -15,6 +15,38 @@ export class FoodRepository implements IFoodRepository {
   ) {
   }
 
+  async findSimilarFoods(
+      embedding: number[],
+      limit = 100,
+      similarityThreshold = 0.6,
+    ): Promise<Array<{ id: string; description: string; similarity: number }>> {
+      try {
+        // Using pgvector's L2 distance or cosine similarity
+        const results = await this.prisma.$queryRaw<{ id: string; description: string; similarity: number }[]>`
+          SELECT
+            f.id,
+            f.description,
+            1 - (fe.embedding <=> ${embedding}::vector) as similarity
+          FROM foods f
+          INNER JOIN food_embeddings fe ON fe.food_id = f.id
+          WHERE fe.embedding_type = 'sentenceTransformer'
+            AND fe.language_code = 'en'
+            AND 1 - (fe.embedding <=> ${embedding}::vector) > ${similarityThreshold}
+          ORDER BY similarity DESC
+          LIMIT ${limit}
+        `;
+
+        return results;
+      } catch (error) {
+        this.logger.error('Failed to find similar foods', error);
+        throw new IngredientMatchingError(
+          ErrorCodes.DATABASE_ERROR,
+          'Failed to find similar foods',
+          error,
+        );
+      }
+    }
+
   async getFoodCandidatesWithEmbeddings(modelVersion = '1.0.0'): Promise<FoodCandidate[]> {
     try {
           // Using raw query to fetch embeddings

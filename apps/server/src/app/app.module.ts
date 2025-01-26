@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { ExpressAdapter } from '@bull-board/express';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ThrottlerModule } from '@nestjs/throttler';
 
 import { ConfigService } from '@nutri/server-config';
@@ -7,6 +8,7 @@ import { ContextModule } from '@nutri/server-context';
 import { IngredientMatchingModule } from '@nutri/server-ingredient-matching';
 import { MetricsModule } from '@nutri/server-metrics';
 import { QUEUE_NAMES, QueueModule } from '@nutri/server-queue';
+import { BullDashboardService } from 'libs/server/queue/src/lib/bull-dashboard.service';
 import { GraphqlModule } from './graphql/graphql.module';
 import { FoodModule } from './modules/food/food.module';
 import { ManualReviewModule } from './modules/manual-review/manual-review.module';
@@ -37,5 +39,16 @@ import { TableViewDefinitionModule } from './modules/table-view-definition/table
     TableViewDefinitionModule,
   ],
 })
-export class AppModule {
+export class AppModule implements NestModule {
+  constructor(private readonly bullDashboardService: BullDashboardService) {}
+
+  configure(consumer: MiddlewareConsumer): void {
+    const serverAdapter = new ExpressAdapter();
+    const router = serverAdapter.getRouter();
+
+    this.bullDashboardService.createDashboard(serverAdapter);
+
+    serverAdapter.setBasePath('/management');
+    consumer.apply(router).forRoutes('/management');
+  }
 }

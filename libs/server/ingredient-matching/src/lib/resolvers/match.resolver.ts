@@ -10,7 +10,7 @@ export class MatchResolver {
   async scheduleIngredientMatch(
     @Args('input') input: ScheduleMatchInput,
   ): Promise<boolean> {
-    await this.matchScheduler.addMatch(
+    await this.matchScheduler.addMatchJob(
       input.matchId,
       {
         similarityThreshold: input.similarityThreshold,

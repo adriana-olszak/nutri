@@ -11,7 +11,7 @@ export class MatchScheduler {
     private matchQueue: Queue<IngredientMatchJobDto>,
   ) {}
 
-  async addMatch(
+  async addMatchJob(
     matchId: string,
     options?: {
       similarityThreshold?: number;
