@@ -1,9 +1,0 @@
-apps/server/src/app/modules/table-view-definition/table-view-definition.resolver.ts
-apps/server/src/app/modules/table-view-definition/table-view-definition.helper.ts
-apps/server/src/app/modules/table-view-definition/table-view-definition.module.ts
-apps/server/src/app/modules/table-view-definition/table-view-definition.service.ts
-apps/server/src/app/graphql/enums/table-view-type.enum.ts
-apps/server/src/app/graphql/enums/table-id-type.enum.ts
-apps/server/src/app/graphql/enums/column-view-type.enum.ts
-apps/server/src/app/graphql/models/column-view.model.ts
-apps/server/src/app/graphql/models/table-view-definition.model.ts
