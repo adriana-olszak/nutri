@@ -1,10 +1,10 @@
 import { Transform, plainToInstance } from 'class-transformer';
 import {
-  IsBoolean,
-  IsEnum,
-  IsNumber,
-  IsString,
-  validateSync,
+    IsBoolean,
+    IsEnum,
+    IsNumber,
+    IsString,
+    validateSync,
 } from 'class-validator';
 
 export enum Environment {
@@ -76,6 +76,9 @@ class EnvironmentVariables {
 
   @IsString()
   REDIS_USERNAME!: string;
+
+  @IsString()
+  LLM_BASE_URL!: string;
 }
 
 export type ENV_VARS = keyof EnvironmentVariables;

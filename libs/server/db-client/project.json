@@ -12,10 +12,7 @@
       }
     },
     "generate-types": {
-      "command": "prisma generate",
-      "options": {
-        "cwd": "libs/server/db-client"
-      }
+      "command": "prisma generate --schema=libs/server/db-client/prisma/schema.prisma"
     },
     "migrate": {
       "command": "prisma migrate dev",

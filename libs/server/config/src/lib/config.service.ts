@@ -210,7 +210,7 @@ export class ConfigService {
   get llmConfig(): LLMConfig {
     return {
       model: 'llama-3.2-3b-instruct',
-      baseUrl: 'http://127.0.0.1:1234',
+      baseUrl: this.configService.get('LLM_BASE_URL', { infer: true }),
       apiKey: undefined,
       maxRetries: 4,
       timeout: 1000 * 60 * 5,

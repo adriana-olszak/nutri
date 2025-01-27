@@ -20,7 +20,7 @@ generator nestgraphql {
 
 datasource db {
   provider   = "postgresql"
-  url        = "postgresql://nutri:nutri@localhost:3100/nutri"
+  url        = env("DATABASE_URL")
   extensions = [fuzzystrmatch, pg_trgm, pgvector(map: "vector")]
 }
 
