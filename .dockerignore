@@ -1,0 +1,11 @@
+# .dockerignore
+node_modules
+.pnpm-store
+npm-debug.log
+pnpm-debug.log
+dist
+.git
+.gitignore
+.env
+*.md
+.nx/cache

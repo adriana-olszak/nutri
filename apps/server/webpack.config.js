@@ -3,21 +3,29 @@ const { join } = require('path');
 
 module.exports = {
   output: {
-    path: join(__dirname, '../../dist/apps/server')
-  }, plugins: [new NxAppWebpackPlugin({
-    target: 'node',
-    compiler: 'tsc',
-    main: './src/main.ts',
-    tsConfig: './tsconfig.app.json',
-    assets: ['./src/assets'],
-    optimization: false,
-    outputHashing: 'none',
-    transformers: [{
-      'name': '@nestjs/swagger/plugin', 'options': {
-        'introspectComments': true
-      }
-    }, {
-      'name': '@nestjs/graphql/plugin'
-    }]
-  })]
+    path: join(__dirname, '../../dist/apps/server'),
+  },
+  plugins: [
+    new NxAppWebpackPlugin({
+      generatePackageJson: true,
+      target: 'node',
+      compiler: 'tsc',
+      main: './src/main.ts',
+      tsConfig: './tsconfig.app.json',
+      assets: ['./src/assets'],
+      optimization: false,
+      outputHashing: 'none',
+      transformers: [
+        {
+          name: '@nestjs/swagger/plugin',
+          options: {
+            introspectComments: true,
+          },
+        },
+        {
+          name: '@nestjs/graphql/plugin',
+        },
+      ],
+    }),
+  ],
 };

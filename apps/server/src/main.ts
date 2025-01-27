@@ -19,7 +19,7 @@ async function bootstrap() {
   app.use(express.json());
   app.use(cookieParser())
   app.enableCors({
-    origin: /^http?:\/\/localhost(:\d+)?$/,
+    origin: /^https?:\/\/(localhost|host\.docker\.internal)(:\d+)?$/,
     credentials: true
   });
   app.enableShutdownHooks();

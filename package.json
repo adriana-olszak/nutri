@@ -4,10 +4,6 @@
   "license": "MIT",
   "scripts": {
     "dev": "npx nx run-many -t serve",
-    "ml:install": "npx nx run ml:install",
-    "ml:app:run": "npx nx run ml:run",
-    "ml:worker:run": "npx nx run ml:worker",
-    "ml:worker:setup": "npx nx run ml:queue",
     "client:gql:codegen": "npx nx run client-gql:gen",
     "data:import:usda": "npx nx run data-import-usda:import",
     "data:import:otto": "npx nx run data-import:import:otto",
@@ -17,7 +13,9 @@
     "db:nutri:migrate": "npx nx run server-db-client:migrate",
     "db:nutri:client": "npx nx run server-db-client:generate-types",
     "db:nutri:dump": "./tools/dump-database.sh nutri postgres-nutri",
-    "db:nutri:tui": "harlequin -a postgres -h localhost -p 3100 -U nutri --password nutri -d nutri"
+    "db:nutri:tui": "harlequin -a postgres -h localhost -p 3100 -U nutri --password nutri -d nutri",
+    "docker:server:build": "docker build -t server:test -f deploy/dockerfiles/server/Dockerfile .",
+    "docker:server:run": "docker run -it --rm -p 3000:3000 --env-file .env -e REDIS_HOST=host.docker.internal -e DATABASE_URL=postgresql://nutri:nutri@host.docker.internal:3100/nutri -e SERVER_BASE_URL=http://host.docker.internal:3000 -e CLIENT_BASE_URL=http://host.docker.internal:4200 server:test -e LLM_BASE_URL=http://host.docker.internal:1234"
   },
   "private": true,
   "dependencies": {
