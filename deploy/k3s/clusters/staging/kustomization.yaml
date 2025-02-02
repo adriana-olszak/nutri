@@ -1,0 +1,7 @@
+bases:
+  - ../../base/server
+
+namespace: staging
+
+resources:
+  - namespace.yaml

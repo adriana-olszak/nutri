@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      containers:
+        - name: server
+          image: docker.io/library/server:latest # Full image name
+          imagePullPolicy: IfNotPresent # Don't try to pull from registry
+          ports:
+            - containerPort: 4100
+          envFrom:
+            - secretRef:
+                name: server-secrets # Reference to sealed secrets
+
+          env:
+            - name: DATABASE_URL
+              value: 'postgresql://nutri:nutri@host.docker.internal:3100/nutri'
+            - name: DATABASE_USER
+              value: nutri
+            - name: DATABASE_PASSWORD
+              value: nutri
+            - name: DATABASE_NAME
+              value: nutri
+            - name: DATABASE_PORT
+              value: '3100'
+            - name: REDIS_PORT
+              value: '3200'
+            - name: REDIS_HOST
+              value: host.docker.internal
+            - name: REDIS_PASSWORD
+              value: redis_docker
+            - name: REDIS_USERNAME
+              value: default
+            - name: LLM_BASE_URL
+              value: http://host.docker.internal:1234
+            - name: SERVER_APP_PORT
+              value: '3000'
+            - name: NODE_ENV
+              value: development
+            - name: OAUTH_GOOGLE_CLIENT_SECRET
+              value: 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
+
+              # This is not real secret, just for testing purposes, running in local environment
+            - name: OAUTH_GOOGLE_CLIENT_ID
+              value: 769688341651-bv8shhe9ebo92eund1kurktqs2b6e7c7.apps.googleusercontent.com
+            - name: JWT_EXPIRES_IN
+              value: '3600'
+              # This is not real secret, just for testing purposes, running in local environment
+            - name: AUTH_JWT_ACCESS_PUBLIC_KEY
+              value: "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEAgMThoGWT8pC/840PAwFdZDmcIvk\nyZUdiPaq7VWanFEyF610TXMylPsQvtEceqhb7qst3wz8NOBeluwIIAStbA==\n-----END PUBLIC KEY-----"
+
+              # This is not real secret, just for testing purposes, running in local environment
+            - name: AUTH_JWT_ACCESS_SECRET
+              value: "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIBQFyOAcxhTKc/Npu5BqefP8zYnpbnAlOdbekJs6rGEKoAoGCCqGSM49\nAwEHoUQDQgAEAgMThoGWT8pC/840PAwFdZDmcIvkyZUdiPaq7VWanFEyF610TXMy\nlPsQvtEceqhb7qst3wz8NOBeluwIIAStbA==\n-----END EC PRIVATE KEY-----"
+
+              # This is not real secret, just for testing purposes, running in local environment
+            - name: AUTH_JWT_REFRESH_SECRET
+              value: "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIBQFyOAcxhTKc/Npu5BqefP8zYnpbnAlOdbekJs6rGEKoAoGCCqGSM49\nAwEHoUQDQgAEAgMThoGWT8pC/840PAwFdZDmcIvkyZUdiPaq7VWanFEyF610TXMy\nlPsQvtEceqhb7qst3wz8NOBeluwIIAStbA==\n-----END EC PRIVATE KEY-----"
+            - name: AUTH_REMEMBER_ME_EXPIRES_IN
+              value: '2592000'
+            - name: BCRYPT_COST
+              value: '12'
+            - name: SERVER_BASE_URL
+              value: http://host.docker.internal:3000
+            - name: CLIENT_BASE_URL
+              value: http://host.docker.internal:4200
+            - name: PUBLIC_REGISTRATION
+              value: 'true'
+            - name: AUTH_JWT_REFRESH_EXPIRATION
+              value: '604800'
+            - name: AUTH_JWT_ACCESS_EXPIRATION
+              value: '1800'
