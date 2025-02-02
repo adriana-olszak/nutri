@@ -4,6 +4,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "npx nx run-many -t serve",
+    "docs:serve": "nx serve docs",
+    "docs:build": "nx build docs",
+    "docs:clean": "nx clean docs",
     "client:gql:codegen": "npx nx run client-gql:gen",
     "data:import:usda": "npx nx run data-import-usda:import",
     "data:import:otto": "npx nx run data-import:import:otto",
