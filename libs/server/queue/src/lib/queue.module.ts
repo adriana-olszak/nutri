@@ -2,6 +2,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigService } from '@nutri/server-config';
 import { ConfigModule } from '@nutri/server-config/config.module';
+import { RedisModule, RedisService } from '@nutri/server-redis';
 import { availableQueuesProvider } from './available-queues.provider';
 import { BullAdminService } from './bull-admin.service';
 import { BullDashboardService } from './bull-dashboard.service';
@@ -17,12 +18,14 @@ export class QueueModule {
       module: QueueModule,
       global: true,
       imports: [
+
+
         // Sets up the connection to redis as well as default configuration for job including connection
         BullModule.forRootAsync({
-          imports: [ConfigModule],
-          useFactory: (configService: ConfigService) => {
+          imports: [ConfigModule,RedisModule,],
+          useFactory: (configService: ConfigService, redisService: RedisService) => {
             return {
-              connection: configService.redisConfig,
+              connection: redisService.getClient(),
               defaultJobOptions: {
                 removeOnComplete: 500,
                 removeOnFail: false,
@@ -47,7 +50,7 @@ export class QueueModule {
               prefix: configService.redisBullPrefix,
             };
           },
-          inject: [ConfigService],
+          inject: [ConfigService, RedisService],
         }),
         BullModule.registerQueue(...queueConfigs),
       ],

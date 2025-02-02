@@ -15,7 +15,7 @@
     "db:nutri:dump": "./tools/dump-database.sh nutri postgres-nutri",
     "db:nutri:tui": "harlequin -a postgres -h localhost -p 3100 -U nutri --password nutri -d nutri",
     "docker:server:build": "docker build -t server:test -f deploy/dockerfiles/server/Dockerfile .",
-    "docker:server:run": "docker run -it --rm -p 3000:3000 --env-file .env -e REDIS_HOST=host.docker.internal -e DATABASE_URL=postgresql://nutri:nutri@host.docker.internal:3100/nutri -e SERVER_BASE_URL=http://host.docker.internal:3000 -e CLIENT_BASE_URL=http://host.docker.internal:4200 server:test -e LLM_BASE_URL=http://host.docker.internal:1234"
+    "docker:server:run": "docker run -it --rm -p 4100:4100 --env-file .env -e REDIS_HOST=host.docker.internal -e DATABASE_URL=postgresql://nutri:nutri@host.docker.internal:3100/nutri -e SERVER_BASE_URL=http://host.docker.internal:4100 -e CLIENT_BASE_URL=http://host.docker.internal:4200 server:test -e LLM_BASE_URL=http://host.docker.internal:1234"
   },
   "private": true,
   "dependencies": {
@@ -115,6 +115,7 @@
     "helmet": "^7.1.0",
     "hot-shots": "^10.0.0",
     "input-otp": "^1.2.4",
+    "ioredis": "^5.4.2",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.408.0",
@@ -122,6 +123,7 @@
     "mobx-persist-store": "^1.1.5",
     "mobx-react-lite": "^4.0.7",
     "nestjs-cls": "^4.5.0",
+    "nestjs-pino": "^4.3.0",
     "next-themes": "^0.3.0",
     "nodemailer": "^6.9.14",
     "passport": "^0.7.0",
@@ -129,6 +131,7 @@
     "passport-jwt": "^4.0.1",
     "phoenix": "^1.7.14",
     "pino": "^9.3.2",
+    "pino-loki": "^2.5.0",
     "pino-pretty": "^11.2.2",
     "prisma-class-generator": "^0.2.9",
     "prisma-pagination": "^0.2.3",

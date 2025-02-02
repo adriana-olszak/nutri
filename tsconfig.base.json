@@ -49,6 +49,7 @@
       "@nutri/server-ml": ["libs/server/ml/src/index.ts"],
       "@nutri/server-parse-recipe": ["libs/server/parse-recipe/src/index.ts"],
       "@nutri/server-queue": ["libs/server/queue/src/index.ts"],
+      "@nutri/server-redis": ["libs/server/redis/src/index.ts"],
       "@nutri/server-testing": ["libs/server/testing/src/index.ts"],
       "@nutri/server-utils": ["libs/server/utils/src/index.ts"],
       "@nutri/store": ["apps/client/src/store"],

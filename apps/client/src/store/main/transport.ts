@@ -29,7 +29,7 @@ export class Transport {
   constructor(auth: AuthMethods) {
     this.stream = createStreamClient({});
 
-    this.graphqlClient = new GraphQLClient('http://localhost:3000/graphql', { credentials: 'include' });
+    this.graphqlClient = new GraphQLClient('http://localhost:4100/graphql', { credentials: 'include' });
     this.auth = auth;
 
     this.socket = new Socket(

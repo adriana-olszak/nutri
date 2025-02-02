@@ -1,4 +1,4 @@
-import { AuthService, AuthResponse, PasswordChange, ResetPassword, LoginData } from '@nutri/client-auth';
+oimport { AuthService, AuthResponse, PasswordChange, ResetPassword, LoginData } from '@nutri/client-auth';
 import { getSdk } from '@nutri/client-gql';
 import { GraphQLClient } from 'graphql-request';
 
@@ -7,7 +7,7 @@ export class ClientAuthService implements AuthService {
   private graphqlClient: GraphQLClient;
 
   constructor() {
-    this.graphqlClient = new GraphQLClient('http://localhost:3000/graphql', { credentials: 'include' });
+    this.graphqlClient = new GraphQLClient('http://localhost:4100/graphql', { credentials: 'include' });
     this.client = getSdk(this.graphqlClient);
   }
 

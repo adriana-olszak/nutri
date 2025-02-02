@@ -133,6 +133,7 @@ export class ConfigService {
       port: this.configService.get('REDIS_PORT', { infer: true }),
       password: this.configService.get('REDIS_PASSWORD', { infer: true }),
       username: this.configService.get('REDIS_USERNAME', { infer: true }),
+      maxRetriesPerRequest: 0,
       // docker compose redis has TLS disabled
       ...(['test', 'development'].includes(process.env['NODE_ENV'] as string)
         ? {}
