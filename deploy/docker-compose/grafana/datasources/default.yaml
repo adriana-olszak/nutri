@@ -1,0 +1,38 @@
+apiVersion: 1
+
+datasources:
+  - name: loki
+    type: loki
+    uid: loki
+    access: proxy
+    url: http://host.docker.internal:3100
+  - name: tempo
+    type: tempo
+    uid: tempo
+    access: proxy
+    url: http://host.docker.internal:3200
+    editable: false
+    jsonData:
+      tracesToLogsV2:
+        datasourceUid: nutri_loki
+        spanStartTimeShift: '5m'
+        spanEndTimeShift: '-5m'
+        customQuery: true
+        query: '{filename="/var/log/grafana/grafana.log"} |="$${__span.traceId}"'
+  - name: prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://host.docker.internal:9090
+    basicAuth: true #username: admin, password: admin
+    basicAuthUser: admin
+    jsonData:
+      manageAlerts: true
+      alertmanagerUid: nutri_alertmanager
+      prometheusType: Prometheus #Cortex | Mimir | Prometheus | Thanos
+      prometheusVersion: 2.40.0
+      exemplarTraceIdDestinations:
+        - name: traceID
+          datasourceUid: nutri_tempo
+    secureJsonData:
+      basicAuthPassword: admin #https://grafana.com/docs/grafana/latest/administration/provisioning/#using-environment-variables

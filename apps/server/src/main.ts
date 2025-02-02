@@ -6,14 +6,15 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
-
+import { Logger as PinoLogger } from 'nestjs-pino';
 
 import { ConfigService } from '@nutri/server-config';
 import express from 'express';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule,  { bufferLogs: true });
+  app.useLogger(app.get(PinoLogger));
   const config: ConfigService = app.get(ConfigService);
 
   app.use(express.json());

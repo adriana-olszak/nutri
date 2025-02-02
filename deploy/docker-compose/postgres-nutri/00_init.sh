@@ -41,51 +41,9 @@ EOSQL
 }
 
 
-
-# Function to create Procrastinate schema
-create_procrastinate_schema() {
-    local database="$1"
-    echo "Creating Procrastinate schema in database: $database"
-
-    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" -d "$database" <<-EOSQL
-        DO
-        \$\$
-        BEGIN
-            IF NOT EXISTS (SELECT FROM pg_catalog.pg_namespace WHERE nspname = 'procrastinate') THEN
-                CREATE SCHEMA procrastinate;
-            END IF;
-        END
-        \$\$;
-
-        -- Grant usage on procrastinate schema to all existing roles
-        DO
-        \$\$
-        DECLARE
-            r record;
-        BEGIN
-            FOR r IN SELECT rolname FROM pg_roles WHERE rolcanlogin LOOP
-                EXECUTE format('GRANT USAGE ON SCHEMA procrastinate TO %I', r.rolname);
-                EXECUTE format('GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA procrastinate TO %I', r.rolname);
-                EXECUTE format('GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA procrastinate TO %I', r.rolname);
-            END LOOP;
-        END
-        \$\$;
-
-        -- Set default privileges for future tables and sequences in procrastinate schema
-        ALTER DEFAULT PRIVILEGES IN SCHEMA procrastinate
-        GRANT ALL PRIVILEGES ON TABLES TO PUBLIC;
-
-        ALTER DEFAULT PRIVILEGES IN SCHEMA procrastinate
-        GRANT ALL PRIVILEGES ON SEQUENCES TO PUBLIC;
-EOSQL
-}
-
 # Process SQL files for each database
 for db in "$POSTGRES_DB"; do
     echo "Processing database: $db"
-
-   # Create Procrastinate schema
-    create_procrastinate_schema "$db"
 
     for sql_file in /docker-entrypoint-initdb.d/"$db"/*.sql; do
         if [ -f "$sql_file" ]; then

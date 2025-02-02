@@ -34,7 +34,7 @@ FROM node:20-bullseye-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=4100
 
 # Copy necessary files (using the stage name "builder")
 COPY --from=builder /app/dist/apps/server ./dist
@@ -44,6 +44,6 @@ COPY --from=builder /app/package.json ./package.json
 # Copy Prisma files
 COPY --from=builder /app/libs/server/db-client/prisma ./prisma
 
-EXPOSE 3000
+EXPOSE 4100
 
 CMD ["node", "dist/main.js"]
