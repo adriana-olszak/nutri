@@ -1,4 +1,4 @@
-oimport { AuthService, AuthResponse, PasswordChange, ResetPassword, LoginData } from '@nutri/client-auth';
+import { AuthService, AuthResponse, PasswordChange, ResetPassword, LoginData } from '@nutri/client-auth';
 import { getSdk } from '@nutri/client-gql';
 import { GraphQLClient } from 'graphql-request';
 
