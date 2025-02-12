@@ -7,7 +7,9 @@ import { Job } from 'bullmq';
 import { IngredientMatchingService } from '../services/ingredient-matching.service';
 import { IngredientMatchJobDto } from './types';
 
-@Processor(QUEUE_NAMES.INGREDIENT_MATCH)
+@Processor(QUEUE_NAMES.INGREDIENT_MATCH, {
+  concurrency: 2,
+})
 export class MatchProcessor extends WorkerHost {
   logger = new Logger(MatchProcessor.name);
   constructor(

@@ -2,22 +2,21 @@ import { Injectable, Logger } from '@nestjs/common';
 import { StatsDService } from '@nutri/server-metrics';
 import { EMBEDDING_MODELS, EmbeddingService, LLMConfidence, LLMMatchResult, LLMService } from '@nutri/server-ml';
 import {
-  MatchFood,
-  MatchQuality,
-  MatchStatus,
-  MatchType
+    MatchFood,
+    MatchQuality,
+    MatchStatus,
+    MatchType
 } from '@prisma/client';
 
-import { FoodEmbeddingRepository } from '../repositories/food-embedding.repository';
-import { MatchRepository } from '../repositories/match.repository';
+import { FoodEmbeddingRepository, SimilarFood } from '@nutri/server-data-access-foods';
+import { MatchFoodsRepository, MatchRepository } from '@nutri/server-data-access-matching';
+import { RecipeIngredientsRepository } from '@nutri/server-data-access-recipes';
+import { MatchNotFoundException, ProcessingFailedException } from '../exceptions';
 import {
-  ErrorCodes,
-  IngredientMatchingError,
-  MatchQualityEvaluation,
-  ProcessMatchOptions,
-  ProcessMatchResult
+    MatchQualityEvaluation,
+    ProcessMatchOptions,
+    ProcessMatchResult
 } from '../types';
-import { SimilarFood } from '../types/embeddings.types';
 
 @Injectable()
 export class IngredientMatchingService {
@@ -33,9 +32,12 @@ export class IngredientMatchingService {
   constructor(
     private readonly embeddingService: EmbeddingService,
     private readonly llmService: LLMService,
-    private readonly matchRepository: MatchRepository,
-    private readonly foodEmbeddingRepository: FoodEmbeddingRepository,
     private readonly metrics: StatsDService,
+    // repositories
+    private readonly matchRepository: MatchRepository,
+    private readonly matchFoodRepository: MatchFoodsRepository,
+    private readonly foodEmbeddingRepository: FoodEmbeddingRepository,
+    private readonly recipeIngredientsRepository: RecipeIngredientsRepository,
 
   ) {}
 
@@ -50,15 +52,17 @@ export class IngredientMatchingService {
           matchId,
           options,
         });
-      const match = await this.matchRepository.getMatchById(matchId);
+      const match = await this.matchRepository.findById(matchId)
+
+      if(!match) {
+        throw new MatchNotFoundException(matchId)
+      }
 
       // Track ingredient text length for analysis
       this.metrics.histogram('ingredient_matching.text_length', match.ingredientText.length);
 
-      await this.matchRepository.updateMatchStatus({
-        id: matchId,
-        status: MatchStatus.AUTO_MATCHING_IN_PROGRESS,
-      });
+      await this.matchRepository.updateStatus(matchId,  MatchStatus.AUTO_MATCHING_IN_PROGRESS,
+      );
 
       // 1. Generate embedding and find candidates
       const embedding = await this.embeddingService.generateEmbedding(
@@ -122,7 +126,7 @@ export class IngredientMatchingService {
     candidates: SimilarFood[],
   ): Promise<ProcessMatchResult> {
     const {confidence, quality: matchQuality } = this.evaluateMatchQuality(this.getLLMConfidenceScore(llmResult.confidence))
-    const [primaryMatch] = await this.matchRepository.createFoodMatches([{
+    const primaryMatch =  await this.matchFoodRepository.create({
       matchId,
       foodId: llmResult.foodId,
       rank: 1,
@@ -133,14 +137,14 @@ export class IngredientMatchingService {
         llmReasoning: llmResult.reasoning,
         originalScore: llmResult.confidence,
       },
-    }]);
+    });
 
     if (this.isHighQualityMatch(primaryMatch)) {
       await this.applyAutoMatch(matchId, primaryMatch);
-      await this.matchRepository.updateMatchStatus({
-        id: matchId,
-        status: MatchStatus.AUTO_APPROVED,
-      });
+      await this.matchRepository.updateStatus(
+        matchId,
+ MatchStatus.AUTO_APPROVED,
+      );
 
       return {
         matchId,
@@ -151,10 +155,9 @@ export class IngredientMatchingService {
 
     // If LLM match isn't high quality, store top candidates for manual review
     await this.storeTopCandidatesForReview(matchId, candidates);
-    await this.matchRepository.updateMatchStatus({
-      id: matchId,
-      status: MatchStatus.PENDING_REVIEW,
-    });
+    await this.matchRepository.updateStatus( matchId,
+     MatchStatus.PENDING_REVIEW,
+    );
 
     return {
       matchId,
@@ -182,7 +185,7 @@ export class IngredientMatchingService {
         },
       }));
 
-    await this.matchRepository.createFoodMatches(topCandidates);
+    await this.matchFoodRepository.createMany(topCandidates);
   }
 
   private determineMatchQuality(
@@ -209,10 +212,9 @@ export class IngredientMatchingService {
 
   private async handleNoMatches(matchId: string): Promise<void> {
     this.logger.warn(`No matches found for match ${matchId}`);
-    await this.matchRepository.updateMatchStatus({
-      id: matchId,
-      status: MatchStatus.PENDING_REVIEW,
-    });
+    await this.matchRepository.updateStatus(matchId,
+     MatchStatus.PENDING_REVIEW,
+    );
   }
 
   private async handleError(
@@ -221,16 +223,11 @@ export class IngredientMatchingService {
   ): Promise<ProcessMatchResult> {
     this.logger.error(`Error processing match ${matchId}`, error);
 
-    await this.matchRepository.updateMatchStatus({
-      id: matchId,
-      status: MatchStatus.AUTO_MATCHING_FAILED,
-    });
-
-    throw new IngredientMatchingError(
-      ErrorCodes.PROCESSING_FAILED,
-      `Failed to process match ${matchId}`,
-      error,
+    await this.matchRepository.updateStatus( matchId,
+     MatchStatus.AUTO_MATCHING_FAILED,
     );
+
+    throw new ProcessingFailedException(`Failed to process match ${matchId}`,)
   }
 
   private getLLMConfidenceScore(confidence: LLMConfidence): number {
@@ -262,12 +259,12 @@ export class IngredientMatchingService {
     matchId: string,
     foodMatch: MatchFood,
   ): Promise<void> {
-    await this.matchRepository.updateSelectedFoodMatch(
+    await this.matchRepository.setSelectedFoodMatch(
       matchId,
       foodMatch.id,
     );
 
-    await this.matchRepository.updateRecipeIngredientsFoodId(
+    await this.recipeIngredientsRepository.setFoodId(
       matchId,
       foodMatch.foodId,
     );

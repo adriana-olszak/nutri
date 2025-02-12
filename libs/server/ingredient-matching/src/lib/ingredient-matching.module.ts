@@ -7,11 +7,11 @@ import { QUEUE_NAMES } from '@nutri/server-queue';
 import { MatchProcessor } from './queue/match.processor';
 import { MatchScheduler } from './queue/match.scheduler';
 
+import { DataAccessFoodsModule, FoodEmbeddingRepository } from '@nutri/server-data-access-foods';
+import { DataAccessMatchingModule } from '@nutri/server-data-access-matching';
+import { DataAccessRecipesModule } from '@nutri/server-data-access-recipes';
 import { DbClientModule } from '@nutri/server-db-client';
-import { MatchController } from './controllers/match.controller';
-import { FoodEmbeddingRepository } from './repositories/food-embedding.repository';
-import { FoodRepository } from './repositories/food.repository';
-import { MatchRepository } from './repositories/match.repository';
+import { IngredientMatchingController } from './controllers/ingredient-matching.controller';
 import { MatchResolver } from './resolvers/match.resolver';
 import { IngredientMatchingService } from './services/ingredient-matching.service';
 
@@ -21,18 +21,19 @@ import { IngredientMatchingService } from './services/ingredient-matching.servic
     BullModule.registerQueue({
       name: QUEUE_NAMES.INGREDIENT_MATCH,
     }),
-    DbClientModule
+    DbClientModule,
+    DataAccessFoodsModule,
+    DataAccessRecipesModule,
+    DataAccessMatchingModule
   ],
   providers: [
     IngredientMatchingService,
     FoodEmbeddingRepository,
-    MatchRepository,
-    FoodRepository,
     MatchProcessor,
     MatchScheduler,
     MatchResolver,
   ],
-  controllers: [MatchController],
+  controllers: [IngredientMatchingController],
   exports: [
     IngredientMatchingService,
     MatchScheduler,
