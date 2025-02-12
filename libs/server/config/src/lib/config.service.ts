@@ -213,7 +213,7 @@ export class ConfigService {
       model: 'llama-3.2-3b-instruct',
       baseUrl: this.configService.get('LLM_BASE_URL', { infer: true }),
       apiKey: undefined,
-      maxRetries: 4,
+      maxRetries: 1,
       timeout: 1000 * 60 * 5,
     }
   }

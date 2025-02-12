@@ -4,8 +4,7 @@ import { StatsDService } from '@nutri/server-metrics';
 import axios, { AxiosError } from 'axios';
 import { plainToClass } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
-import { BEST_MATCH_SCHEMA, BestMatch, INGREDIENT_ANALYSIS_SCHEMA, IngredientAnalysis } from '../types/llm.types';
-
+import { BEST_MATCH_SCHEMA, BestMatch } from '../types/llm.types';
 
 interface CompletionRequest {
   messages: Array<{
@@ -33,63 +32,17 @@ export class LLMService {
   constructor(
     private readonly config: ConfigService,
     private readonly metrics: StatsDService,
-  ) {
-
-  }
-
-  async analyzeIngredient(ingredient: string): Promise<IngredientAnalysis> {
-      this.logger.debug(`Analyzing ingredient: ${ingredient}`);
-
-      try {
-        const result = await this.complete({
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a food ingredient expert. Analyze ingredients and provide structured information.',
-            },
-            {
-              role: 'user',
-              content: `Analyze this ingredient: "${ingredient}"`,
-            },
-          ],
-          response_format: {
-            type: 'json_schema',
-            json_schema: INGREDIENT_ANALYSIS_SCHEMA,
-          },
-        });
-
-        const analysis = plainToClass(IngredientAnalysis, JSON.parse(result));
-        await validateOrReject(analysis);
-
-        this.logger.debug('Successfully analyzed ingredient', {
-          ingredient,
-          analysis,
-        });
-
-        return analysis;
-      } catch (error) {
-        this.logger.error(
-          `Failed to analyze ingredient: ${ingredient}`,
-          error instanceof Error ? error.stack : error,
-        );
-        throw this.handleLLMError(error);
-      }
-    }
-
-    async findBestMatch(
-      ingredient: string,
-      candidates: Array<{ id: string; description: string }>,
-    ): Promise<BestMatch & { foodId: string }> {
-      this.logger.debug(`Finding best match for: ${ingredient}`, {
-        candidateCount: candidates.length,
-      });
-
-      try {
-        const result = await this.complete({
-          messages: [
-            {
-                 role: 'system',
-                 content: `You are a food matching expert specialized in matching recipe ingredients to standardized food items.
+  ) {}
+  // TODO move out of LLM service
+  async findBestMatch(
+    ingredient: string,
+    candidates: Array<{ id: string; description: string }>,
+  ): Promise<BestMatch & { foodId: string }> {
+    const match = await this.completeWithValidation({
+      messages: [
+        {
+          role: 'system',
+          content: `You are a food matching expert specialized in matching recipe ingredients to standardized food items.
                  Your task is to find the most appropriate match from a provided list of food items.
 
                  CRITICAL RULES:
@@ -124,15 +77,15 @@ export class LLMService {
                    "reasoning": "Basic form of the requested ingredient, preparation method difference can be noted but doesn't affect matching"
                  }
                  (NOT "tomato sauce" or "tomato soup" as they are processed products)`,
-            },
-            {
-              role: 'user',
-              content: `Find the best match for this ingredient from the following list.
+        },
+        {
+          role: 'user',
+          content: `Find the best match for this ingredient from the following list.
 
               Ingredient to match: "${ingredient}"
 
               Available matches (copy the exact text for your choice):
-              ${candidates.map(c => `- ${c.description}`).join('\n')}
+              ${candidates.map((c) => `- ${c.description}`).join('\n')}
 
               Remember:
               1. Choose basic/pure forms of ingredients over mixed products
@@ -145,117 +98,149 @@ export class LLMService {
               2. If no direct match, look for closest basic ingredient form
               3. Avoid choosing products where the ingredient is just a component
               4. Copy the exact text of your chosen match`,
-            },
-          ],
-          response_format: {
-            type: 'json_schema',
-            json_schema: BEST_MATCH_SCHEMA,
-          },
-        });
+        },
+      ],
+      responseSchema: BEST_MATCH_SCHEMA,
+      responseClass: BestMatch,
+      context: 'find-best-match',
+    });
 
-        const match = plainToClass(BestMatch, JSON.parse(result));
-        await validateOrReject(match);
+    const matchedCandidate = candidates.find(
+      (c) => c.description === match.bestMatch,
+    );
 
-        const matchedCandidate = candidates.find(
-          c => c.description === match.bestMatch,
-        );
-
-        if (!matchedCandidate) {
-          throw new Error(
-            'LLM returned a match that is not in the candidate list',
-          );
-        }
-
-        const finalResult = {
-          ...match,
-          foodId: matchedCandidate.id,
-        };
-
-        this.logger.debug('Successfully found best match', {
-          ingredient,
-          match: finalResult,
-        });
-
-        return finalResult;
-
-      } catch (error) {
-        this.logger.error(
-          `Failed to find match for: ${ingredient}`,
-          error instanceof Error ? error.stack : error,
-        );
-        throw this.handleLLMError(error);
-      }
+    if (!matchedCandidate) {
+      throw new Error('LLM returned a match that is not in the candidate list');
     }
 
-    private async complete(request: CompletionRequest & {
+    const finalResult = {
+      ...match,
+      foodId: matchedCandidate.id,
+    };
+
+    this.logger.debug('Successfully found best match', {
+      ingredient,
+      match: finalResult,
+    });
+
+    return finalResult;
+  }
+
+  public async completeWithValidation<T extends object>(params: {
+    messages: CompletionRequest['messages'];
+    responseSchema: { schema: Record<string, unknown> };
+    responseClass: new () => T;
+    context: string;
+  }): Promise<T> {
+    this.logger.log(`Starting ${params.context}`);
+    console.log('params', params);
+    try {
+      const result = await this.complete({
+        messages: params.messages,
+        response_format: {
+          type: 'json_schema',
+          json_schema: params.responseSchema,
+        },
+      });
+
+      const parsed = plainToClass(params.responseClass, JSON.parse(result));
+      await validateOrReject(parsed);
+
+      this.logger.log(`Successfully completed ${params.context}`, {
+        result: parsed,
+      });
+
+      return parsed;
+    } catch (e) {
+      const error = this.handleLLMError(e);
+      this.logger.error(
+        error,
+        `Failed to complete ${params.context}`,
+        error instanceof Error ? error.stack : error,
+      );
+      throw error;
+    }
+  }
+
+  private async complete(
+    request: CompletionRequest & {
       response_format?: {
         type: 'json_schema';
-        json_schema: unknown;
+        json_schema: { schema: Record<string, unknown> };
       };
-    }): Promise<string> {
-      let retries = 0;
+    },
+  ): Promise<string> {
+    let retries = 0;
 
-      while (retries < this.config.llmConfig.maxRetries) {
-        try {
-          const params = {
-            temperature: 0.2,
-            max_tokens: 500,
-            model: this.config.llmConfig.model,
-          }
+    while (retries < this.config.llmConfig.maxRetries) {
+      try {
+        const params = {
+          temperature: request.temperature || 0.2,
+          max_tokens: request.max_tokens || 8000,
+          model: this.config.llmConfig.model,
+        };
 
-          this.logger.debug('Sending LLM request', {
-            attempt: retries + 1,
-            messageCount: request.messages.length,
-            hasJsonSchema: !!request.response_format,
-            ...params
-          });
-          const response = await axios.post<CompletionResponse>(
-            `${this.config.llmConfig.baseUrl}/v1/chat/completions`,
-            {
-              ...request,
-              ...params
-            },
-            {
-              headers: this.config.llmConfig.apiKey ? {
-                'Authorization': `Bearer ${this.config.llmConfig.apiKey}`,
-              } : undefined,
-              timeout: this.config.llmConfig.timeout,
-            },
-          );
+        this.logger.log({
+          message: 'Sending LLM request',
+          attempt: retries + 1,
+          messageCount: request.messages.length,
+          hasJsonSchema: !!request.response_format,
+          ...params,
+        });
 
-          return response.data.choices[0].message.content;
-        } catch (error) {
-          retries++;
-          const isLastRetry = retries === this.config.llmConfig.maxRetries;
+        console.log('right be fore send', {
+          ...params,
+          ...request,
+        });
+        const response = await axios.post<CompletionResponse>(
+          `${this.config.llmConfig.baseUrl}/v1/chat/completions`,
+          {
+            ...params,
+            ...request,
+          },
+          {
+            headers: this.config.llmConfig.apiKey
+              ? {
+                  Authorization: `Bearer ${this.config.llmConfig.apiKey}`,
+                }
+              : undefined,
+            timeout: this.config.llmConfig.timeout,
+          },
+        );
 
-          this.logger.error(
-            `LLM request failed (attempt ${retries}/${this.config.llmConfig.maxRetries})`,
-            error instanceof AxiosError ? {
-              status: error.response?.status,
-              data: error.response?.data,
-            } : error,
-          );
+        return response.data.choices[0].message.content;
+      } catch (error) {
+        retries++;
+        const isLastRetry = retries === this.config.llmConfig.maxRetries;
 
-          if (isLastRetry) {
-            throw error;
-          }
+        this.logger.error(
+          error instanceof AxiosError
+            ? {
+                status: error.response?.status,
+                data: error.response?.data,
+                message: `LLM request failed (attempt ${retries}/${this.config.llmConfig.maxRetries})`,
+              }
+            : error,
+        );
 
-          await new Promise(resolve =>
-            setTimeout(resolve, 1000 * retries)
-          );
+        if (isLastRetry) {
+          throw error;
         }
-      }
 
-      throw new Error('Failed to complete LLM request');
+        await new Promise((resolve) => setTimeout(resolve, 1000 * retries));
+      }
     }
 
-    private handleLLMError(error: unknown): Error {
-      if (error instanceof SyntaxError) {
-        return new Error('LLM returned invalid JSON response');
-      }
-      if (error instanceof AxiosError) {
-        return new Error(`LLM request failed: ${error.message}`);
-      }
-      return error instanceof Error ? error : new Error('Unknown LLM error');
+    throw new Error('Failed to complete LLM request');
+  }
+
+  private handleLLMError(error: unknown): Error {
+    if (error instanceof SyntaxError) {
+      return new Error('LLM returned invalid JSON response');
     }
+    if (error instanceof AxiosError) {
+      return new Error(`LLM request failed: ${error.message}`);
+    }
+    return error instanceof Error ? error : new Error('Unknown LLM error');
+  }
 }
