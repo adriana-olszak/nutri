@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../dist/tools",
+    "rootDir": ".",
+    "module": "commonjs",
+    "target": "es2020",
+    "esModuleInterop": true,
+    "types": ["node"],
+    "lib": ["es2021"]
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
