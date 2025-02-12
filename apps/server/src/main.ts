@@ -11,6 +11,7 @@ import { Logger as PinoLogger } from 'nestjs-pino';
 import { ConfigService } from '@nutri/server-config';
 import express from 'express';
 import { AppModule } from './app/app.module';
+import { DatabaseExceptionFilter } from './app/filters/database-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule,  { bufferLogs: true });
@@ -24,13 +25,14 @@ async function bootstrap() {
     credentials: true
   });
   app.enableShutdownHooks();
+  app.useGlobalFilters(new DatabaseExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix(config.globalPrefix);
   setupSwagger(app);
 
   await app.listen(config.port());
   Logger.log(
-    `🚀 Application is running on: http://localhost:${config.port()}/${config.globalPrefix}`
+    `🚀 Application is running on: http://localhost:${config.port()}/${config.globalPrefix}, swagger on  http://localhost:${config.port()}/${config.globalPrefix}/swagger`
   );
 }
 
@@ -41,7 +43,7 @@ function setupSwagger(app) {
     .setVersion('0.0.1')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('swagger', app, document);
+  SwaggerModule.setup('api', app, document);
 }
 
 bootstrap();

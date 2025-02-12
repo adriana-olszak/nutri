@@ -1,17 +1,17 @@
 import {
-  Injectable,
-  UnauthorizedException,
-  Logger,
-  NotFoundException
+    Injectable,
+    Logger,
+    NotFoundException,
+    UnauthorizedException
 } from '@nestjs/common';
-import {
-  PrismaService,
-  PrismaTransactionalClient
-} from '@nutri/server-db-client';
 import { JwtService } from '@nestjs/jwt';
-import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nutri/server-config';
-import { ErrorHandler } from '@nutri/server-utils';
+import {
+    PrismaService,
+    PrismaTransactionalClient
+} from '@nutri/server-db-client';
+import { ErrorHandler } from '@nutri/server-shared';
+import { v4 as uuidv4 } from 'uuid';
 
 type GenerateTokenParams = {
   userId: string;

@@ -1,8 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '@nutri/server-db-client';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nutri/server-config';
-import { ErrorHandler } from '@nutri/server-utils';
+import { ErrorHandler } from '@nutri/server-shared';
 
 type GenerateTokenParams = {
   user: {

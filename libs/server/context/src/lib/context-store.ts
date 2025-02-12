@@ -1,9 +1,11 @@
+import { PrismaClient } from '@prisma/client';
 import { ClsStore } from 'nestjs-cls';
 
 export enum CLS_KEYS {
   MODE = 'MODE',
   USER_ID = 'USER_ID',
   JOB = 'JOB',
+  TX = 'TX',
 }
 
 export interface ContextStore extends ClsStore {
@@ -16,6 +18,7 @@ export interface ContextStore extends ClsStore {
     attemptsMade: number;
     data: unknown;
   };
+    [CLS_KEYS.TX]?: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
 }
 
 // Helper type to get only the keys we've added to ContextStore

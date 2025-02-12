@@ -1,21 +1,21 @@
 import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  UnauthorizedException
+    BadRequestException,
+    Injectable,
+    Logger,
+    UnauthorizedException
 } from '@nestjs/common';
-import * as crypto from 'crypto';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '@nutri/server-db-client';
-import { TokenBlacklistService } from './token-blacklist.service';
-import { SessionService } from './session.service';
-import { AuthAuditLogService } from './auth-audit-log.service';
-import { RefreshTokenService } from './refresh-token.service';
-import { ErrorHandler } from '@nutri/server-utils';
-import { AccessTokenService } from './access-token.service';
-import { AuthSession } from './interfaces/auth-session';
 import { ConfigService } from '@nutri/server-config';
+import { PrismaService } from '@nutri/server-db-client';
+import { ErrorHandler } from '@nutri/server-shared';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
+import { AccessTokenService } from './access-token.service';
+import { AuthAuditLogService } from './auth-audit-log.service';
+import { AuthSession } from './interfaces/auth-session';
+import { RefreshTokenService } from './refresh-token.service';
+import { SessionService } from './session.service';
+import { TokenBlacklistService } from './token-blacklist.service';
 
 @Injectable()
 export class AuthService {

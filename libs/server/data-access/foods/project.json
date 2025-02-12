@@ -1,0 +1,9 @@
+{
+  "name": "server-data-access-foods",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/server/data-access/foods/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project server-data-access-foods --web",
+  "targets": {}
+}

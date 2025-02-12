@@ -7,7 +7,12 @@ import { ConfigModule } from '@nutri/server-config/config.module';
 import { ContextModule } from '@nutri/server-context';
 import { IngredientMatchingModule } from '@nutri/server-ingredient-matching';
 import { MetricsModule } from '@nutri/server-metrics';
-import { BullDashboardService, QUEUE_NAMES, QueueModule } from '@nutri/server-queue';
+import {
+    BullDashboardService,
+    QUEUE_NAMES,
+    QueueModule,
+} from '@nutri/server-queue';
+import { RecipeImportModule } from '@nutri/server-recipe-import';
 import { LoggerModule } from 'nestjs-pino';
 import { GraphqlModule } from './graphql/graphql.module';
 import { FoodModule } from './modules/food/food.module';
@@ -18,31 +23,34 @@ import { QuestionnaireModule } from './modules/questionnaire/questionnaire.modul
 import { RecipeModule } from './modules/recipe/recipe.module';
 import { TableViewDefinitionModule } from './modules/table-view-definition/table-view-definition.module';
 
-
 @Module({
   imports: [
     LoggerModule.forRoot({
       pinoHttp: {
-          transport: {
-            targets: [
-              // send logs to stdout
-              {
-                target: 'pino/file',
-                options: { destination: 1 }
+        transport: {
+          targets: [
+            // send logs to stdout
+            // TODO: remove this target in production
+            {
+              target: 'pino-pretty',
+              options: {
+                destination: 1,
+                colorize: true,
               },
-              // send logs to loki
-              {
-                target: "pino-loki",
-                options: {
-                  batching: true,
-                  interval: 5,
-                  host: 'http://localhost:3100',
-                }
-              }
-            ]
-          },
-          redact: ['req.headers.cookie', 'req.headers.authorization'],
+            },
+            // send logs to loki
+            {
+              target: 'pino-loki',
+              options: {
+                batching: true,
+                interval: 5,
+                host: 'http://localhost:3100',
+              },
+            },
+          ],
         },
+        redact: ['req.headers.cookie', 'req.headers.authorization'],
+      },
     }),
     ContextModule.register(),
     MetricsModule.forRoot(),
@@ -61,6 +69,7 @@ import { TableViewDefinitionModule } from './modules/table-view-definition/table
     NutritionModule,
     ManualReviewModule,
     TableViewDefinitionModule,
+    RecipeImportModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -72,7 +81,7 @@ export class AppModule implements NestModule {
 
     this.bullDashboardService.createDashboard(serverAdapter);
 
-    serverAdapter.setBasePath('/management');
+    serverAdapter.setBasePath('/api/management');
     consumer.apply(router).forRoutes('/management');
   }
 }
