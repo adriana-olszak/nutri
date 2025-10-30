@@ -321,11 +321,9 @@ model Recipe {
   updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
 
   instructions RecipeInstructions[]
-  parts        RecipePart[]
   ingredients  RecipeIngredient[]
-  categories   RecipeCategory[]
+  parts        RecipePart[]
   images       RecipeImage[]
-  seasons      Season[]
   tags         Tag[]
 
   @@map("recipes")
@@ -345,17 +343,6 @@ model RecipeImage {
 
   @@index([recipeId])
   @@map("recipe_images")
-}
-
-model Season {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-
-  recipes Recipe[]
-
-  @@map("recipe_seasons")
 }
 
 model Tag {
@@ -486,13 +473,6 @@ model MatchManualReview {
   @@map("match_manual_reviews")
 }
 
-model RecipeCategory {
-  id      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name    String   @unique
-  recipes Recipe[]
-
-  @@map("recipe_categories")
-}
 
 model TableViewDefinition {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

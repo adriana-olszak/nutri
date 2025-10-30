@@ -13,6 +13,7 @@ import {
     QueueModule,
 } from '@nutri/server-queue';
 import { RecipeImportModule } from '@nutri/server-recipe-import';
+import { RecipeManagementModule } from '@nutri/server-recipe-management';
 import { LoggerModule } from 'nestjs-pino';
 import { GraphqlModule } from './graphql/graphql.module';
 import { FoodModule } from './modules/food/food.module';
@@ -70,6 +71,7 @@ import { TableViewDefinitionModule } from './modules/table-view-definition/table
     ManualReviewModule,
     TableViewDefinitionModule,
     RecipeImportModule,
+    RecipeManagementModule,
   ],
 })
 export class AppModule implements NestModule {

@@ -1,19 +1,17 @@
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { PaginationArgs } from '../../../graphql/args/pagination.args';
-import { RecipePaginatedModel } from '../../../graphql/models/recipe-paginated.model';
-import { RecipeService } from '../recipe.service';
-import { RecipeDataLoader } from '../recipe.data-loader';
-import { Recipe } from '../../../graphql/models/recipe.model';
-import { RecipeOrderByWithRelationInput } from '../../../graphql/inputs/recipe-order-by-with-relation.input';
 import { CreateOneRecipeArgs } from '../../../graphql/args/create-one-recipe.args';
+import { PaginationArgs } from '../../../graphql/args/pagination.args';
 import { UpdateOneRecipeArgs } from '../../../graphql/args/update-one-recipe.args';
-import { RecipePart } from '../../../graphql/models/recipe-part.model';
-import { RecipeIngredient } from '../../../graphql/models/recipe-ingredient.model';
-import { RecipeCategory } from '../../../graphql/models/recipe-category.model';
-import { RecipeImage } from '../../../graphql/models/recipe-image.model';
-import { Season } from '../../../graphql/models/season.model';
-import { Tag } from '../../../graphql/models/tag.model';
 import { RecipeFilterInput } from '../../../graphql/filters/recipes/recipe-filter.input';
+import { RecipeOrderByWithRelationInput } from '../../../graphql/inputs/recipe-order-by-with-relation.input';
+import { RecipeImage } from '../../../graphql/models/recipe-image.model';
+import { RecipeIngredient } from '../../../graphql/models/recipe-ingredient.model';
+import { RecipePaginatedModel } from '../../../graphql/models/recipe-paginated.model';
+import { RecipePart } from '../../../graphql/models/recipe-part.model';
+import { Recipe } from '../../../graphql/models/recipe.model';
+import { Tag } from '../../../graphql/models/tag.model';
+import { RecipeDataLoader } from '../recipe.data-loader';
+import { RecipeService } from '../recipe.service';
 
 @Resolver(() => Recipe)
 export class RecipeResolver {
@@ -65,20 +63,9 @@ export class RecipeResolver {
     return this.recipeDataLoader.batchIngredients.load(recipe.id);
   }
 
-  @ResolveField(() => [RecipeCategory])
-  async categories(@Parent() recipe: Recipe): Promise<RecipeCategory[]> {
-    return await this.recipeDataLoader.batchCategories.load(recipe.id);
-  }
-
   @ResolveField(() => [RecipeImage])
   async images(@Parent() recipe: Recipe): Promise<RecipeImage[]> {
     return await this.recipeDataLoader.batchImages.load(recipe.id);
-
-  }
-
-  @ResolveField(() => [Season])
-  async seasons(@Parent() recipe: Recipe): Promise<Season[]> {
-    return await this.recipeDataLoader.batchSeasons.load(recipe.id);
 
   }
 

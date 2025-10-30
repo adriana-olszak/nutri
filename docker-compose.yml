@@ -1,4 +1,3 @@
-version: '3.7'
 services:
   postgres-nutri:
     container_name: postgres-nutri
@@ -130,6 +129,15 @@ services:
     volumes:
       - ./deploy/docker-compose/prometheus:/etc/prometheus
       - prom_data:/prometheus
+
+  docs:
+    build:
+      context: .
+      dockerfile: deploy/dockerfiles/docs/Dockerfile
+    ports:
+      - '${DOCS_PORT:-4666}:80'
+    volumes:
+      - ./apps/docs:/apps/docs
 
 networks:
   monitoring:

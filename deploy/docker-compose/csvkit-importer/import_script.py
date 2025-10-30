@@ -40,6 +40,30 @@ def wait_for_postgres(db_name):
             time.sleep(1)
 
 
+def schema_exists(schema_name):
+    """Check if a schema already exists in the database"""
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS
+        )
+        conn.autocommit = True
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT COUNT(*) FROM information_schema.schemata
+            WHERE schema_name = %s
+        """, (schema_name,))
+
+        result = cursor.fetchone()
+        exists = result is not None and result[0] > 0
+
+        cursor.close()
+        conn.close()
+        return exists
+    except Exception as e:
+        print(f"Error checking if schema {schema_name} exists: {e}")
+        return False
+
 def create_schema_if_not_exists(schema_name):
     try:
         conn = psycopg2.connect(
@@ -74,6 +98,8 @@ def import_csv_file(schema_name, file_path, table_name):
         schema_name,
         "--tables",
         table_name,
+        "--chunk-size",
+        "10000",  # Adjust this value based on your data size
         "-e",
         encoding,  # Specify the detected encoding
         file_path,
@@ -119,6 +145,11 @@ def import_files(schema_name, dir_path):
 
     if not should_load:
       return
+
+    # Check if schema already exists and has data
+    if schema_exists(schema_name):
+        print(f"Schema {schema_name} already exists. Skipping import.")
+        return
 
     create_schema_if_not_exists(schema_name)
 

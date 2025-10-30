@@ -1,0 +1,35 @@
+{
+  "name": "client-rest",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/client/rest/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "fetch-yaml": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/fetch-yaml.js",
+        "cwd": "libs/client/rest"
+      }
+    },
+    "gen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx orval --config orval.config.js",
+        "cwd": "libs/client/rest"
+      },
+      "dependsOn": ["fetch-yaml"]
+    },
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/client/rest",
+        "main": "libs/client/rest/src/index.ts",
+        "tsConfig": "libs/client/rest/tsconfig.lib.json",
+        "assets": ["libs/client/rest/*.md"]
+      },
+      "dependsOn": ["gen"]
+    }
+  }
+}

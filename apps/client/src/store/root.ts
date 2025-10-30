@@ -1,14 +1,14 @@
 import localforage from 'localforage';
-import { when, makeAutoObservable } from 'mobx';
+import { makeAutoObservable, when } from 'mobx';
 import { configurePersistable } from 'mobx-persist-store';
 
-import { UIStore } from './ui/UI.store';
+import { IngredientsStore } from './ingredients/Ingredients.store';
 import { Transport } from './main/transport';
-import {RecipesStore} from "@nutri/store/recipes/Recipes.store";
-import {IngredientsStore} from "@nutri/store/ingredients/Ingredients.store";
-import {SurveysStore} from "@nutri/store/surveys/Surveys.store";
-import { MatchesStore } from '@nutri/store/manual-reviews/Matches.store';
-import { TableViewsStore } from '@nutri/store/tableViews/TableViews.store';
+import { MatchesStore } from './manual-reviews/Matches.store';
+import { RecipesStore } from './recipes/Recipes.store';
+import { SurveysStore } from './surveys/Surveys.store';
+import { TableViewsStore } from './tableViews/TableViews.store';
+import { UIStore } from './ui/UI.store';
 
 localforage.config({
   driver: localforage.INDEXEDDB,
@@ -26,26 +26,27 @@ configurePersistable({
 
 export class RootStore {
   isAuthenticated = false;
+  isBootstrapping = false;
+  isBootstrapped = false;
+
   ui: UIStore;
   tableViews: TableViewsStore;
   recipes: RecipesStore;
   ingredients: IngredientsStore;
   surveys: SurveysStore;
   matches: MatchesStore;
-  // manualReviews: ManualReviewsStore;
 
   constructor(private transport: Transport, isAuthenticated: boolean) {
     makeAutoObservable(this);
 
     this.ui = new UIStore();
     this.isAuthenticated = isAuthenticated;
-    this.tableViews = new TableViewsStore(this, transport);
+    this.tableViews = new TableViewsStore();
     this.recipes = new RecipesStore(this, transport);
     this.ingredients = new IngredientsStore(this, transport);
     this.surveys = new SurveysStore(this, transport);
     this.matches = new MatchesStore(this, transport);
-    // this.manualReviews = new ManualReviewsStore(this, transport);
-    console.log(isAuthenticated)
+
     when(
       () => this.isAuthenticated,
       async () => {
@@ -55,20 +56,22 @@ export class RootStore {
   }
 
   async bootstrap() {
-    await Promise.all([
-      this.tableViews.bootstrap(),
-      this.recipes.bootstrap(),
-      this.ingredients.bootstrap(),
-      this.surveys.bootstrap(),
-      this.matches.bootstrap(),
-    ]);
-  }
+    if (this.isBootstrapping || this.isBootstrapped) return;
 
-  get isBootstrapped() {
-    return true;
-  }
-
-  get isBootstrapping() {
-    return true;
+    this.isBootstrapping = true;
+    try {
+      await Promise.all([
+        this.tableViews.load(),
+        this.recipes.bootstrap(),
+        this.ingredients.bootstrap(),
+        this.surveys.bootstrap(),
+        this.matches.bootstrap(),
+      ]);
+      this.isBootstrapped = true;
+    } catch (error) {
+      console.error('Failed to bootstrap stores', error);
+    } finally {
+      this.isBootstrapping = false;
+    }
   }
 }

@@ -14,14 +14,6 @@ export class RecipeEntitiesRepository extends BaseRepository {
   constructor(txService: TransactionService) {
     super(txService);
     this.entityHandlers = {
-      recipeCategory: {
-        model: this.client.recipeCategory,
-        connectionField: 'categories'
-      },
-      season: {
-        model: this.client.season,
-        connectionField: 'seasons'
-      },
       tag: {
         model: this.client.tag,
         connectionField: 'tags'

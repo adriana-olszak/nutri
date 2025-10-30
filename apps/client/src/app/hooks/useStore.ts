@@ -3,7 +3,11 @@ import { useContext } from 'react';
 import { RootStoreContext } from '../providers/RootStoreProvider';
 
 export const useStores = () => {
-  return useContext(RootStoreContext);
+  const store = useContext(RootStoreContext);
+  if (!store) {
+    throw new Error('useStore must be used within a RootStoreProvider');
+  }
+  return store;
 };
 
 export const useUIStore = () => useStores().ui;

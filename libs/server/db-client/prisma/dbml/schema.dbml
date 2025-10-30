@@ -253,11 +253,9 @@ Table recipes {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
   instructions recipe_instructions [not null]
-  parts recipe_parts [not null]
   ingredients recipe_ingredients [not null]
-  categories recipe_categories [not null]
+  parts recipe_parts [not null]
   images recipe_images [not null]
-  seasons recipe_seasons [not null]
   tags recipe_tags [not null]
 }
 
@@ -271,14 +269,6 @@ Table recipe_images {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
   recipe recipes [not null]
-}
-
-Table recipe_seasons {
-  id String [pk]
-  name String [unique, not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [default: `now()`, not null]
-  recipes recipes [not null]
 }
 
 Table recipe_tags {
@@ -373,12 +363,6 @@ Table match_manual_reviews {
   notes String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
-}
-
-Table recipe_categories {
-  id String [pk]
-  name String [unique, not null]
-  recipes recipes [not null]
 }
 
 Table table_view_definitions {
@@ -503,16 +487,6 @@ Table poll_answers {
   updatedAt DateTime [default: `now()`, not null]
   question poll_questions [not null]
   submission poll_submissions [not null]
-}
-
-Table RecipeToRecipeCategory {
-  categoriesId String [ref: > recipe_categories.id]
-  recipesId String [ref: > recipes.id]
-}
-
-Table RecipeToSeason {
-  seasonsId String [ref: > recipe_seasons.id]
-  recipesId String [ref: > recipes.id]
 }
 
 Table RecipeToTag {

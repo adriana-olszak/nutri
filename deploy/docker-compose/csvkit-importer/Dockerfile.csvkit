@@ -1,11 +1,20 @@
-FROM python:3.9-slim
+FROM python:3.9-alpine
 
-RUN apt-get update && apt-get install -y \
+# Install required system dependencies
+RUN apk add --no-cache \
     postgresql-client \
-    libpq-dev \
+    postgresql-dev \
     gcc \
-    && rm -rf /var/lib/apt/lists/*
+    g++ \
+    musl-dev \
+    libffi-dev \
+    make \
+    # Required for pandas
+    py3-numpy \
+    # For Excel support
+    openblas-dev
 
+# Install Python packages
 RUN pip install --no-cache-dir \
     csvkit \
     psycopg2-binary \

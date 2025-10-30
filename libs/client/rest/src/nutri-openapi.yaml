@@ -1,0 +1,901 @@
+openapi: 3.0.0
+paths:
+  /api/matches/{matchId}/schedule:
+    post:
+      operationId: IngredientMatchingController_scheduleMatch
+      summary: Schedule ingredient matching
+      parameters:
+        - name: matchId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleMatchDto'
+      responses:
+        '202':
+          description: Match has been scheduled
+      tags:
+        - Ingredient Matching
+  /api/matches/{matchId}/execute:
+    post:
+      operationId: IngredientMatchingController_executeMatch
+      summary: Execute ingredient matching immediately
+      parameters:
+        - name: matchId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecuteMatchDto'
+      responses:
+        '200':
+          description: Match processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatchResultDto'
+      tags:
+        - Ingredient Matching
+  /api/matches/schedule-batch:
+    post:
+      operationId: IngredientMatchingController_scheduleBatchMatches
+      summary: Schedule multiple matches for processing
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleBatchMatchDto'
+      responses:
+        '202':
+          description: Matches have been scheduled for processing
+      tags:
+        - Ingredient Matching
+  /api/notification-preview/job-accepted-magic-link:
+    get:
+      operationId: NotificationPreviewController_previewJobAcceptedMagicLink
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/notification/welcome-to-mail:
+    post:
+      operationId: NotificationController_sendWelcomeMail
+      parameters: []
+      responses:
+        '201':
+          description: ''
+  /api/recipes/import:
+    post:
+      operationId: RecipeImportController_importRecipe
+      summary: Import recipe from structured JSON
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportRecipeInputDto'
+      responses:
+        '201':
+          description: Recipe imported successfully
+      tags:
+        - Recipe Import
+  /api/recipes/import/text:
+    post:
+      operationId: RecipeImportController_importPlainText
+      summary: Import recipe from plain text
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              $ref: '#/components/schemas/ImportRecipeTextInputDto'
+      responses:
+        '201':
+          description: Recipe imported successfully
+      tags:
+        - Recipe Import
+  /api/recipes/import/file:
+    post:
+      operationId: RecipeImportController_importFile
+      summary: Import recipe from file
+      parameters:
+        - name: type
+          required: true
+          in: query
+          schema:
+            type: string
+        - name: language
+          required: true
+          in: query
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                language:
+                  type: string
+                  enum:
+                    - en
+                    - pl
+                  default: en
+      responses:
+        '201':
+          description: ''
+      tags:
+        - Recipe Import
+  /api/recipes:
+    post:
+      operationId: RecipesController_create
+      summary: Create a new recipe
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecipeDto'
+      responses:
+        '201':
+          description: Recipe successfully created
+        '400':
+          description: Bad request
+      tags:
+        - Recipe Management
+    get:
+      operationId: RecipesController_findAll
+      summary: Find all recipes
+      parameters:
+        - name: search
+          required: false
+          in: query
+          description: Search term for filtering recipes
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of recipes returned
+      tags:
+        - Recipe Management
+  /api/recipes/{id}:
+    get:
+      operationId: RecipesController_findOne
+      summary: Find a recipe by ID
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Recipe ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recipe found
+        '404':
+          description: Recipe not found
+      tags:
+        - Recipe Management
+    delete:
+      operationId: RecipesController_remove
+      summary: Delete a recipe
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Recipe ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recipe successfully deleted
+        '404':
+          description: Recipe not found
+      tags:
+        - Recipe Management
+  /api/recipes/{id}/full:
+    get:
+      operationId: RecipesController_getFullRecipe
+      summary: Get full recipe details including ingredients and instructions
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Recipe ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Complete recipe details returned
+        '404':
+          description: Recipe not found
+      tags:
+        - Recipe Management
+  /api/recipes/{id}/cooking-view:
+    get:
+      operationId: RecipesController_getCookingView
+      summary: Get recipe in cooking view format
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Recipe ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cooking view of recipe returned
+        '404':
+          description: Recipe not found
+      tags:
+        - Recipe Management
+  /api/recipes/{id}/parts:
+    post:
+      operationId: RecipesController_createPart
+      summary: Create a new part for a recipe
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Recipe ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Recipe part created successfully
+        '404':
+          description: Recipe not found
+      tags:
+        - Recipe Management
+  /api/schemas/recipe/{operation}:
+    get:
+      operationId: RecipeSchemasController_getRecipeSchema
+      summary: Get recipe JSON schema for specific operation
+      parameters:
+        - name: operation
+          required: true
+          in: path
+          description: Operation type (create, update, etc.)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Schema returned successfully
+      tags:
+        - Recipe Schemas
+  /api/schemas/recipe-ingredient/{operation}:
+    get:
+      operationId: RecipeSchemasController_getIngredientSchema
+      summary: Get recipe ingredient JSON schema for specific operation
+      parameters:
+        - name: operation
+          required: true
+          in: path
+          description: Operation type (create, update, etc.)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Schema returned successfully
+      tags:
+        - Recipe Schemas
+  /api/schemas/recipe-instruction/{operation}:
+    get:
+      operationId: RecipeSchemasController_getInstructionSchema
+      summary: Get recipe instruction JSON schema for specific operation
+      parameters:
+        - name: operation
+          required: true
+          in: path
+          description: Operation type (create, update, etc.)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Schema returned successfully
+      tags:
+        - Recipe Schemas
+  /api/recipes/{recipeId}/ingredients:
+    post:
+      operationId: RecipeIngredientsController_create
+      summary: Create a recipe ingredient
+      parameters:
+        - name: recipeId
+          required: true
+          in: path
+          description: Recipe ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecipeIngredientDto'
+      responses:
+        '201':
+          description: Ingredient created successfully
+        '400':
+          description: Bad request
+      tags:
+        - Recipe Ingredients
+    get:
+      operationId: RecipeIngredientsController_findAll
+      summary: Find all ingredients for a recipe
+      parameters:
+        - name: recipeId
+          required: true
+          in: path
+          description: Recipe ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of ingredients returned
+        '404':
+          description: Recipe not found
+      tags:
+        - Recipe Ingredients
+  /api/recipes/{recipeId}/ingredients/batch:
+    post:
+      operationId: RecipeIngredientsController_createBatch
+      summary: Create multiple recipe ingredients
+      parameters:
+        - name: recipeId
+          required: true
+          in: path
+          description: Recipe ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateRecipeIngredientDto'
+      responses:
+        '201':
+          description: Ingredients created successfully
+        '400':
+          description: Bad request
+      tags:
+        - Recipe Ingredients
+  /api/recipes/{recipeId}/instructions/batch:
+    post:
+      operationId: RecipeInstructionsController_createBatch
+      summary: Create multiple recipe instructions
+      parameters:
+        - name: recipeId
+          required: true
+          in: path
+          description: Recipe ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateRecipeInstructionDto'
+      responses:
+        '201':
+          description: Instructions created successfully
+        '400':
+          description: Bad request
+      tags:
+        - Recipe Instructions
+  /api/recipes/{recipeId}/instructions:
+    get:
+      operationId: RecipeInstructionsController_findAll
+      summary: Find all instructions for a recipe
+      parameters:
+        - name: recipeId
+          required: true
+          in: path
+          description: Recipe ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of instructions returned
+        '404':
+          description: Recipe not found
+      tags:
+        - Recipe Instructions
+  /api/recipes/{recipeId}/entities/tags:
+    post:
+      operationId: RecipeEntitiesController_addTag
+      parameters:
+        - name: recipeId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+  /api/recipes/drafts:
+    post:
+      operationId: RecipeDraftsController_createDraft
+      summary: Create a new recipe draft
+      parameters: []
+      responses:
+        '201':
+          description: Draft created successfully
+      tags:
+        - Recipe Drafts
+  /api/recipes/drafts/{id}:
+    get:
+      operationId: RecipeDraftsController_getDraft
+      summary: Get a recipe draft by ID
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Draft ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Draft found
+        '404':
+          description: Draft not found
+      tags:
+        - Recipe Drafts
+    put:
+      operationId: RecipeDraftsController_updateDraftBasic
+      summary: Update basic recipe draft information
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Draft ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecipeDto'
+      responses:
+        '200':
+          description: Draft updated successfully
+        '404':
+          description: Draft not found
+      tags:
+        - Recipe Drafts
+    delete:
+      operationId: RecipeDraftsController_deleteDraft
+      summary: Delete a recipe draft
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Draft ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Draft deleted successfully
+        '404':
+          description: Draft not found
+      tags:
+        - Recipe Drafts
+  /api/recipes/drafts/{id}/ingredients:
+    put:
+      operationId: RecipeDraftsController_updateDraftIngredients
+      summary: Update ingredients in a recipe draft
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Draft ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateRecipeIngredientDto'
+      responses:
+        '200':
+          description: Draft ingredients updated successfully
+        '404':
+          description: Draft not found
+      tags:
+        - Recipe Drafts
+  /api/recipes/drafts/{id}/steps:
+    put:
+      operationId: RecipeDraftsController_updateDraftInstructions
+      summary: Update instructions in a recipe draft
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Draft ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateRecipeInstructionDto'
+      responses:
+        '200':
+          description: Draft instructions updated successfully
+        '404':
+          description: Draft not found
+      tags:
+        - Recipe Drafts
+  /api/recipes/drafts/{id}/finalize:
+    post:
+      operationId: RecipeDraftsController_finalizeDraft
+      summary: Finalize a recipe draft to create a complete recipe
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Draft ID
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Draft finalized successfully
+        '404':
+          description: Draft not found
+      tags:
+        - Recipe Drafts
+info:
+  title: Nutri API
+  description: Internal REST API documentation
+  version: 0.0.1
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    ScheduleMatchDto:
+      type: object
+      properties:
+        matchId:
+          type: string
+        similarityThreshold:
+          type: number
+          minimum: 0
+          maximum: 1
+        maxCandidates:
+          type: number
+          minimum: 1
+          maximum: 100
+        priority:
+          type: number
+      required:
+        - matchId
+    ExecuteMatchDto:
+      type: object
+      properties:
+        matchId:
+          type: string
+          description: The ID of the match to process
+        similarityThreshold:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Minimum similarity threshold (0-1)
+        maxCandidates:
+          type: number
+          minimum: 1
+          maximum: 100
+          description: Maximum number of candidates to consider
+      required:
+        - matchId
+    MatchResultDto:
+      type: object
+      properties:
+        matchId:
+          type: string
+        status:
+          type: string
+          enum:
+            - PENDING_MATCH
+            - AUTO_MATCHING_IN_PROGRESS
+            - AUTO_MATCHING_FAILED
+            - PENDING_REVIEW
+            - IN_REVIEW
+            - AUTO_APPROVED
+            - APPROVED
+            - REJECTED
+            - NEEDS_REMATCH
+        selectedFood:
+          type: object
+          properties:
+            id:
+              required: true
+              type: string
+            description:
+              required: false
+              type: string
+            confidence:
+              required: false
+              type: number
+            quality:
+              required: false
+              type: object
+        candidates:
+          type: array
+          items:
+            type: string
+        processingTimeMs:
+          type: number
+      required:
+        - matchId
+        - status
+        - selectedFood
+        - processingTimeMs
+    ScheduleBatchMatchDto:
+      type: object
+      properties:
+        similarityThreshold:
+          type: number
+          minimum: 0
+        maxCandidates:
+          type: number
+          minimum: 1
+        priority:
+          type: number
+        limit:
+          type: number
+          minimum: 1
+    ImportRecipeDto:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 200
+          pattern: /^[\p{L}\p{N}\s\-']+$/u
+        sourceId:
+          type: string
+          maxLength: 200
+        ingredients:
+          type: array
+          items:
+            type: string
+            maxLength: 500
+            minLength: 2
+        instructions:
+          type: array
+          items:
+            type: string
+            maxLength: 1000
+            minLength: 10
+        sourceUrl:
+          type: string
+          maxLength: 256
+        description:
+          type: string
+          maxLength: 1000
+        cookingTime:
+          type: string
+          maxLength: 50
+        prepTime:
+          type: string
+          maxLength: 50
+        servingsText:
+          type: string
+          maxLength: 50
+          pattern: /^(serves|makes)?\s*\d+(-\d+)?\s*(people|servings?)?$/i
+        servingsMin:
+          type: number
+          minimum: 1
+          maximum: 100
+        servingsMax:
+          type: number
+          minimum: 1
+          maximum: 100
+        categories:
+          type: array
+          items:
+            type: string
+            maxLength: 50
+        seasons:
+          type: string
+          enum:
+            - SPRING
+            - SUMMER
+            - AUTUMN
+            - WINTER
+        tags:
+          type: array
+          items:
+            type: string
+            maxLength: 50
+        language:
+          type: string
+          default: en
+          enum:
+            - en
+            - pl
+      required:
+        - title
+        - sourceId
+        - ingredients
+        - instructions
+    ImportRecipeOptionsDto:
+      type: object
+      properties:
+        language:
+          type: string
+        autoMatchIngredients:
+          type: boolean
+        validateIngredients:
+          type: boolean
+        skipDuplicates:
+          type: boolean
+    ImportRecipeInputDto:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ImportRecipeDto'
+        options:
+          $ref: '#/components/schemas/ImportRecipeOptionsDto'
+      required:
+        - data
+        - options
+    ImportRecipeTextDto:
+      type: object
+      properties:
+        text:
+          type: string
+          minLength: 50
+          maxLength: 5000
+          pattern: /^[\p{L}\p{N}\p{P}\s]+$/u
+        title:
+          type: string
+          minLength: 3
+          maxLength: 200
+          pattern: /^[\p{L}\p{N}\s\-']+$/u
+        language:
+          type: string
+          default: en
+          enum:
+            - en
+            - pl
+      required:
+        - text
+    ImportRecipeTextInputDto:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ImportRecipeTextDto'
+        options:
+          $ref: '#/components/schemas/ImportRecipeOptionsDto'
+      required:
+        - data
+        - options
+    CreateRecipeDto:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 100
+        description:
+          type: string
+        sourceId:
+          type: string
+        sourceUrl:
+          type: string
+        cookingTime:
+          type: string
+        prepTime:
+          type: string
+        servingsText:
+          type: string
+        servingsMin:
+          type: number
+          minimum: 1
+        servingsMax:
+          type: number
+          minimum: 1
+        tagIds:
+          type: array
+          items:
+            type: string
+      required:
+        - title
+    CreateRecipeIngredientDto:
+      type: object
+      properties:
+        recipeId:
+          type: string
+        partId:
+          type: string
+        quantity:
+          type: number
+          minimum: 0
+        quantityText:
+          type: string
+        minQuantity:
+          type: number
+          minimum: 0
+        maxQuantity:
+          type: number
+          minimum: 0
+        unit:
+          type: string
+        unitText:
+          type: string
+        ingredientText:
+          type: string
+        extraInfo:
+          type: string
+        foodId:
+          type: string
+      required:
+        - recipeId
+        - quantity
+        - unit
+        - ingredientText
+    CreateRecipeInstructionDto:
+      type: object
+      properties:
+        recipeId:
+          type: string
+        content:
+          type: string
+        type:
+          type: object
+        order:
+          type: number
+          minimum: 1
+        listIndex:
+          type: number
+          minimum: 1
+      required:
+        - recipeId
+        - content
+        - type
+        - order

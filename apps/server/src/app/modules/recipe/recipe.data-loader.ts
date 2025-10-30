@@ -1,12 +1,10 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { PrismaService } from '@nutri/server-db-client';
 import DataLoader from 'dataloader';
-import { RecipePart } from '../../graphql/models/recipe-part.model';
-import { RecipeIngredient } from '../../graphql/models/recipe-ingredient.model';
-import { RecipeCategory } from '../../graphql/models/recipe-category.model';
-import { RecipeImage } from '../../graphql/models/recipe-image.model';
-import { Season } from '../../graphql/models/season.model';
 import { Food } from '../../graphql/models/food.model';
+import { RecipeImage } from '../../graphql/models/recipe-image.model';
+import { RecipeIngredient } from '../../graphql/models/recipe-ingredient.model';
+import { RecipePart } from '../../graphql/models/recipe-part.model';
 import { Tag } from '../../graphql/models/tag.model';
 
 @Injectable({ scope: Scope.REQUEST })
@@ -55,26 +53,6 @@ export class RecipeDataLoader {
     }
   });
 
-  public readonly batchCategories = new DataLoader<string, Pick<RecipeCategory, 'id' | 'name'>[]>(
-    async (recipeIds: readonly string[]) => {
-      const categoriesWithRecipes = await this.prisma.recipeCategory.findMany({
-        where: { recipes: { some: { id: { in: recipeIds as string[] } } } },
-        include: { recipes: { select: { id: true } } }
-      });
-
-      const categoryMap = new Map<string, Pick<RecipeCategory, 'id' | 'name'>[]>();
-
-      recipeIds.forEach(id => {
-        const categories = categoriesWithRecipes
-          .filter(category => category.recipes.some(recipe => recipe.id === id))
-          .map(({ recipes, ...rest }) => rest);
-        categoryMap.set(id, categories);
-      });
-
-      return recipeIds.map(id => categoryMap.get(id) || []);
-    }
-  );
-
   public readonly batchImages = new DataLoader<string, RecipeImage[]>(
     async (recipeIds: readonly string[]): Promise<(RecipeImage[] | Error)[]> => {
       try {
@@ -97,31 +75,6 @@ export class RecipeDataLoader {
     }
   );
 
-  public readonly batchSeasons = new DataLoader<string, Season[]>(
-    async (recipeIds: readonly string[]): Promise<(Season[] | Error)[]> => {
-      try {
-        const seasonsWithRecipes = await this.prisma.season.findMany({
-          where: { recipes: { some: { id: { in: recipeIds as string[] } } } },
-          include: { recipes: { select: { id: true } } }
-        });
-
-        const seasonMap = new Map<string, Season[]>();
-        seasonsWithRecipes.forEach(season => {
-          season.recipes.forEach(recipe => {
-            if (!seasonMap.has(recipe.id)) {
-              seasonMap.set(recipe.id, []);
-            }
-            const { recipes, ...seasonWithoutRecipes } = season;
-            seasonMap.get(recipe.id)?.push(seasonWithoutRecipes);
-          });
-        });
-
-        return recipeIds.map(id => seasonMap.get(id) || []);
-      } catch (error) {
-        return recipeIds.map(() => error instanceof Error ? error : new Error('An unknown error occurred'));
-      }
-    }
-  );
 
   public readonly batchTags = new DataLoader<string, Tag[]>(
     async (recipeIds: readonly string[]): Promise<(Tag[] | Error)[]> => {

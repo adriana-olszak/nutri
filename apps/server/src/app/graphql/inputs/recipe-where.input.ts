@@ -1,11 +1,8 @@
-import { Field } from '@nestjs/graphql';
-import { InputType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
+import { DateTimeFilter } from '../prisma/date-time-filter.input';
+import { IntNullableFilter } from '../prisma/int-nullable-filter.input';
 import { StringFilter } from '../prisma/string-filter.input';
 import { StringNullableFilter } from '../prisma/string-nullable-filter.input';
-import { IntNullableFilter } from '../prisma/int-nullable-filter.input';
-import { DateTimeFilter } from '../prisma/date-time-filter.input';
-import { RecipeCategoryListRelationFilter } from './recipe-category-list-relation-filter.input';
-import { SeasonListRelationFilter } from './season-list-relation-filter.input';
 import { TagListRelationFilter } from './tag-list-relation-filter.input';
 
 @InputType()
@@ -55,12 +52,6 @@ export class RecipeWhereInput {
 
     @Field(() => DateTimeFilter, {nullable:true})
     updatedAt?: DateTimeFilter;
-
-    @Field(() => RecipeCategoryListRelationFilter, {nullable:true})
-    categories?: RecipeCategoryListRelationFilter;
-
-    @Field(() => SeasonListRelationFilter, {nullable:true})
-    seasons?: SeasonListRelationFilter;
 
     @Field(() => TagListRelationFilter, {nullable:true})
     tags?: TagListRelationFilter;

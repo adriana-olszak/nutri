@@ -18,12 +18,6 @@ export class RecipesRepository extends BaseRepository {
       return await this.client.recipe.create({
         data: {
           ...dto,
-          categories: dto.categoryIds ? {
-            connect: dto.categoryIds.map(id => ({ id })),
-          } : undefined,
-          seasons: dto.seasonIds ? {
-            connect: dto.seasonIds.map(id => ({ id })),
-          } : undefined,
           tags: dto.tagIds ? {
             connect: dto.tagIds.map(id => ({ id })),
           } : undefined,
@@ -71,9 +65,7 @@ export class RecipesRepository extends BaseRepository {
               order: 'asc',
             },
           },
-          categories: true,
           tags: true,
-          seasons: true,
         },
       });
     } catch (error) {
@@ -94,7 +86,7 @@ export class RecipesRepository extends BaseRepository {
           ],
         } : undefined,
         include: {
-          categories: true,
+          tags: true,
           _count: {
             select: {
               ingredients: true,

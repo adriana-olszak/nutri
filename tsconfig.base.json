@@ -16,10 +16,10 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@nutri/tools/*": ["tools/src/*"],
       "@nutri/client-auth": ["libs/client/auth/src/index.ts"],
       "@nutri/client-gql": ["libs/client/gql/src/index.ts"],
       "@nutri/client-recipes": ["libs/client/recipes/src/index.ts"],
+      "@nutri/client-rest": ["libs/client/rest/src/index.ts"],
       "@nutri/client-ui": ["libs/client/ui/src/index.ts"],
       "@nutri/client-ui/*": ["libs/client/ui/src/lib/*"],
       "@nutri/client-utils": ["libs/client/utils/src/index.ts"],
@@ -61,11 +61,15 @@
       "@nutri/server-parse-recipe": ["libs/server/parse-recipe/src/index.ts"],
       "@nutri/server-queue": ["libs/server/queue/src/index.ts"],
       "@nutri/server-recipe-import": ["libs/server/recipe-import/src/index.ts"],
+      "@nutri/server-recipe-management": [
+        "libs/server/recipe-management/src/index.ts"
+      ],
       "@nutri/server-redis": ["libs/server/redis/src/index.ts"],
       "@nutri/server-shared": ["libs/server/shared/src/index.ts"],
       "@nutri/server-testing": ["libs/server/testing/src/index.ts"],
       "@nutri/store": ["apps/client/src/store"],
-      "@nutri/store/*": ["apps/client/src/store/*"]
+      "@nutri/store/*": ["apps/client/src/store/*"],
+      "@nutri/tools/*": ["tools/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

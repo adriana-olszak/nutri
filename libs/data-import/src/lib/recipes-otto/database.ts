@@ -1,6 +1,6 @@
-import { Prisma, PrismaClient, RecipeInstructionsType } from '@prisma/client';
-import { ParsedRecipe, ParsedIngredient, ParsedImage, EntityType, EntityHandler } from './types';
+import { PrismaClient, RecipeInstructionsType } from '@prisma/client';
 import { MatchStatus } from '../../../../server/db-client/@generated/prisma/match-status.enum';
+import { EntityHandler, EntityType, ParsedImage, ParsedIngredient, ParsedRecipe } from './types';
 
 
 export async function populateDatabase(prisma: PrismaClient, parsedRecipes: ParsedRecipe[]) {
@@ -47,11 +47,11 @@ async function createRecipeImages(prisma: PrismaClient, recipeId: string, images
 }
 
 async function createRecipeCategories(prisma: PrismaClient, recipeId: string, categories: string[]) {
-  await createRecipeEntities(prisma, recipeId, categories, 'recipeCategory');
+  await createRecipeEntities(prisma, recipeId, categories, 'tag');
 }
 
 async function createRecipeSeasons(prisma: PrismaClient, recipeId: string, seasons: string[]) {
-  await createRecipeEntities(prisma, recipeId, seasons, 'season');
+  await createRecipeEntities(prisma, recipeId, seasons, 'tag');
 }
 
 async function createRecipeTags(prisma: PrismaClient, recipeId: string, tags: string[]) {
@@ -60,12 +60,12 @@ async function createRecipeTags(prisma: PrismaClient, recipeId: string, tags: st
 
 const entityHandlers = (prisma: PrismaClient): Record<EntityType, EntityHandler> => ({
   recipeCategory: {
-    model: prisma.recipeCategory,
-    connectionField: 'categories'
+    model: prisma.tag,
+    connectionField: 'tags'
   },
   season: {
-    model: prisma.season,
-    connectionField: 'seasons'
+    model: prisma.tag,
+    connectionField: 'tags'
   },
   tag: {
     model: prisma.tag,

@@ -10,8 +10,6 @@ export interface CreateRecipeDto {
   servingsText?: string;
   servingsMin?: number;
   servingsMax?: number;
-  categoryIds?: string[];
-  seasonIds?: string[];
   tagIds?: string[];
 }
 
@@ -19,15 +17,15 @@ export interface CreateRecipeIngredientDto {
   recipeId: string;
   partId?: string;
   foodId?: string;
-  id?: string
-  quantity: number
-  quantityText?: string | null
-  minQuantity?: number | null
-  maxQuantity?: number | null
-  unit: string
-  unitText?: string | null
-  ingredientText: string
-  extraInfo?: string | null
+  id?: string;
+  quantity: number;
+  quantityText?: string | null;
+  minQuantity?: number | null;
+  maxQuantity?: number | null;
+  unit: string;
+  unitText?: string | null;
+  ingredientText: string;
+  extraInfo?: string | null;
 }
 
 export interface CreateRecipeInstructionDto {
@@ -42,6 +40,11 @@ export interface RecipeWithRelations {
   id: string;
   title: string;
   description?: string | null;
+  servingsText?: string | null;
+  servingsMin?: number | null;
+  servingsMax?: number | null;
+  cookingTime?: string | null;
+  prepTime?: string | null;
   instructions: Array<{
     id: string;
     content: string;
@@ -58,15 +61,7 @@ export interface RecipeWithRelations {
       description: string;
     } | null;
   }>;
-  categories: Array<{
-    id: string;
-    name: string;
-  }>;
   tags: Array<{
-    id: string;
-    name: string;
-  }>;
-  seasons: Array<{
     id: string;
     name: string;
   }>;
@@ -74,10 +69,12 @@ export interface RecipeWithRelations {
 
 export interface EntityHandler {
   model: {
-    create: (data: {data: {name: string}}) => Promise<{id: string}>
-    findUnique: (data:{where: {name: string}}) => Promise<{id: string} | null>
-  },
-  connectionField: string
+    create: (data: { data: { name: string } }) => Promise<{ id: string }>;
+    findUnique: (data: {
+      where: { name: string };
+    }) => Promise<{ id: string } | null>;
+  };
+  connectionField: string;
 }
 
-export type EntityType = 'recipeCategory'| 'season' | 'tag'
+export type EntityType = 'tag';

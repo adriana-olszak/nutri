@@ -1,39 +1,37 @@
-import { Channel } from 'phoenix';
-import { P, match } from 'ts-pattern';
-import { runInAction, makeAutoObservable } from 'mobx';
-import set from 'lodash/set';
+import {
+    TableIdType,
+    TableViewDefinition as TableViewDef,
+    TableViewDefinition,
+    TableViewType,
+} from '@nutri/client-gql';
+import {
+    ComparisonOperator,
+    IBaseFilter,
+    IBaseFilterItem,
+} from '@nutri/common-interfaces';
 import omit from 'lodash/omit';
-import { TableIdType, TableViewDefinition as TableViewDef, TableViewType } from '@nutri/client-gql';
-import { makeAutoSyncable, Store } from '@nutri/store/main/store';
-import { Transport } from '@nutri/store/main/transport';
-import { RootStore } from '@nutri/store/root';
-import { Operation } from '@nutri/store/main/types';
-import debounce from 'lodash/debounce';
-import { ComparisonOperator, IBaseFilter, IBaseFilterItem } from '@nutri/common-interfaces';
+import set from 'lodash/set';
+import { makeAutoObservable, runInAction } from 'mobx';
+import { P, match } from 'ts-pattern';
+import { httpClient } from '../../api/httpClient';
+import { Store } from '../base/Store';
 
-export type ExtendedFilterItem = IBaseFilterItem & { active?: boolean }
+export type ExtendedFilterItem = IBaseFilterItem & { active?: boolean };
 
-export class TableViewDefStore implements Store<TableViewDef> {
-  value: TableViewDef = getDefaultValue();
-  version = 0;
-  isLoading = false;
-  history: Operation[] = [];
-  error: string | null = null;
-  channel: Channel | undefined;
-  subscribe = makeAutoSyncable.subscribe;
-  load = makeAutoSyncable.load<TableViewDef>();
-  update = makeAutoSyncable.update<TableViewDef>();
-  private readonly debouncedSave: () => void;
-
-  constructor(public root: RootStore, public transport: Transport) {
-    makeAutoSyncable(this, { channelName: 'TableViewDef', mutator: this.save });
+export class TableViewStore extends Store<TableViewDefinition> {
+  constructor(private id: string) {
+    super();
     makeAutoObservable(this);
-    this.debouncedSave = debounce(this.save, 500);
   }
 
-  set id(id: string) {
-    this.value.id = id;
+  protected async fetchData(): Promise<TableViewDefinition> {
+    return httpClient.get<TableViewDefinition>(`/table-views/${this.id}`);
   }
+
+  protected async saveData(data: TableViewDefinition): Promise<TableViewDefinition> {
+    return httpClient.put<TableViewDefinition>(`/table-views/${this.id}`, data);
+  }
+
 
   reorderColumn(sourceColumnId: number, targetColumnId: number) {
     this.update((value) => {
@@ -107,11 +105,6 @@ export class TableViewDefStore implements Store<TableViewDef> {
         this.value.columnView[columnIdx].width = size;
       }
     });
-
-    this.debouncedSave();
-  }
-
-  async invalidate() {
   }
 
   async save() {
@@ -156,8 +149,7 @@ export class TableViewDefStore implements Store<TableViewDef> {
   getFilter(id: string) {
     const filters = this.getFilters();
 
-    return (filters?.AND)?.find((f) => f.filter?.property === id)
-      ?.filter;
+    return filters?.AND?.find((f) => f.filter?.property === id)?.filter;
   }
 
   appendFilter(filter: ExtendedFilterItem) {
@@ -167,7 +159,7 @@ export class TableViewDefStore implements Store<TableViewDef> {
       if (
         draft &&
         draft?.AND?.findIndex((f) => f.filter?.property === filter.property) !==
-        -1
+          -1
       ) {
         return value;
       }
@@ -189,9 +181,7 @@ export class TableViewDefStore implements Store<TableViewDef> {
       const draft = this.getFilters();
 
       if (draft) {
-        draft.AND = (draft.AND)?.filter(
-          (f) => f.filter?.property !== id,
-        );
+        draft.AND = draft.AND?.filter((f) => f.filter?.property !== id);
         value.filters = JSON.stringify(draft);
       }
 
@@ -212,7 +202,7 @@ export class TableViewDefStore implements Store<TableViewDef> {
       const draft = this.getFilters();
 
       if (draft) {
-        const foundFilter = (draft.AND)?.find(
+        const foundFilter = draft.AND?.find(
           (f) => f.filter?.property === filter.property,
         )?.filter;
 
@@ -241,7 +231,7 @@ export class TableViewDefStore implements Store<TableViewDef> {
       if (!draft.AND) {
         return value;
       }
-      const foundIndex = (draft.AND)?.findIndex(
+      const foundIndex = draft.AND?.findIndex(
         (f) => f.filter?.property === filter.property,
       );
 
@@ -265,7 +255,7 @@ export class TableViewDefStore implements Store<TableViewDef> {
           property,
           active: false,
           value: '',
-          operation
+          operation,
         });
 
         return value;
@@ -279,14 +269,19 @@ export class TableViewDefStore implements Store<TableViewDef> {
       );
 
       if (foundIndex !== -1) {
-        draft.AND[foundIndex].filter = { property, active: false, operation, value: '' };
+        draft.AND[foundIndex].filter = {
+          property,
+          active: false,
+          operation,
+          value: '',
+        };
         value.filters = JSON.stringify(draft);
       } else {
         this.appendFilter({
           property,
           active: false,
           value: '',
-          operation
+          operation,
         });
       }
 

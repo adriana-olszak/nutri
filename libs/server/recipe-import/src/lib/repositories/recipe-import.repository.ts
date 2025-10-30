@@ -127,8 +127,6 @@ export class RecipeImportRepository {
     };
 
     await Promise.all([
-      createEntities(recipe.categories, 'recipeCategory'),
-      createEntities(recipe.seasons, 'season'),
       createEntities(recipe.tags, 'tag'),
     ]);
   }
